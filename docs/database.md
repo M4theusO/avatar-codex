@@ -343,7 +343,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 | Achievement | ~12 | — |
 | ChallengeTemplate | ~8 | — |
 
-- Usuário de demonstração apenas em Development (credenciais documentadas no README), criado na Fase 5 junto com o hash de senha.
+- Usuário de demonstração apenas em Development (`DemoUserSeeder`, credenciais no README): criado no startup se ainda não existir, com a senha em hash PBKDF2. ✅ Fase 5
 
 ## 5. Migrations
 
