@@ -122,13 +122,20 @@ public class AuthService(
 
     private static string NormalizeEmail(string? email) => email?.Trim().ToLowerInvariant() ?? "";
 
-    private static UserDto ToDto(User user) => new(
-        user.Id,
-        user.Username,
-        user.Email,
-        user.AvatarUrl,
-        user.Element.ToSummaryDto(),
-        LevelCalculator.GetLevel(user.ExperiencePoints),
-        user.ExperiencePoints,
-        user.CreatedAt);
+    private static UserDto ToDto(User user)
+    {
+        var progress = LevelCalculator.GetProgress(user.ExperiencePoints);
+        return new UserDto(
+            user.Id,
+            user.Username,
+            user.Email,
+            user.AvatarUrl,
+            user.Element.ToSummaryDto(),
+            progress.Level,
+            user.ExperiencePoints,
+            progress.CurrentLevelXp,
+            progress.NextLevelXp,
+            progress.ProgressPercent,
+            user.CreatedAt);
+    }
 }

@@ -4,7 +4,10 @@ public record RegisterRequest(string Username, string Email, string Password, st
 
 public record LoginRequest(string Email, string Password);
 
-/// <summary>Resumo do usuário autenticado. Nunca inclui o hash da senha.</summary>
+/// <summary>
+/// Resumo do usuário autenticado. Nunca inclui o hash da senha.
+/// CurrentLevelXp/NextLevelXp/LevelProgress alimentam a barra de XP sem o frontend conhecer a fórmula.
+/// </summary>
 public record UserDto(
     Guid Id,
     string Username,
@@ -13,6 +16,9 @@ public record UserDto(
     ElementSummaryDto? Element,
     int Level,
     int ExperiencePoints,
+    int CurrentLevelXp,
+    int NextLevelXp,
+    int LevelProgress,
     DateTimeOffset CreatedAt);
 
 /// <summary>Corpo das respostas de login, cadastro e refresh.</summary>

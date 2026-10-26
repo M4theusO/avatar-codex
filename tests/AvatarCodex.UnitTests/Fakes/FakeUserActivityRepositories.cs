@@ -37,6 +37,16 @@ public sealed class FakeUserCollectionRepository : IUserCollectionRepository
 
     public Task<UserStatisticsDto> GetStatisticsAsync(Guid userId, CancellationToken cancellationToken) =>
         Task.FromResult(new UserStatisticsDto(0, 0, 0, 0, Favorites.Count(f => f.UserId == userId)));
+
+    public List<ExperienceTransaction> Experience { get; } = [];
+
+    public Task<(IReadOnlyList<ExperienceTransaction> Items, int TotalItems)> GetExperienceAsync(
+        Guid userId, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var mine = Experience.Where(t => t.UserId == userId).OrderByDescending(t => t.CreatedAt).ToList();
+        return Task.FromResult<(IReadOnlyList<ExperienceTransaction>, int)>(
+            ([.. mine.Skip((page - 1) * pageSize).Take(pageSize)], mine.Count));
+    }
 }
 
 /// <summary>

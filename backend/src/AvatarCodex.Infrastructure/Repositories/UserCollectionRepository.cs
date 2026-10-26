@@ -93,6 +93,22 @@ public class UserCollectionRepository(AppDbContext db) : IUserCollectionReposito
         return ([.. all.Skip((page - 1) * pageSize).Take(pageSize)], all.Count);
     }
 
+    public async Task<(IReadOnlyList<ExperienceTransaction> Items, int TotalItems)> GetExperienceAsync(
+        Guid userId, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var transactions = db.ExperienceTransactions.AsNoTracking().Where(t => t.UserId == userId);
+
+        var totalItems = await transactions.CountAsync(cancellationToken);
+        var items = await transactions
+            .OrderByDescending(t => t.CreatedAt)
+            .ThenByDescending(t => t.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (items, totalItems);
+    }
+
     public async Task<UserStatisticsDto> GetStatisticsAsync(Guid userId, CancellationToken cancellationToken) =>
         new(
             DiscoveredCharacters: await db.CharacterDiscoveries.CountAsync(d => d.UserId == userId, cancellationToken),
