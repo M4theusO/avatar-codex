@@ -4,7 +4,7 @@ Enciclopédia interativa + plataforma de exploração + sistema de evolução do
 
 O usuário explora personagens, nações, elementos, habilidades e a linha do tempo do universo, e constrói sua própria jornada: descobertas, favoritos, quizzes, XP, níveis, conquistas e desafios diários.
 
-> **Status:** Fase 1 (Setup). Veja o plano completo em [docs/development-phases.md](docs/development-phases.md).
+> **Status:** Fase 2 concluída (banco e domínio); próxima: Fase 3 (API de conteúdo). Veja o plano completo em [docs/development-phases.md](docs/development-phases.md).
 
 ## Stack
 
@@ -64,6 +64,8 @@ dotnet user-secrets set "ConnectionStrings:Default" \
 dotnet run --project src/AvatarCodex.Api --launch-profile http
 ```
 
+Em Development, o startup aplica as migrations e o seed de conteúdo automaticamente (personagens, nações, elementos, habilidades). O seed é idempotente e pode rodar quantas vezes for preciso.
+
 - API: http://localhost:5080
 - Health check: http://localhost:5080/api/health
 - Swagger: http://localhost:5080/swagger
@@ -85,6 +87,10 @@ Aplicação: http://localhost:5173. A página inicial mostra se a API e o banco 
 # Backend
 cd backend && dotnet test
 
+# Backend, incluindo os testes com PostgreSQL real
+# (cada classe cria e remove um banco avatar_codex_test_<guid>)
+AVATARCODEX_TEST_DB="Host=localhost;Port=5432;Username=postgres;Password=<senha>" dotnet test
+
 # Frontend
 cd frontend/avatar-codex-web
 npm run test          # Vitest
@@ -100,6 +106,7 @@ npm run build
 | `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_PORT` | `.env` (raiz) | Usadas pelo `docker-compose.yml` |
 | `ConnectionStrings:Default` | user-secrets ou env `ConnectionStrings__Default` | Conexão do backend com o PostgreSQL |
 | `Cors:AllowedOrigins` | `appsettings.Development.json` ou env | Origens permitidas do frontend |
+| `AVATARCODEX_TEST_DB` | variável de ambiente (opcional) | Servidor PostgreSQL para os testes de integração de banco |
 | `VITE_API_URL` | `frontend/avatar-codex-web/.env.local` | URL base da API |
 
 Nenhum secret é versionado. Use sempre os arquivos `.env.example` como modelo.

@@ -44,9 +44,10 @@ avatar-codex/
 │       │   ├── Entities/
 │       │   ├── Enums/
 │       │   ├── Exceptions/
-│       │   └── Interfaces/
+│       │   ├── Interfaces/
+│       │   └── ValueObjects/        # ImageInfo
 │       └── AvatarCodex.Infrastructure/
-│           ├── Data/                # AppDbContext, Seed/
+│           ├── Data/                # AppDbContext, DatabaseInitializer, Seed/ (JSON + ContentSeeder)
 │           ├── Repositories/
 │           ├── Configurations/      # IEntityTypeConfiguration<T>
 │           ├── Migrations/
@@ -82,14 +83,14 @@ Api ──► Application ──► Domain
 | **Api** | Rotas HTTP, autenticação, model binding, chamar serviço, mapear resultado para status HTTP, middleware de erros. | Conter regra de negócio ou acessar o DbContext diretamente. |
 | **Application** | Casos de uso (`CharacterService`, `QuizService`, `ProgressionService`…), DTOs, validators, interfaces de repositório e de serviços técnicos. | Depender de EF Core, ASP.NET ou detalhes de infraestrutura. |
 | **Domain** | Entidades, enums, exceções de domínio (`NotFoundException`, `ConflictException`, `BusinessRuleException`), regras puras (ex.: `LevelCalculator`). | Ter dependências externas. |
-| **Infrastructure** | `AppDbContext`, configurações EF, repositórios, migrations, seed, JWT, hash de senha, relógio (`IClock`). | Conter regra de negócio. |
+| **Infrastructure** | `AppDbContext`, configurações EF, repositórios, migrations, seed, JWT, hash de senha, relógio (`TimeProvider`). | Conter regra de negócio. |
 
 ### 3.2 Padrões adotados
 
 - **Repositórios simples** apenas onde agregam (consultas com filtros/paginação); sem repositório genérico nem Unit of Work próprio (o `DbContext` já é um).
 - **Mapeamento manual** de DTOs (sem AutoMapper): explícito e fácil de explicar.
 - **FluentValidation** para os DTOs de entrada.
-- **`IClock`** abstrai `DateTime.UtcNow` para tornar testáveis desafios diários e timestamps.
+- **`TimeProvider`** (nativo do .NET) abstrai o relógio para tornar testáveis desafios diários e timestamps.
 - **Timestamps automáticos** (`CreatedAt`/`UpdatedAt`) via override de `SaveChangesAsync`.
 - **Swagger/OpenAPI** em desenvolvimento.
 
@@ -192,7 +193,7 @@ Proposta sem custo: frontend na **Vercel**, backend no **Render** (container Doc
 | Tipo | Ferramenta | Foco |
 |---|---|---|
 | Unitário backend | xUnit | `LevelCalculator`, `ProgressionService`, regras de conquistas e desafios, validação de quiz, validators. |
-| Integração backend | xUnit + `WebApplicationFactory` + Testcontainers (PostgreSQL) | Cadastro/login, auth/permissões, personagens (busca, 404), favoritos, idempotência de XP, quiz sem `IsCorrect`. |
+| Integração backend | xUnit + `WebApplicationFactory` + PostgreSQL real em banco descartável (`AVATARCODEX_TEST_DB`; Testcontainers quando houver Docker) | Cadastro/login, auth/permissões, personagens (busca, 404), favoritos, idempotência de XP, quiz sem `IsCorrect`. |
 | Frontend | Vitest + React Testing Library (+ MSW para mock da API) | Login, cadastro, listagem/filtros/busca, detalhe, favoritos, perfil, quiz e feedback. |
 | E2E | Cypress | 9 fluxos de `development-phases.md` (Fase 14), contra API + banco de teste com seed. |
 
@@ -222,7 +223,7 @@ Proposta sem custo: frontend na **Vercel**, backend no **Render** (container Doc
 | D5 | Nível | **Não persistido**: calculado do XP. `ExperiencePoints` persistido como total desnormalizado, atualizado na mesma transação da `ExperienceTransaction` | Evita duplicar dado derivado e mantém consultas de perfil/ranking baratas |
 | D6 | Personagens com vários elementos (Avatares) | `ElementId` = elemento principal/nativo + `IsAvatar`; subtipos via N:N `CharacterBendingSubtype` | Modelo simples que cobre os Avatares sem tabela extra de elementos |
 | D7 | XP de quiz refeito | XP só na 1ª conclusão; bônus de perfeito só na 1ª vez em que gabarita | Evita farm de XP |
-| D8 | Desafios diários | Pool de `ChallengeTemplate` (seed) e geração preguiçosa de 3 `DailyChallenge` por dia (UTC), na primeira consulta do dia; progresso automático pelo backend | Sem job agendado, determinístico e testável com `IClock` |
+| D8 | Desafios diários | Pool de `ChallengeTemplate` (seed) e geração preguiçosa de 3 `DailyChallenge` por dia (UTC), na primeira consulta do dia; progresso automático pelo backend | Sem job agendado, determinístico e testável com `TimeProvider` |
 | D9 | `POST /challenges/{id}/complete` | **Removido**: conclusão automática no backend quando a meta é atingida | Cumpre a regra "não confiar no cliente" |
 | D10 | Descoberta | Registrada por `POST` explícito ao abrir o detalhe (não como efeito colateral de `GET`) | `GET` deve ser seguro/idempotente (REST) |
 | D11 | Administração de conteúdo | Sem painel admin na v1; conteúdo via seed | Escopo |
@@ -240,7 +241,7 @@ Proposta sem custo: frontend na **Vercel**, backend no **Render** (container Doc
 | Imagens e direitos autorais | URLs externas com `SourceUrl`/`Credit` e fallback visual; fácil de trocar. |
 | Recompensas duplicadas / condições de corrida | Constraints únicas + transação; tratar violação de unique como "já concedido". |
 | Complexidade do refresh token + CORS com cookies | Implementar e testar na Fase 5 com testes de integração; documentar a configuração. |
-| Fuso horário dos desafios diários | Tudo em UTC via `IClock`; UI informa o horário do reset. |
+| Fuso horário dos desafios diários | Tudo em UTC via `TimeProvider`; UI informa o horário do reset. |
 | E2E instável | Banco dedicado com seed determinístico, seletores `data-testid`, sem esperas fixas. |
 | Migrations no Docker | Aplicar no startup só em Development; script/documentação para os demais ambientes. |
 | Cold start no deploy gratuito (Render) | Documentar a limitação; loading amigável no frontend. |
