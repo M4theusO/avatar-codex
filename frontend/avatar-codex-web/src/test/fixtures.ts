@@ -22,6 +22,8 @@ export function character(overrides: Partial<CharacterListItem> = {}): Character
     isBender: true,
     isAvatar: false,
     status: 'Alive',
+    isFavorite: false,
+    isDiscovered: false,
     ...overrides,
   }
 }

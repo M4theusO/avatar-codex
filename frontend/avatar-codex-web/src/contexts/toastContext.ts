@@ -1,6 +1,7 @@
 import { createContext } from 'react'
 
-export type ToastTone = 'success' | 'info' | 'error'
+/** `reward`: XP, descoberta, nível (gamificação). */
+export type ToastTone = 'success' | 'info' | 'error' | 'reward'
 
 export interface ToastContextValue {
   showToast: (message: string, tone?: ToastTone) => void

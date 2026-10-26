@@ -80,6 +80,17 @@
   text-decoration-color: var(--color-text);
 }
 
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.actions:empty {
+  display: none;
+}
+
 @media (min-width: 768px) {
   .hero {
     flex-direction: row;

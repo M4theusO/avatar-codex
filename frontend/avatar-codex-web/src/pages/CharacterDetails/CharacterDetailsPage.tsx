@@ -9,6 +9,7 @@ import Section, { ChipList } from '../../components/common/Section'
 import Skeleton from '../../components/common/Skeleton'
 import { EmptyState, ErrorState } from '../../components/common/StatusMessage'
 import { useCharacter } from '../../hooks/useContent'
+import { useDiscovery } from '../../hooks/useDiscovery'
 import type { CharacterDetails } from '../../types/content'
 import { isNotFoundError } from '../../utils/apiError'
 import styles from './CharacterDetailsPage.module.css'
@@ -16,6 +17,8 @@ import styles from './CharacterDetailsPage.module.css'
 export default function CharacterDetailsPage() {
   const characterId = Number(useParams().id)
   const { data, isPending, isError, error, refetch } = useCharacter(characterId)
+  // Só depois que o conteúdo foi carregado (data existe) — RN-12.
+  useDiscovery('character', characterId, data?.name)
 
   const invalidId = !Number.isInteger(characterId) || characterId <= 0
 

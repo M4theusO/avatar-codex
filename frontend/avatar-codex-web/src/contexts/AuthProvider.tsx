@@ -34,6 +34,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [signIn, signOut])
 
+  const updateUser = useCallback((changes: Partial<User>) => {
+    setUser((current) => (current ? { ...current, ...changes } : current))
+  }, [])
+
   const value = useMemo<AuthContextValue>(
     () => ({
       status,
@@ -47,8 +51,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
           signOut()
         }
       },
+      updateUser,
     }),
-    [status, user, signIn, signOut],
+    [status, user, signIn, signOut, updateUser],
   )
 
   return <AuthContext value={value}>{children}</AuthContext>

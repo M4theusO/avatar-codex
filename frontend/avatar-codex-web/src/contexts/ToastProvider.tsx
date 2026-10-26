@@ -1,4 +1,4 @@
-import { CircleAlert, CircleCheck, Info, X } from 'lucide-react'
+import { CircleAlert, CircleCheck, Info, Sparkles, X } from 'lucide-react'
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
 import { ToastContext, type ToastTone } from './toastContext'
 import styles from './ToastProvider.module.css'
@@ -10,7 +10,7 @@ interface Toast {
 }
 
 const DURATION_MS = 4000
-const icons = { success: CircleCheck, info: Info, error: CircleAlert }
+const icons = { success: CircleCheck, info: Info, error: CircleAlert, reward: Sparkles }
 
 export default function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([])

@@ -41,6 +41,9 @@ export interface CharacterListItem {
   isBender: boolean
   isAvatar: boolean
   status: CharacterStatus
+  /** Sempre false para visitantes; com sessão, vem do backend. */
+  isFavorite: boolean
+  isDiscovered: boolean
 }
 
 export interface CharacterSummary {

@@ -1,8 +1,10 @@
-import { Compass, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { ElementBadge } from '../../components/common/Badge'
-import { Button, ButtonLink } from '../../components/common/Button'
+import { Button } from '../../components/common/Button'
 import CharacterAvatar from '../../components/common/CharacterAvatar'
-import { EmptyState } from '../../components/common/StatusMessage'
+import Section from '../../components/common/Section'
+import ExplorationStats from '../../components/profile/ExplorationStats'
+import RecentDiscoveries from '../../components/profile/RecentDiscoveries'
 import { useAuth } from '../../hooks/useAuth'
 import { useLogout } from '../../hooks/useLogout'
 import { elementStyle } from '../../utils/labels'
@@ -60,12 +62,13 @@ export default function ProfilePage() {
         </Button>
       </header>
 
-      <EmptyState
-        icon={Compass}
-        title="Sua jornada está começando"
-        description="Explore personagens e nações. Em breve, descobertas, favoritos e conquistas aparecerão aqui."
-        action={<ButtonLink to="/characters">Explorar personagens</ButtonLink>}
-      />
+      <Section title="Exploração">
+        <ExplorationStats />
+      </Section>
+
+      <Section title="Descobertas recentes">
+        <RecentDiscoveries />
+      </Section>
     </div>
   )
 }

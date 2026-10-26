@@ -8,6 +8,7 @@ import Section from '../../components/common/Section'
 import Skeleton from '../../components/common/Skeleton'
 import { EmptyState, ErrorState } from '../../components/common/StatusMessage'
 import { useNation } from '../../hooks/useContent'
+import { useDiscovery } from '../../hooks/useDiscovery'
 import type { NationDetails } from '../../types/content'
 import { isNotFoundError } from '../../utils/apiError'
 import { elementStyle } from '../../utils/labels'
@@ -16,6 +17,8 @@ import styles from './NationDetailsPage.module.css'
 export default function NationDetailsPage() {
   const nationId = Number(useParams().id)
   const { data, isPending, isError, error, refetch } = useNation(nationId)
+  // Só depois que o conteúdo foi carregado (data existe) — RN-12, DA-01.
+  useDiscovery('nation', nationId, data?.name)
 
   const invalidId = !Number.isInteger(nationId) || nationId <= 0
 
