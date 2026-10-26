@@ -188,7 +188,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - [x] `POST /api/characters/{id}/discovery` e `POST /api/nations/{id}/discovery` (+10 XP só na 1ª vez, DA-01), `POST/DELETE /api/characters/{id}/favorite`, `GET /api/users/me/favorites|discoveries|statistics`
 - [x] `isFavorite`/`isDiscovered` na listagem, no detalhe do personagem e nos personagens da nação (token opcional)
 - [x] Frontend: botão de favoritar otimista com rollback (cards e detalhe), selo "Descoberto", descoberta enviada uma vez por página e só depois do conteúdo exibido, toasts de descoberta/nível com o `reward` da API, página `/favorites`, perfil com exploração (x / total com barras) e descobertas recentes, atalho de favoritos na navbar
-- [x] Testes: backend 150 (81 unitários + 69 de integração), incluindo **10 descobertas simultâneas do mesmo personagem → 1 XP** e **10 descobertas diferentes em paralelo → 100 XP**; frontend 79
+- [x] Testes: backend 139 (70 unitários + 69 de integração), incluindo **10 descobertas simultâneas do mesmo personagem → 1 XP** e **10 descobertas diferentes em paralelo → 100 XP**; frontend 79
 - [x] Validado num Chrome real: 1ª visita com toast e +10 XP, reload sem toast (uma chamada por visita, mesmo em StrictMode), favoritar, nação, favoritos, perfil com 20 XP e 1/37 · 1/5
 
 **Ajustes em relação ao planejado:**
