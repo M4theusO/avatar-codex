@@ -1,0 +1,154 @@
+using AvatarCodex.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace AvatarCodex.Infrastructure.Data.Seed;
+
+/// <summary>
+/// Aplica o conteúdo de demonstração de forma idempotente: insere o que falta e atualiza o que mudou,
+/// usando o nome (ou código) como chave natural. Nunca remove conteúdo que não esteja no seed.
+/// </summary>
+public class ContentSeeder(AppDbContext db)
+{
+    public async Task SeedAsync(ContentSeedData data, CancellationToken cancellationToken = default)
+    {
+        var errors = data.Validate();
+        if (errors.Count > 0)
+            throw new InvalidOperationException("Seed de conteúdo inválido:\n" + string.Join("\n", errors));
+
+        var elements = await db.Elements.ToDictionaryAsync(e => e.Name, cancellationToken);
+        foreach (var seed in data.Elements)
+        {
+            var element = GetOrAdd(elements, seed.Name, () => new Element
+            {
+                Name = seed.Name, Description = seed.Description, Color = seed.Color, Icon = seed.Icon
+            });
+            element.Description = seed.Description;
+            element.Color = seed.Color;
+            element.Icon = seed.Icon;
+        }
+
+        var subtypes = await db.BendingSubtypes.ToDictionaryAsync(b => b.Name, cancellationToken);
+        foreach (var seed in data.BendingSubtypes)
+        {
+            var subtype = GetOrAdd(subtypes, seed.Name, () => new BendingSubtype
+            {
+                Name = seed.Name, Description = seed.Description
+            });
+            subtype.Description = seed.Description;
+            subtype.Element = elements[seed.Element];
+        }
+
+        var nations = await db.Nations.ToDictionaryAsync(n => n.Name, cancellationToken);
+        foreach (var seed in data.Nations)
+        {
+            var nation = GetOrAdd(nations, seed.Name, () => new Nation
+            {
+                Name = seed.Name, Description = seed.Description
+            });
+            nation.Description = seed.Description;
+            nation.Element = Lookup(elements, seed.Element);
+        }
+
+        var series = await db.Series.ToDictionaryAsync(s => s.Code, cancellationToken);
+        foreach (var seed in data.Series)
+        {
+            var item = GetOrAdd(series, seed.Code, () => new Series { Code = seed.Code, Name = seed.Name });
+            item.Name = seed.Name;
+        }
+
+        var abilities = await db.Abilities.ToDictionaryAsync(a => a.Name, cancellationToken);
+        foreach (var seed in data.Abilities)
+        {
+            var ability = GetOrAdd(abilities, seed.Name, () => new Ability
+            {
+                Name = seed.Name, Description = seed.Description
+            });
+            ability.Description = seed.Description;
+            ability.Element = Lookup(elements, seed.Element);
+        }
+
+        var characters = await db.Characters
+            .Include(c => c.BendingSubtypes)
+            .Include(c => c.Abilities)
+            .Include(c => c.Series)
+            .Include(c => c.Relationships)
+            .AsSplitQuery()
+            .ToDictionaryAsync(c => c.Name, cancellationToken);
+
+        // Primeiro garante que todos os personagens existem, para que as relações possam referenciá-los.
+        foreach (var seed in data.Characters)
+        {
+            var character = GetOrAdd(characters, seed.Name, () => new Character
+            {
+                Name = seed.Name, Description = seed.Description, Biography = seed.Biography
+            });
+            if (!character.Aliases.SequenceEqual(seed.Aliases))
+                character.Aliases = [.. seed.Aliases];
+            character.Description = seed.Description;
+            character.Biography = seed.Biography;
+            character.Nation = Lookup(nations, seed.Nation);
+            character.Element = Lookup(elements, seed.Element);
+            character.IsBender = seed.IsBender;
+            character.IsAvatar = seed.IsAvatar;
+            character.Status = seed.Status;
+            character.FirstAppearance = seed.FirstAppearance;
+
+            Sync(character.Series, seed.Series.Select(code => series[code]));
+            Sync(character.BendingSubtypes, seed.BendingSubtypes.Select(name => subtypes[name]));
+            Sync(character.Abilities, seed.Abilities.Select(name => abilities[name]));
+        }
+
+        foreach (var seed in data.Characters)
+            SyncRelationships(characters[seed.Name], seed.Relationships, characters);
+
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
+    private TEntity GetOrAdd<TEntity>(Dictionary<string, TEntity> existing, string key, Func<TEntity> create)
+        where TEntity : class
+    {
+        if (existing.TryGetValue(key, out var entity))
+            return entity;
+
+        entity = create();
+        db.Add(entity);
+        existing[key] = entity;
+        return entity;
+    }
+
+    private static TEntity? Lookup<TEntity>(Dictionary<string, TEntity> items, string? key) where TEntity : class =>
+        key is null ? null : items[key];
+
+    private static void Sync<TEntity>(ICollection<TEntity> current, IEnumerable<TEntity> desired) where TEntity : class
+    {
+        var desiredList = desired.ToList();
+        foreach (var item in current.Where(c => !desiredList.Contains(c)).ToList())
+            current.Remove(item);
+        foreach (var item in desiredList.Where(d => !current.Contains(d)))
+            current.Add(item);
+    }
+
+    private static void SyncRelationships(
+        Character character, List<RelationshipSeed> desired, Dictionary<string, Character> characters)
+    {
+        foreach (var existing in character.Relationships.ToList())
+        {
+            if (!desired.Any(d => characters[d.Related] == existing.RelatedCharacter && d.Type == existing.Type))
+                character.Relationships.Remove(existing);
+        }
+
+        foreach (var seed in desired)
+        {
+            var related = characters[seed.Related];
+            var relationship = character.Relationships
+                .FirstOrDefault(r => r.RelatedCharacter == related && r.Type == seed.Type);
+
+            if (relationship is null)
+            {
+                relationship = new CharacterRelationship { RelatedCharacter = related, Type = seed.Type };
+                character.Relationships.Add(relationship);
+            }
+            relationship.Description = seed.Description;
+        }
+    }
+}

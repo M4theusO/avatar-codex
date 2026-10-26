@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Água",
+    "description": "O elemento da mudança. Dobradores de água seguem o fluxo, adaptando-se e transformando a força do oponente. A técnica foi aprendida observando a Lua e o empurrar e puxar das marés.",
+    "color": "#3186B5",
+    "icon": "droplets"
+  },
+  {
+    "name": "Terra",
+    "description": "O elemento da substância. Dobradores de terra são firmes e resistentes, esperando o momento certo para agir. A técnica foi aprendida com os texugos-toupeira, os primeiros dobradores de terra.",
+    "color": "#638B58",
+    "icon": "mountain"
+  },
+  {
+    "name": "Fogo",
+    "description": "O elemento do poder. A dobra de fogo nasce da energia vital, da respiração e da determinação. A técnica foi aprendida com os dragões, os primeiros dobradores de fogo.",
+    "color": "#B86B35",
+    "icon": "flame"
+  },
+  {
+    "name": "Ar",
+    "description": "O elemento da liberdade. Dobradores de ar evitam o confronto direto, desviando e redirecionando ataques. A técnica foi aprendida com os bisões voadores.",
+    "color": "#D5C7A2",
+    "icon": "wind"
+  }
+]
