@@ -76,6 +76,9 @@ export function user(overrides: Partial<User> = {}): User {
     element: null,
     level: 1,
     experiencePoints: 0,
+    currentLevelXp: 0,
+    nextLevelXp: 100,
+    levelProgress: 0,
     createdAt: '2026-10-26T12:00:00Z',
     ...overrides,
   }

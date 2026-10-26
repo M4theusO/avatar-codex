@@ -3,7 +3,9 @@ import { ElementBadge } from '../../components/common/Badge'
 import { Button } from '../../components/common/Button'
 import CharacterAvatar from '../../components/common/CharacterAvatar'
 import Section from '../../components/common/Section'
+import ExperienceHistory from '../../components/profile/ExperienceHistory'
 import ExplorationStats from '../../components/profile/ExplorationStats'
+import XpBar from '../../components/progress/XpBar'
 import RecentDiscoveries from '../../components/profile/RecentDiscoveries'
 import { useAuth } from '../../hooks/useAuth'
 import { useLogout } from '../../hooks/useLogout'
@@ -11,7 +13,6 @@ import { elementStyle } from '../../utils/labels'
 import styles from './ProfilePage.module.css'
 
 const dateFormat = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long' })
-const numberFormat = new Intl.NumberFormat('pt-BR')
 
 export default function ProfilePage() {
   const { user } = useAuth()
@@ -35,15 +36,10 @@ export default function ProfilePage() {
         <div className={styles.info}>
           <h1 className={styles.name}>{user.username}</h1>
           <p className={styles.email}>{user.email}</p>
+          <div className={styles.xp}>
+            <XpBar user={user} />
+          </div>
           <dl className={styles.stats}>
-            <div>
-              <dt>Nível</dt>
-              <dd>{user.level}</dd>
-            </div>
-            <div>
-              <dt>Experiência</dt>
-              <dd>{numberFormat.format(user.experiencePoints)} XP</dd>
-            </div>
             <div>
               <dt>Elemento</dt>
               <dd>
@@ -68,6 +64,10 @@ export default function ProfilePage() {
 
       <Section title="Descobertas recentes">
         <RecentDiscoveries />
+      </Section>
+
+      <Section title="Histórico de XP">
+        <ExperienceHistory />
       </Section>
     </div>
   )

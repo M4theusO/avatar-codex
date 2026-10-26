@@ -1,5 +1,10 @@
 import type { CharacterListItem, PagedResult } from '../types/content'
-import type { Discovery, DiscoveryResult, UserStatistics } from '../types/progress'
+import type {
+  Discovery,
+  DiscoveryResult,
+  ExperienceTransaction,
+  UserStatistics,
+} from '../types/progress'
 import { api } from './api'
 
 export async function discoverCharacter(id: number): Promise<DiscoveryResult> {
@@ -30,6 +35,13 @@ export async function getFavorites(page: number): Promise<PagedResult<CharacterL
 export async function getDiscoveries(pageSize: number): Promise<PagedResult<Discovery>> {
   const { data } = await api.get<PagedResult<Discovery>>('/api/users/me/discoveries', {
     params: { pageSize },
+  })
+  return data
+}
+
+export async function getExperience(page: number): Promise<PagedResult<ExperienceTransaction>> {
+  const { data } = await api.get<PagedResult<ExperienceTransaction>>('/api/users/me/experience', {
+    params: { page, pageSize: 10 },
   })
   return data
 }

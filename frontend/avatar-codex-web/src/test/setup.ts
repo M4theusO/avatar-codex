@@ -7,6 +7,15 @@ import * as userService from '../services/userService'
 // As páginas são lazy: com a suíte inteira em paralelo, o primeiro import pode passar de 1s.
 configure({ asyncUtilTimeout: 3000 })
 
+// jsdom não implementa <dialog>: polyfill mínimo (abre/fecha e dispara "close").
+HTMLDialogElement.prototype.showModal ??= function (this: HTMLDialogElement) {
+  this.setAttribute('open', '')
+}
+HTMLDialogElement.prototype.close ??= function (this: HTMLDialogElement) {
+  this.removeAttribute('open')
+  this.dispatchEvent(new Event('close'))
+}
+
 // jsdom não implementa rolagem.
 window.scrollTo = vi.fn() as typeof window.scrollTo
 
@@ -25,6 +34,7 @@ beforeEach(() => {
   vi.mocked(userService.removeFavorite).mockResolvedValue()
   vi.mocked(userService.getFavorites).mockResolvedValue(emptyPage)
   vi.mocked(userService.getDiscoveries).mockResolvedValue(emptyPage)
+  vi.mocked(userService.getExperience).mockResolvedValue(emptyPage)
   vi.mocked(userService.getStatistics).mockResolvedValue({
     discoveredCharacters: 0,
     totalCharacters: 37,

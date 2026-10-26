@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import AuthProvider from '../contexts/AuthProvider'
+import LevelUpProvider from '../contexts/LevelUpProvider'
 import ToastProvider from '../contexts/ToastProvider'
 import { routes } from '../router'
 
@@ -16,9 +17,11 @@ export function renderRoute(url: string) {
   render(
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
-        <AuthProvider>
-          <RouterProvider router={router} />
-        </AuthProvider>
+        <LevelUpProvider>
+          <AuthProvider>
+            <RouterProvider router={router} />
+          </AuthProvider>
+        </LevelUpProvider>
       </ToastProvider>
     </QueryClientProvider>,
   )

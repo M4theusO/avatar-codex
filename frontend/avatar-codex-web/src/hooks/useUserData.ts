@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getDiscoveries, getFavorites, getStatistics } from '../services/userService'
+import { getDiscoveries, getExperience, getFavorites, getStatistics } from '../services/userService'
 import { useAuth } from './useAuth'
 
 // Dados do usuário logado: a chave inclui o id, então outro login nunca vê o cache anterior.
@@ -25,6 +25,16 @@ export function useRecentDiscoveries(pageSize = 6) {
     queryKey: ['me', userId, 'discoveries', pageSize],
     queryFn: () => getDiscoveries(pageSize),
     enabled,
+  })
+}
+
+export function useExperienceHistory(page: number) {
+  const { userId, enabled } = useUserKey()
+  return useQuery({
+    queryKey: ['me', userId, 'experience', page],
+    queryFn: () => getExperience(page),
+    enabled,
+    placeholderData: keepPreviousData,
   })
 }
 
