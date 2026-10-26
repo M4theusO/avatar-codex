@@ -4,7 +4,7 @@ Enciclopédia interativa + plataforma de exploração + sistema de evolução do
 
 O usuário explora personagens, nações, elementos, habilidades e a linha do tempo do universo, e constrói sua própria jornada: descobertas, favoritos, quizzes, XP, níveis, conquistas e desafios diários.
 
-> **Status:** Fase 2 concluída (banco e domínio); próxima: Fase 3 (API de conteúdo). Veja o plano completo em [docs/development-phases.md](docs/development-phases.md).
+> **Status:** Fase 3 concluída (API de conteúdo); próxima: Fase 4 (frontend base). Veja o plano completo em [docs/development-phases.md](docs/development-phases.md).
 
 ## Stack
 

@@ -13,7 +13,7 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 ## Status atual
 
-**Fase 3 — API de conteúdo** (próxima). Fases 0, 1 e 2 concluídas (`docs/development-phases.md`).
+**Fase 4 — Frontend base** (próxima). Fases 0 a 3 concluídas (`docs/development-phases.md`).
 **Não iniciar a Fase 1 sem confirmação explícita do usuário.**
 
 ## Decisões aprovadas
