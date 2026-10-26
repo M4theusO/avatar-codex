@@ -255,6 +255,56 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.ToTable("elements", (string)null);
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.ExperienceTransaction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("integer")
+                        .HasColumnName("amount");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("description");
+
+                    b.Property<int>("SourceId")
+                        .HasColumnType("integer")
+                        .HasColumnName("source_id");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("type");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_experience_transactions");
+
+                    b.HasIndex("UserId", "Type", "SourceId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_experience_transactions_user_id_type_source_id");
+
+                    b.ToTable("experience_transactions", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_experience_transactions_amount_positive", "amount > 0");
+                        });
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.Nation", b =>
                 {
                     b.Property<int>("Id")
@@ -432,6 +482,87 @@ namespace AvatarCodex.Infrastructure.Migrations
                         {
                             t.HasCheckConstraint("ck_users_experience_points_non_negative", "experience_points >= 0");
                         });
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserCharacterDiscovery", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("integer")
+                        .HasColumnName("character_id");
+
+                    b.Property<DateTimeOffset>("DiscoveredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("discovered_at");
+
+                    b.HasKey("UserId", "CharacterId")
+                        .HasName("pk_character_discoveries");
+
+                    b.HasIndex("CharacterId")
+                        .HasDatabaseName("ix_character_discoveries_character_id");
+
+                    b.HasIndex("UserId", "DiscoveredAt")
+                        .IsDescending(false, true)
+                        .HasDatabaseName("ix_character_discoveries_user_id_discovered_at");
+
+                    b.ToTable("character_discoveries", (string)null);
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserFavoriteCharacter", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("integer")
+                        .HasColumnName("character_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.HasKey("UserId", "CharacterId")
+                        .HasName("pk_favorite_characters");
+
+                    b.HasIndex("CharacterId")
+                        .HasDatabaseName("ix_favorite_characters_character_id");
+
+                    b.HasIndex("UserId", "CreatedAt")
+                        .IsDescending(false, true)
+                        .HasDatabaseName("ix_favorite_characters_user_id_created_at");
+
+                    b.ToTable("favorite_characters", (string)null);
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserNationDiscovery", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("NationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("nation_id");
+
+                    b.Property<DateTimeOffset>("DiscoveredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("discovered_at");
+
+                    b.HasKey("UserId", "NationId")
+                        .HasName("pk_nation_discoveries");
+
+                    b.HasIndex("NationId")
+                        .HasDatabaseName("ix_nation_discoveries_nation_id");
+
+                    b.HasIndex("UserId", "DiscoveredAt")
+                        .IsDescending(false, true)
+                        .HasDatabaseName("ix_nation_discoveries_user_id_discovered_at");
+
+                    b.ToTable("nation_discoveries", (string)null);
                 });
 
             modelBuilder.Entity("character_abilities", b =>
@@ -620,6 +751,16 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.Navigation("RelatedCharacter");
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.ExperienceTransaction", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_experience_transactions_users_user_id");
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.Nation", b =>
                 {
                     b.HasOne("AvatarCodex.Domain.Entities.Element", "Element")
@@ -685,6 +826,63 @@ namespace AvatarCodex.Infrastructure.Migrations
                         .HasConstraintName("fk_users_elements_element_id");
 
                     b.Navigation("Element");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserCharacterDiscovery", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.Character", "Character")
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_character_discoveries_characters_character_id");
+
+                    b.HasOne("AvatarCodex.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_character_discoveries_users_user_id");
+
+                    b.Navigation("Character");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserFavoriteCharacter", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.Character", "Character")
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_favorite_characters_characters_character_id");
+
+                    b.HasOne("AvatarCodex.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_favorite_characters_users_user_id");
+
+                    b.Navigation("Character");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserNationDiscovery", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.Nation", "Nation")
+                        .WithMany()
+                        .HasForeignKey("NationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_nation_discoveries_nations_nation_id");
+
+                    b.HasOne("AvatarCodex.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_nation_discoveries_users_user_id");
+
+                    b.Navigation("Nation");
                 });
 
             modelBuilder.Entity("character_abilities", b =>

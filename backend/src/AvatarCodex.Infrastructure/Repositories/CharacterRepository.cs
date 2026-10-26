@@ -39,6 +39,9 @@ public class CharacterRepository(AppDbContext db) : ICharacterRepository
     public Task<bool> ExistsAsync(int id, CancellationToken cancellationToken) =>
         db.Characters.AnyAsync(c => c.Id == id, cancellationToken);
 
+    public Task<string?> GetNameAsync(int id, CancellationToken cancellationToken) =>
+        db.Characters.Where(c => c.Id == id).Select(c => c.Name).FirstOrDefaultAsync(cancellationToken);
+
     public async Task<IReadOnlyList<Ability>> GetAbilitiesAsync(int characterId, CancellationToken cancellationToken) =>
         await db.Characters
             .AsNoTracking()

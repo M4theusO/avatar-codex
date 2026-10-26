@@ -5,6 +5,7 @@ using AvatarCodex.Application.Validators;
 using AvatarCodex.Domain.Entities;
 using AvatarCodex.Domain.Enums;
 using AvatarCodex.Domain.Exceptions;
+using AvatarCodex.UnitTests.Fakes;
 using FluentValidation;
 
 namespace AvatarCodex.UnitTests.Characters;
@@ -16,7 +17,7 @@ public class CharacterServiceTests
 
     public CharacterServiceTests()
     {
-        _service = new CharacterService(_repository, new CharacterQueryParametersValidator());
+        _service = new CharacterService(_repository, new FakeUserCollectionRepository(), new CharacterQueryParametersValidator());
     }
 
     [Fact]
@@ -100,6 +101,8 @@ public class CharacterServiceTests
             Task.FromResult<Character?>(null);
 
         public Task<bool> ExistsAsync(int id, CancellationToken cancellationToken) => Task.FromResult(false);
+
+        public Task<string?> GetNameAsync(int id, CancellationToken cancellationToken) => Task.FromResult<string?>(null);
 
         public Task<IReadOnlyList<Ability>> GetAbilitiesAsync(int characterId, CancellationToken cancellationToken) =>
             Task.FromResult<IReadOnlyList<Ability>>([]);

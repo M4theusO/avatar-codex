@@ -14,6 +14,10 @@ public static class DependencyInjection
         services.AddScoped<NationService>();
         services.AddScoped<CatalogService>();
         services.AddScoped<AuthService>();
+        services.AddScoped<ProgressionService>();
+        services.AddScoped<DiscoveryService>();
+        services.AddScoped<FavoriteService>();
+        services.AddScoped<UserService>();
 
         return services;
     }

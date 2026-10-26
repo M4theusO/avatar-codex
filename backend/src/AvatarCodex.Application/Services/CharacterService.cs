@@ -7,10 +7,14 @@ using FluentValidation;
 
 namespace AvatarCodex.Application.Services;
 
-public class CharacterService(ICharacterRepository repository, IValidator<CharacterQueryParameters> validator)
+public class CharacterService(
+    ICharacterRepository repository,
+    IUserCollectionRepository collection,
+    IValidator<CharacterQueryParameters> validator)
 {
+    /// <param name="userId">Usuário autenticado (token opcional): preenche isFavorite/isDiscovered.</param>
     public async Task<PagedResult<CharacterListItemDto>> GetPagedAsync(
-        CharacterQueryParameters query, CancellationToken cancellationToken = default)
+        CharacterQueryParameters query, Guid? userId = null, CancellationToken cancellationToken = default)
     {
         await validator.ValidateAndThrowAsync(query, cancellationToken);
 
@@ -27,17 +31,20 @@ public class CharacterService(ICharacterRepository repository, IValidator<Charac
             string.Equals(query.Order, "desc", StringComparison.OrdinalIgnoreCase));
 
         var (items, totalItems) = await repository.GetPagedAsync(filter, cancellationToken);
+        var marks = await collection.GetMarksOrNoneAsync(userId, [.. items.Select(c => c.Id)], cancellationToken);
 
         return new PagedResult<CharacterListItemDto>(
-            [.. items.Select(c => c.ToListItemDto())], filter.Page, filter.PageSize, totalItems);
+            [.. items.Select(c => marks.Apply(c.ToListItemDto()))], filter.Page, filter.PageSize, totalItems);
     }
 
-    public async Task<CharacterDetailsDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<CharacterDetailsDto> GetByIdAsync(
+        int id, Guid? userId = null, CancellationToken cancellationToken = default)
     {
         var character = await repository.GetDetailsAsync(id, cancellationToken)
             ?? throw NotFoundException.For("Personagem", id);
 
-        return character.ToDetailsDto();
+        var marks = await collection.GetMarksOrNoneAsync(userId, [id], cancellationToken);
+        return marks.Apply(character.ToDetailsDto());
     }
 
     public async Task<IReadOnlyList<AbilityDto>> GetAbilitiesAsync(int id, CancellationToken cancellationToken = default)

@@ -35,7 +35,9 @@ public record CharacterListItemDto(
     ElementSummaryDto? Element,
     bool IsBender,
     bool IsAvatar,
-    CharacterStatus Status);
+    CharacterStatus Status,
+    bool IsFavorite = false,
+    bool IsDiscovered = false);
 
 public record CharacterSummaryDto(int Id, string Name, ImageDto? Image, ElementSummaryDto? Element);
 
@@ -57,4 +59,6 @@ public record CharacterDetailsDto(
     IReadOnlyList<ReferenceDto> BendingSubtypes,
     IReadOnlyList<AbilityDto> Abilities,
     IReadOnlyList<SeriesDto> Series,
-    IReadOnlyList<CharacterRelationshipDto> Relationships);
+    IReadOnlyList<CharacterRelationshipDto> Relationships,
+    bool IsFavorite = false,
+    bool IsDiscovered = false);
