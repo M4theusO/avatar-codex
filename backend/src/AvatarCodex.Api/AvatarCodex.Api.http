@@ -1,0 +1,6 @@
+@AvatarCodex.Api_HostAddress = http://localhost:5080
+
+GET {{AvatarCodex.Api_HostAddress}}/api/health
+Accept: application/json
+
+###
