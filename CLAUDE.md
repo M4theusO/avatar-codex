@@ -15,15 +15,21 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 **Fase 8 — Conquistas** (próxima, ainda não iniciada). Fases 0 a 7 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-26):**
-- Backend pronto até a API de conteúdo: entidades, migration, seed (37 personagens), endpoints de personagens/nações/elementos/habilidades/séries, tratamento global de erros, 64 testes passando.
-- Frontend base pronto: layout, navbar, rotas com lazy loading, componentes base, Home, Characters (busca/filtros/ordenação/paginação na URL), CharacterDetails, Nations, NationDetails, Timeline (placeholder), 404.
-- Autenticação pronta: cadastro, login, logout, JWT + refresh em cookie httpOnly, sessão recuperada ao recarregar, rotas protegidas, perfil básico, usuário demo (README).
-- Favoritos e descoberta prontos: favoritar (otimista), descoberta de personagem e nação com +10 XP idempotente (ProgressionService mínimo), /favorites, perfil com exploração e descobertas recentes.
-- XP e níveis prontos: progresso de nível calculado só no backend, XpBar (perfil e navbar), modal de novo nível em fila, histórico de XP. Backend 158 testes, frontend 83.
+**Onde paramos (2026-10-26, fim do dia):** Fase 7 concluída, commitada e publicada no GitHub (`main` = `origin/main`, último commit `19e70ad`). Nenhum trabalho pendente.
+- **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos), API com busca/filtros/paginação, tratamento global de erros.
+- **Frontend base:** layout, navbar, rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, Timeline (placeholder), 404.
+- **Autenticação:** cadastro, login, logout, JWT (15 min, em memória) + refresh rotacionado em cookie httpOnly, sessão recuperada ao recarregar, rotas protegidas, usuário demo (README).
+- **Favoritos e descoberta:** favoritar otimista, descoberta de personagem/nação com +10 XP idempotente (testado com concorrência), `/favorites`, perfil com exploração.
+- **XP e níveis:** `ProgressionService` + `ExperienceRewards` + `LevelCalculator` (fórmula só no backend), XpBar (perfil e navbar), modal de novo nível em fila, histórico de XP.
+- **Testes:** backend 158 (87 unitários + 71 integração), frontend 83. Lint, format e build passando.
+
+**Próximo passo — Fase 8 (Conquistas):** entidades `Achievement`/`UserAchievement` + seed (RF-ACH-01: Primeiro passo, Curioso, Explorador, Historiador, Mestre dos elementos, Conhecedor de Avatar), avaliação no `ProgressionService` após cada evento sem cascata (RN-08) e desbloqueio único (RN-05), "Primeiro passo" no cadastro (adiado da Fase 5), `achievementsUnlocked` no `reward`, `GET /api/users/me/achievements`, página `/achievements`, toast de conquista, conquistas (x / total) no perfil e nas estatísticas.
 - **Não iniciar uma nova fase sem confirmação explícita do usuário.**
 
+**Fluxo de trabalho combinado:** ao fim de cada fase → testes + lint + build + teste num Chrome real (CDP) → docs → commits pequenos → **push só quando o usuário pedir**. O usuário costuma pedir "rode o projeto para eu testar" (subir API + Vite em background) e depois "pare de rodar".
+
 **Ambiente local:** sem Docker; PostgreSQL 18 local na porta 5432, banco `avatar_codex`, connection string e `Jwt:Secret` nos user-secrets do `AvatarCodex.Api`. Testes de banco precisam de `AVATARCODEX_TEST_DB` (connection string do servidor, sem `Database`).
+- O usuário alterna entre **dois PCs**. Em um PC novo: instalar PostgreSQL, configurar os user-secrets (`ConnectionStrings:Default` e `Jwt:Secret`), `dotnet tool install -g dotnet-ef`, `npm install` e copiar `frontend/avatar-codex-web/.env.example` para `.env.local` (ver README). No PC atual tudo isso já está feito; a variável `AVATARCODEX_TEST_DB` não é persistente (definir na sessão ao rodar os testes).
 
 ## Decisões aprovadas
 
