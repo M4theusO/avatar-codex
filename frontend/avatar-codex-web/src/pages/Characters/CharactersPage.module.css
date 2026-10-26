@@ -1,0 +1,84 @@
+.toolbar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.search {
+  grid-column: 1 / -1;
+}
+
+.sort {
+  min-width: 0;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* Mobile/tablet: filtros recolhidos atrás do botão "Filtros" */
+.sidebar {
+  display: none;
+}
+
+.sidebarOpen {
+  display: block;
+}
+
+.results {
+  flex: 1;
+  min-width: 0;
+}
+
+.resultsBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.count {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.loadingMore {
+  opacity: 0.6;
+  transition: opacity var(--transition-fast);
+}
+
+@media (min-width: 640px) {
+  .toolbar {
+    grid-template-columns: 1fr 14rem auto;
+  }
+
+  .search {
+    grid-column: auto;
+  }
+}
+
+/* Desktop: filtros fixos em uma sidebar */
+@media (min-width: 1024px) {
+  .toolbar {
+    grid-template-columns: 1fr 14rem;
+  }
+
+  .filtersToggle {
+    display: none;
+  }
+
+  .layout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: calc(var(--navbar-height) + var(--space-4));
+    display: block;
+    flex: 0 0 15rem;
+  }
+}

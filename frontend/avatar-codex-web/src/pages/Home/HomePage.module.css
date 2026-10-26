@@ -1,32 +1,156 @@
 .page {
   display: flex;
   flex-direction: column;
+  gap: var(--space-16);
+}
+
+/* Hero atmosférico: brilhos discretos das quatro cores, sem dominar o fundo */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  min-height: 100vh;
-  padding: 1.5rem;
+  gap: var(--space-4);
+  padding: var(--space-16) var(--space-4) var(--space-12);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
   text-align: center;
+  isolation: isolate;
+}
+
+.heroGlow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(
+      circle at 10% 15%,
+      color-mix(in srgb, var(--color-water) 30%, transparent),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 90% 20%,
+      color-mix(in srgb, var(--color-fire) 28%, transparent),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 15% 95%,
+      color-mix(in srgb, var(--color-earth) 26%, transparent),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 85% 90%,
+      color-mix(in srgb, var(--color-air) 18%, transparent),
+      transparent 40%
+    );
+  animation: drift 18s ease-in-out infinite alternate;
+}
+
+.eyebrow {
+  color: var(--color-air);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
 }
 
 .title {
-  margin: 0;
   font-family: var(--font-display);
+  font-size: var(--text-3xl);
   font-weight: 700;
-  font-size: 2.5rem;
-  line-height: 1.2;
 }
 
-.subtitle {
-  margin: 0;
+.tagline {
+  max-width: 36rem;
   color: var(--color-text-muted);
+  font-size: var(--text-lg);
 }
 
-.status {
-  margin: 1rem 0 0;
-  padding: 0.5rem 1rem;
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.seeAll {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.seeAll:hover {
+  color: var(--color-text);
+}
+
+.elements {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.element {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-6);
   border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background-color: var(--color-surface);
-  font-size: 0.875rem;
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--element-color) 16%, transparent),
+      transparent 55%
+    ),
+    var(--color-surface);
+}
+
+.elementIcon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid var(--element-color);
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--element-color) 18%, transparent);
+  color: var(--element-color);
+}
+
+.elementName {
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.elementDescription {
+  flex: 1;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+@keyframes drift {
+  to {
+    transform: scale(1.08) translateY(-2%);
+  }
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding: var(--space-16) var(--space-8);
+  }
+
+  .title {
+    font-size: 3.5rem;
+  }
 }

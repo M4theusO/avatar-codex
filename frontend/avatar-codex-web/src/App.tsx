@@ -1,12 +1,14 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import HomePage from './pages/Home/HomePage'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { RouterProvider } from 'react-router'
+import { createQueryClient } from './lib/queryClient'
+import { router } from './router'
 
-const queryClient = new QueryClient()
+const queryClient = createQueryClient()
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <HomePage />
+      <RouterProvider router={router} />
     </QueryClientProvider>
   )
 }
