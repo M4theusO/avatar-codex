@@ -10,6 +10,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddFrontendCors(builder.Configuration);
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
@@ -31,6 +32,7 @@ else
 }
 
 app.UseCors(CorsExtensions.FrontendPolicy);
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

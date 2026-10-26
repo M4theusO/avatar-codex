@@ -1,6 +1,7 @@
 using AvatarCodex.Application.Interfaces;
 using AvatarCodex.Infrastructure.Data;
 using AvatarCodex.Infrastructure.Repositories;
+using AvatarCodex.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,11 @@ public static class DependencyInjection
         services.AddScoped<ICharacterRepository, CharacterRepository>();
         services.AddScoped<INationRepository, NationRepository>();
         services.AddScoped<ICatalogRepository, CatalogRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
+        services.AddSingleton<ITokenService, JwtTokenService>();
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
         services.AddHealthChecks()
             .AddDbContextCheck<AppDbContext>("database");

@@ -13,5 +13,8 @@ public class NotFoundException(string message) : DomainException(message)
 /// <summary>Conflito com o estado atual, ex. email já cadastrado (HTTP 409).</summary>
 public class ConflictException(string message) : DomainException(message);
 
+/// <summary>Credenciais ou sessão inválidas (HTTP 401).</summary>
+public class UnauthorizedException(string message) : DomainException(message);
+
 /// <summary>Violação de regra de negócio (HTTP 422).</summary>
 public class BusinessRuleException(string message) : DomainException(message);

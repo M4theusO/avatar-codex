@@ -18,6 +18,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
                 StatusCodes.Status400BadRequest,
                 InvalidDataMessage,
                 [.. validation.Errors.Select(e => new FieldError(ToCamelCase(e.PropertyName), e.ErrorMessage))]),
+            UnauthorizedException => new ErrorResponse(StatusCodes.Status401Unauthorized, exception.Message, []),
             NotFoundException => new ErrorResponse(StatusCodes.Status404NotFound, exception.Message, []),
             ConflictException => new ErrorResponse(StatusCodes.Status409Conflict, exception.Message, []),
             BusinessRuleException => new ErrorResponse(StatusCodes.Status422UnprocessableEntity, exception.Message, []),

@@ -13,6 +13,7 @@ public static class DependencyInjection
         services.AddScoped<CharacterService>();
         services.AddScoped<NationService>();
         services.AddScoped<CatalogService>();
+        services.AddScoped<AuthService>();
 
         return services;
     }
