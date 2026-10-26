@@ -1,0 +1,81 @@
+.card {
+  --element-color: var(--color-text-muted);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--element-color);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--element-color) 14%, transparent),
+      transparent 55%
+    ),
+    var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.card:hover,
+.card:focus-within {
+  border-color: var(--element-color);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.card:has(.link:focus-visible) {
+  outline: 2px solid var(--color-air);
+  outline-offset: 2px;
+}
+
+.symbol {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 1px solid var(--element-color);
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--element-color) 18%, transparent);
+  color: var(--element-color);
+}
+
+.name {
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.description {
+  flex: 1;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
