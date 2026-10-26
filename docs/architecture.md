@@ -93,6 +93,9 @@ Api ──► Application ──► Domain
 - **`TimeProvider`** (nativo do .NET) abstrai o relógio para tornar testáveis desafios diários e timestamps.
 - **Timestamps automáticos** (`CreatedAt`/`UpdatedAt`) via override de `SaveChangesAsync`.
 - **Swagger/OpenAPI** em desenvolvimento.
+- **Serviços de aplicação** como classes concretas registradas no DI (`CharacterService`, `NationService`, `CatalogService` para elementos/habilidades/séries). Só os repositórios têm interface, porque são a fronteira com a infraestrutura e o ponto de troca nos testes.
+- **Repositórios de leitura** (`ICharacterRepository`, `INationRepository`, `ICatalogRepository`) usam `AsNoTracking` e devolvem entidades; o mapeamento para DTO acontece na Application (`Mappings/ContentMappings.cs`).
+- **Validação** em `Validators/` (FluentValidation), executada pelo serviço com `ValidateAndThrowAsync`, para que a regra valha para qualquer chamador, não só para o controller.
 
 ### 3.3 Gamificação centralizada
 
@@ -129,7 +132,7 @@ O `RewardResult` volta na resposta do endpoint que originou o evento, e o fronte
 
 ### 3.5 Tratamento de erros
 
-Middleware global converte exceções no formato padrão (`api.md` §3):
+Um `IExceptionHandler` (`Api/Middleware/GlobalExceptionHandler.cs`) converte exceções no formato padrão (`api.md` §3). Erros de model binding (ex.: `?page=abc`) passam pelo `InvalidModelStateResponseFactory` e saem no mesmo formato:
 
 | Exceção | HTTP |
 |---|---|

@@ -27,7 +27,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 0 | Planejamento | P0 | Análise da especificação, decisões, arquitetura, entidades, relacionamentos, rotas, endpoints, páginas, componentes, documentação inicial | Docs aprovados pelo usuário ✅ (2026-10-26) |
 | 1 | Setup | P0 | Repositório, solução .NET (4 projetos + 2 de teste), projeto React/TS/Vite, Docker com PostgreSQL, configuração de ambiente, `.gitignore`, `.env.example`, README inicial | Frontend e backend executando separadamente; API conecta no banco ✅ (2026-10-26) |
 | 2 | Banco e domínio | P0 | Element, BendingSubtype, Nation, Series, Character, Ability e tabelas de junção, User, RefreshToken; configurações EF, DbContext, migrations, seed | Banco sobe do zero com dados de demonstração ✅ (2026-10-26) |
-| 3 | API de conteúdo | P0 | Characters, Nations, Elements, Abilities, Series; busca, filtros, paginação, ordenação; middleware de erros; Swagger | Endpoints funcionando e com testes de integração básicos |
+| 3 | API de conteúdo | P0 | Characters, Nations, Elements, Abilities, Series; busca, filtros, paginação, ordenação; middleware de erros; Swagger | Endpoints funcionando e com testes de integração básicos ✅ (2026-10-26) |
 | 4 | Frontend base | P0 | Tokens/tema (paleta DA-02, fontes Cinzel/Inter DA-03, validação de contraste), layout, navbar, rotas, componentes base, cards, loading/error/empty, responsividade; páginas Home, Characters, CharacterDetails, Nations, Timeline (placeholder) | Navegação completa sobre dados reais, mobile-first; foco visual |
 | 5 | Autenticação | P0 | Cadastro, login, logout, JWT + refresh, recuperação de sessão, rotas protegidas, perfil básico | Usuário real cria conta, loga, recarrega a página e continua logado |
 | 6 | Favoritos e descoberta | P0/P1 | Favoritos, descoberta de personagens e nações, histórico de descobertas, XP inicial | Experiência personalizada; descoberta de personagem e de nação (+10 XP, DA-01) registrada só após o conteúdo ser exibido, sem XP duplicado mesmo com requisições concorrentes (testado) |
@@ -123,3 +123,18 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - Testes de integração usam um banco descartável no PostgreSQL configurado em `AVATARCODEX_TEST_DB` em vez de Testcontainers, porque não há Docker no ambiente atual. A troca para Testcontainers fica restrita a `TestDatabase.cs`.
 - `CharacterRelationship` entrou já na Fase 2 (estava implícita), por fazer parte do conteúdo do personagem.
 - Imagens e usuário de demonstração ficam para as Fases 4 e 5.
+
+## Fase 3 — API de conteúdo (concluída)
+
+- [x] `GET /api/characters` com busca (nome + apelidos), filtros (nação, elemento, tipo, status, série), ordenação (nome, nação, elemento; asc/desc) e paginação
+- [x] `GET /api/characters/{id}` e `GET /api/characters/{id}/abilities`
+- [x] `GET /api/nations`, `GET /api/nations/{id}`, `GET /api/elements`, `GET /api/abilities`, `GET /api/series`
+- [x] Validação com FluentValidation e mensagens em português
+- [x] Tratamento global de erros (`IExceptionHandler`) com o formato `{ status, message, errors }`, inclusive para erros de binding
+- [x] Swagger documentando respostas 200/400/404
+- [x] Testes: 17 unitários (serviço e validator) + 33 de integração (endpoints com PostgreSQL real e handler de erros)
+
+**Ajustes em relação ao planejado:**
+- Personagens sem nação/elemento ficam sempre no fim da ordenação por esses campos, e o desempate por id garante paginação estável.
+- `%` e `_` na busca são tratados como texto, não como curinga.
+- Os campos `isFavorite`/`isDiscovered` dos endpoints públicos ficam para a Fase 6.

@@ -31,6 +31,12 @@ Nunca inclui stack trace nem detalhes internos.
 
 Query: `?page=1&pageSize=12&search=zuko&sort=name&order=asc` (`pageSize` máx. 50).
 
+- `search`: busca no nome **e nos apelidos**, sem diferenciar maiúsculas/minúsculas; `%` e `_` são tratados como texto literal. Máx. 100 caracteres.
+- `sort`: `name` (padrão), `nation`, `element`; `order`: `asc` (padrão) ou `desc`. Valores de texto não diferenciam maiúsculas/minúsculas.
+- Na ordenação por nação/elemento, personagens sem nação/elemento ficam **sempre no fim**. O desempate é por nome e id, para que as páginas nunca repitam nem pulem itens.
+- Parâmetros inválidos retornam `400` com um item em `errors` por campo (ex.: `{ "field": "pageSize", "message": "O tamanho da página deve estar entre 1 e 50." }`), inclusive erros de tipo como `?page=abc`.
+- Enums são serializados como texto (`"status": "Alive"`, `"type": "Family"`).
+
 ```json
 {
   "items": [],
@@ -82,19 +88,37 @@ Exemplo de resposta de login:
 ```
 
 ### Conteúdo
-| Método | Rota | | Descrição |
-|---|---|---|---|
-| GET | `/api/characters` | 🔓* | Lista paginada. Filtros: `search`, `nationId`, `elementId`, `type` (`avatar`/`bender`/`nonBender`), `status`, `seriesId`; `sort` = `name`/`nation`/`element`. |
-| GET | `/api/characters/{id}` | 🔓* | Detalhe com nação, elemento, subtipos, habilidades, séries, relações e relacionados. 404 se não existir. |
-| GET | `/api/characters/{id}/abilities` | 🔓 | Habilidades do personagem |
-| GET | `/api/characters/compare?ids=1,2` | 🔓 | Dados lado a lado + atributos (P2) |
-| GET | `/api/nations` | 🔓 | Lista de nações |
-| GET | `/api/nations/{id}` | 🔓* | Detalhe + personagens |
-| GET | `/api/elements` | 🔓 | Elementos com subtipos |
-| GET | `/api/abilities` | 🔓 | Lista (filtro `elementId`) |
-| GET | `/api/timeline` | 🔓 | Eventos ordenados com era e personagens. Filtros: `eraId`, `characterId` (P2) |
-| GET | `/api/eras` | 🔓 | Eras (P2) |
-| GET | `/api/series` | 🔓 | Séries (para filtro) |
+| Método | Rota | | Descrição | Status |
+|---|---|---|---|---|
+| GET | `/api/characters` | 🔓* | Lista paginada (`PagedResult<CharacterListItemDto>`). Filtros: `search`, `nationId`, `elementId`, `type` (`avatar`/`bender`/`nonBender`), `status` (`Alive`/`Deceased`/`Unknown`), `seriesId`; `sort` = `name`/`nation`/`element`; `order` = `asc`/`desc`. 400 em parâmetros inválidos. | ✅ Fase 3 |
+| GET | `/api/characters/{id}` | 🔓* | Detalhe (`CharacterDetailsDto`): apelidos, biografia, nação, elemento, subtipos, habilidades, séries, primeira aparição e relações (com o personagem relacionado resumido). 404 se não existir. | ✅ Fase 3 |
+| GET | `/api/characters/{id}/abilities` | 🔓 | Habilidades do personagem, ordenadas por nome. 404 se o personagem não existir. | ✅ Fase 3 |
+| GET | `/api/characters/compare?ids=1,2` | 🔓 | Dados lado a lado + atributos (P2) | Fase 13 |
+| GET | `/api/nations` | 🔓 | Nações com elemento e `characterCount`, na ordem dos elementos (Água, Terra, Fogo, Ar) e sem elemento por último | ✅ Fase 3 |
+| GET | `/api/nations/{id}` | 🔓* | Detalhe + personagens. 404 se não existir. | ✅ Fase 3 |
+| GET | `/api/elements` | 🔓 | Elementos (com cor e ícone) e seus subtipos de dobra | ✅ Fase 3 |
+| GET | `/api/abilities` | 🔓 | Lista ordenada por nome (filtro opcional `elementId`) | ✅ Fase 3 |
+| GET | `/api/timeline` | 🔓 | Eventos ordenados com era e personagens. Filtros: `eraId`, `characterId` (P2) | Fase 12 |
+| GET | `/api/eras` | 🔓 | Eras (P2) | Fase 12 |
+| GET | `/api/series` | 🔓 | Séries (para filtro) | ✅ Fase 3 |
+
+> Os campos dependentes do usuário (`isFavorite`, `isDiscovered`) dos endpoints 🔓* entram na Fase 6, junto com a autenticação opcional.
+
+Exemplo de item da listagem:
+
+```json
+{
+  "id": 9,
+  "name": "Aang",
+  "description": "O último dobrador de ar e o Avatar que encerrou a Guerra dos Cem Anos.",
+  "image": null,
+  "nation": { "id": 5, "name": "Nômades do Ar" },
+  "element": { "id": 4, "name": "Ar", "color": "#D5C7A2", "icon": "wind" },
+  "isBender": true,
+  "isAvatar": true,
+  "status": "Deceased"
+}
+```
 
 ### Descoberta e favoritos
 | Método | Rota | | Descrição | Respostas |
