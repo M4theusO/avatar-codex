@@ -31,7 +31,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 4 | Frontend base | P0 | Tokens/tema (paleta DA-02, fontes Cinzel/Inter DA-03, validação de contraste), layout, navbar, rotas, componentes base, cards, loading/error/empty, responsividade; páginas Home, Characters, CharacterDetails, Nations, Timeline (placeholder) | Navegação completa sobre dados reais, mobile-first; foco visual ✅ (2026-10-26) |
 | 5 | Autenticação | P0 | Cadastro, login, logout, JWT + refresh, recuperação de sessão, rotas protegidas, perfil básico | Usuário real cria conta, loga, recarrega a página e continua logado ✅ (2026-10-26) |
 | 6 | Favoritos e descoberta | P0/P1 | Favoritos, descoberta de personagens e nações, histórico de descobertas, XP inicial | Experiência personalizada; descoberta de personagem e de nação (+10 XP, DA-01) registrada só após o conteúdo ser exibido, sem XP duplicado mesmo com requisições concorrentes (testado) ✅ (2026-10-26) |
-| 7 | XP e níveis | P1 | ExperienceTransaction, ProgressionService, LevelCalculator, XpBar, notificações de nível, `RewardResult` | Regras centralizadas no backend, com testes unitários |
+| 7 | XP e níveis | P1 | ExperienceTransaction, ProgressionService, LevelCalculator, XpBar, notificações de nível, `RewardResult` | Regras centralizadas no backend, com testes unitários ✅ (2026-10-26) |
 | 8 | Conquistas | P1 | Achievement, UserAchievement, regras, desbloqueio, página de conquistas, notificações | Conquistas desbloqueiam automaticamente e uma única vez |
 | 9 | Quiz | P1 | Quizzes, perguntas, opções, submissão, validação, resultado, XP, histórico; UI atraente | `isCorrect` nunca exposto antes da submissão; testes cobrindo isso |
 | 10 | Dashboard | P1/P2 | Endpoint agregado + página: XP, nível, progresso, conquistas, desafios, descobertas, quiz recomendado, favoritos | Destino padrão após login |
@@ -197,3 +197,20 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - O histórico de descobertas junta personagens e nações em memória antes de paginar: são dezenas de itens por usuário, e isso evita um UNION com tipos owned. Rever se o conteúdo crescer muito.
 - Favoritos ficam como ícone (estrela) na área do usuário da navbar, para não apertar a navbar em 1024px.
 - Nos testes de frontend, a espera padrão do Testing Library subiu para 3s: com a suíte inteira em paralelo, o primeiro carregamento lazy de uma página podia passar de 1s.
+
+## Fase 7 — XP e níveis (concluída)
+
+> `ExperienceTransaction`, `ProgressionService`, `LevelCalculator` e `RewardResult` foram antecipados nas Fases 5 e 6; esta fase fechou o que faltava.
+
+- [x] `LevelCalculator.GetProgress`: nível, XP mínimo do nível atual e do próximo e porcentagem (0–99) — a fórmula (RN-07) continua num único lugar
+- [x] `UserDto` e `RewardResult` passam a trazer `currentLevelXp`, `nextLevelXp` e `levelProgress`: o frontend não conhece a fórmula
+- [x] `GET /api/users/me/experience`: histórico paginado de XP (RF-XP-01)
+- [x] `XpBar` (perfil completo e versão compacta na navbar) com animação de ganho; cor do elemento ou neutro claro (DA-02)
+- [x] Modal de novo nível com `<dialog>` nativo (foco preso, Esc, fundo inerte), em fila quando há vários níveis; substitui o toast provisório da Fase 6 (RF-XP-03)
+- [x] Perfil com "Histórico de XP" paginado
+- [x] Testes: backend 158 (87 unitários + 71 de integração), incluindo a fórmula em níveis de fronteira e a consistência nível × progresso de 0 a 10.000 XP; frontend 83
+- [x] Validado num Chrome real: 10 descobertas pela interface → barra da navbar sobe (50/100 na 5ª) → modal de nível 2 com foco em "Continuar" → Esc fecha → perfil "Nível 2 · 100 / 250 XP" e 10 itens no histórico
+
+**Ajustes em relação ao planejado:**
+- `GET /api/users/me` não foi criado: `GET /api/auth/me` já devolve o perfil com XP e progresso. Ele entra quando houver dados de perfil a mais (ex.: `PATCH` de avatar/elemento).
+- O `<dialog>` nativo não existe no jsdom; os testes usam um polyfill mínimo em `test/setup.ts`.

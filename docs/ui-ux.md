@@ -192,8 +192,8 @@ Cards dos desafios do dia com progresso, recompensa e horário do próximo reset
 Disparados a partir do `reward` retornado pela API (nunca calculados no frontend):
 
 - **Descoberta** (personagem ou nação): `✨ NOVA DESCOBERTA — Você descobriu Zuko! +10 XP` (toast). Só aparece quando a API retorna `isNew: true`.
-- **XP**: animação curta na `XpBar`.
-- **Nível**: modal/overlay `🎉 NOVO NÍVEL! Você alcançou o nível 10. Continue sua jornada!`
+- **XP**: animação curta na `XpBar` (a barra cresce e um brilho a atravessa). A `XpBar` aparece completa no perfil e compacta na navbar, sob o nome do usuário; usa a cor do elemento do usuário ou o neutro claro (DA-02). ✅ Fase 7
+- **Nível**: modal `Novo nível! Você alcançou o nível 10. Continue sua jornada!` com `<dialog>` nativo (foco preso, Esc fecha, fundo inerte), foco inicial em "Continuar". Vários níveis entram numa fila e aparecem um de cada vez. ✅ Fase 7
 - **Conquista**: toast com ícone e nome.
 - **Desafio concluído**: toast com recompensa.
 
