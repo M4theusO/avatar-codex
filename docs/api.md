@@ -56,14 +56,19 @@ Endpoints que geram progresso retornam um objeto `reward`, que o frontend usa no
 {
   "reward": {
     "xpGained": 60,
-    "totalXp": 1240,
-    "level": 12,
+    "totalXp": 1040,
+    "level": 6,
     "leveledUp": true,
+    "currentLevelXp": 1000,
+    "nextLevelXp": 1350,
+    "levelProgress": 11,
     "achievementsUnlocked": [ { "id": 2, "name": "Curioso", "icon": "eye", "experienceReward": 50 } ],
     "challengesCompleted": [ { "id": 31, "title": "Descubra 3 personagens", "experienceReward": 30 } ]
   }
 }
 ```
+
+`currentLevelXp`/`nextLevelXp` são o XP mínimo do nível atual e do próximo, e `levelProgress` (0–99) é a porcentagem da barra. O frontend não conhece a fórmula de nível (RN-07): exibe esses valores, que também vêm no `UserDto` (login, refresh, `/auth/me`). ✅ Fase 7
 
 ## 6. Endpoints
 
@@ -86,7 +91,7 @@ Exemplo de resposta de login:
 {
   "accessToken": "eyJ...",
   "expiresIn": 900,
-  "user": { "id": "4f1c…", "username": "matheus", "email": "m@ex.com", "avatarUrl": null, "element": null, "level": 1, "experiencePoints": 0, "createdAt": "2026-10-26T12:00:00Z" }
+  "user": { "id": "4f1c…", "username": "matheus", "email": "m@ex.com", "avatarUrl": null, "element": null, "level": 1, "experiencePoints": 0, "currentLevelXp": 0, "nextLevelXp": 100, "levelProgress": 0, "createdAt": "2026-10-26T12:00:00Z" }
 }
 ```
 
@@ -137,7 +142,7 @@ Regras de descoberta (RN-12):
 - Recurso inexistente → `404`; sem token → `401`.
 
 ```json
-{ "isNew": true, "reward": { "xpGained": 10, "totalXp": 130, "level": 2, "leveledUp": true, "achievementsUnlocked": [], "challengesCompleted": [] } }
+{ "isNew": true, "reward": { "xpGained": 10, "totalXp": 100, "level": 2, "leveledUp": true, "currentLevelXp": 100, "nextLevelXp": 250, "levelProgress": 0, "achievementsUnlocked": [], "challengesCompleted": [] } }
 ```
 
 ### Usuário
@@ -149,7 +154,7 @@ Regras de descoberta (RN-12):
 | GET | `/api/users/me/dashboard` | 🔒 | Agregado do dashboard (evita várias chamadas) |
 | GET | `/api/users/me/favorites` | 🔒 | Favoritos (`PagedResult<CharacterListItemDto>`, `?page`/`?pageSize`), mais recentes primeiro ✅ Fase 6 |
 | GET | `/api/users/me/discoveries` | 🔒 | Descobertas de personagens e nações (`PagedResult<DiscoveryDto>`: `kind` = `Character`/`Nation`, `id`, `name`, `image`, `element`, `discoveredAt`), mais recentes primeiro ✅ Fase 6 |
-| GET | `/api/users/me/experience` | 🔒 | Histórico de transações de XP (paginado) |
+| GET | `/api/users/me/experience` | 🔒 | Histórico de transações de XP (`PagedResult<ExperienceTransactionDto>`: `id`, `amount`, `type`, `description`, `createdAt`), mais recente primeiro ✅ Fase 7 |
 | GET | `/api/users/me/quiz-history` | 🔒 | Tentativas: pontuação, %, data e melhor resultado por quiz |
 | GET | `/api/users/me/achievements` | 🔒 | Conquistas desbloqueadas + progresso das bloqueadas |
 
