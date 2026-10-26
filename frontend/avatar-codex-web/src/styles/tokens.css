@@ -1,0 +1,17 @@
+/* Paleta (DA-02) e tipografia (DA-03) — ver docs/ui-ux.md §2 e §3 */
+:root {
+  --color-bg: #101820;
+  --color-surface: #1b2835;
+  --color-surface-raised: #243445;
+  --color-border: #2e4052;
+  --color-text: #e8edf2;
+  --color-text-muted: #9fb0c0;
+
+  --color-water: #3186b5;
+  --color-fire: #b86b35;
+  --color-earth: #638b58;
+  --color-air: #d5c7a2;
+
+  --font-display: 'Cinzel', serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
