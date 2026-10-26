@@ -18,7 +18,6 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 **Onde paramos (2026-10-26):**
 - Backend pronto até a API de conteúdo: entidades, migration, seed (37 personagens), endpoints de personagens/nações/elementos/habilidades/séries, tratamento global de erros, 64 testes passando.
 - Frontend ainda é só o setup da Fase 1 (página inicial com status da API).
-- **Decisão pendente antes da Fase 4:** imagens dos personagens. Recomendação apresentada: placeholders próprios (iniciais + cor do elemento) agora e curadoria de imagens reais na Fase 15. Aguardando resposta do usuário.
 - **Não iniciar uma nova fase sem confirmação explícita do usuário.**
 
 **Ambiente local:** sem Docker; PostgreSQL 18 local na porta 5432, banco `avatar_codex`, connection string nos user-secrets do `AvatarCodex.Api`. Testes de banco precisam de `AVATARCODEX_TEST_DB` (connection string do servidor, sem `Database`).
@@ -28,6 +27,7 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 - **DA-01** — Descoberta de nação: +10 XP só na 1ª vez por usuário, registrada depois que o conteúdo principal foi exibido, com idempotência garantida no backend.
 - **DA-02** — Paleta dark: fundo `#101820`, superfície `#1B2835`; acentos Água `#3186B5`, Fogo `#B86B35`, Terra `#638B58`, Ar `#D5C7A2`. Elementos são acentos, nunca dominantes; Água/Fogo/Terra não podem ser usadas como texto pequeno (contraste).
 - **DA-03** — Tipografia: Cinzel em títulos e destaques narrativos (com moderação); Inter em todo o resto.
+- **DA-04** — Imagens de personagens: placeholders próprios (iniciais + cor do elemento) até a Fase 15, quando entra a curadoria de imagens reais.
 
 ## Stack
 
