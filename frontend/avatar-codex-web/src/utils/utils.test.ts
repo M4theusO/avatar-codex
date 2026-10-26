@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { hasActiveFilters, parseCharacterQuery } from './characterQuery'
 import { getInitials } from './labels'
 import { getPageItems } from './pagination'
+import { getApiError } from './apiError'
+import { safeRedirect } from './redirect'
+import { apiError } from '../test/fixtures'
 
 describe('parseCharacterQuery', () => {
   it('lê filtros válidos da URL', () => {
@@ -55,6 +58,40 @@ describe('getPageItems', () => {
   it('usa reticências nas lacunas', () => {
     expect(getPageItems(5, 10)).toEqual([1, 'gap', 4, 5, 6, 'gap', 10])
     expect(getPageItems(1, 10)).toEqual([1, 2, 'gap', 10])
+  })
+})
+
+describe('safeRedirect', () => {
+  it.each([
+    ['/characters?type=avatar', '/characters?type=avatar'],
+    [null, '/profile'],
+    ['', '/profile'],
+    ['https://evil.example.com', '/profile'],
+    ['//evil.example.com', '/profile'],
+    ['/\\evil.example.com', '/profile'],
+  ])('%s → %s', (value, expected) => {
+    expect(safeRedirect(value)).toBe(expected)
+  })
+})
+
+describe('getApiError', () => {
+  it('usa a mensagem e os erros por campo da API', () => {
+    const details = getApiError(
+      apiError(400, 'Os dados enviados são inválidos.', [
+        { field: 'email', message: 'Email inválido.' },
+        { field: 'email', message: 'Segunda mensagem ignorada.' },
+      ]),
+    )
+    expect(details).toEqual({
+      message: 'Os dados enviados são inválidos.',
+      fieldErrors: { email: 'Email inválido.' },
+    })
+  })
+
+  it('não repassa mensagens de erro 500', () => {
+    expect(getApiError(apiError(500, 'NullReferenceException at …')).message).toBe(
+      'Ocorreu um erro inesperado. Tente novamente mais tarde.',
+    )
   })
 })
 

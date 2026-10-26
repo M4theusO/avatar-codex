@@ -139,6 +139,34 @@
   font-size: var(--text-sm);
 }
 
+.join {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-10) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(
+      ellipse at 50% 120%,
+      color-mix(in srgb, var(--color-air) 14%, transparent),
+      transparent 60%
+    ),
+    var(--color-surface);
+  text-align: center;
+}
+
+.joinTitle {
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
+.joinText {
+  max-width: 32rem;
+  color: var(--color-text-muted);
+}
+
 @keyframes drift {
   to {
     transform: scale(1.08) translateY(-2%);

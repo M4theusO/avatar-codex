@@ -6,6 +6,7 @@ import ElementIcon from '../../components/common/ElementIcon'
 import Section from '../../components/common/Section'
 import Skeleton from '../../components/common/Skeleton'
 import { ErrorState } from '../../components/common/StatusMessage'
+import { useAuth } from '../../hooks/useAuth'
 import { useCharacters, useElements } from '../../hooks/useContent'
 import { elementStyle } from '../../utils/labels'
 import styles from './HomePage.module.css'
@@ -37,7 +38,28 @@ export default function HomePage() {
 
       <AvatarsSection />
       <ElementsSection />
+      <JoinSection />
     </div>
+  )
+}
+
+/** Chamada para cadastro, só para quem ainda não entrou. */
+function JoinSection() {
+  const { status } = useAuth()
+  if (status !== 'anonymous') return null
+
+  return (
+    <section className={styles.join} aria-labelledby="join-title">
+      <h2 id="join-title" className={styles.joinTitle}>
+        Comece sua jornada
+      </h2>
+      <p className={styles.joinText}>
+        Crie uma conta para favoritar personagens, ganhar XP ao explorar e acompanhar sua evolução.
+      </p>
+      <ButtonLink to="/register" variant="primary">
+        Criar conta grátis
+      </ButtonLink>
+    </section>
   )
 }
 

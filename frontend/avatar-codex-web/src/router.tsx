@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
 import { createBrowserRouter, type RouteObject } from 'react-router'
+import { GuestOnly, RequireAuth } from './components/auth/RouteGuards'
 import { ErrorState } from './components/common/StatusMessage'
 import AppLayout from './components/layout/AppLayout'
 import HomePage from './pages/Home/HomePage'
@@ -29,6 +30,17 @@ export const routes: RouteObject[] = [
       { path: 'nations', lazy: page(() => import('./pages/Nations/NationsPage')) },
       { path: 'nations/:id', lazy: page(() => import('./pages/NationDetails/NationDetailsPage')) },
       { path: 'timeline', lazy: page(() => import('./pages/Timeline/TimelinePage')) },
+      {
+        element: <GuestOnly />,
+        children: [
+          { path: 'login', lazy: page(() => import('./pages/Login/LoginPage')) },
+          { path: 'register', lazy: page(() => import('./pages/Register/RegisterPage')) },
+        ],
+      },
+      {
+        element: <RequireAuth />,
+        children: [{ path: 'profile', lazy: page(() => import('./pages/Profile/ProfilePage')) }],
+      },
       { path: '*', lazy: page(() => import('./pages/NotFound/NotFoundPage')) },
     ],
   },
