@@ -1,4 +1,6 @@
+using AvatarCodex.Application.Interfaces;
 using AvatarCodex.Infrastructure.Data;
+using AvatarCodex.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,10 @@ public static class DependencyInjection
         services.AddDbContext<AppDbContext>(options => options
             .UseNpgsql(connectionString)
             .UseSnakeCaseNamingConvention());
+
+        services.AddScoped<ICharacterRepository, CharacterRepository>();
+        services.AddScoped<INationRepository, NationRepository>();
+        services.AddScoped<ICatalogRepository, CatalogRepository>();
 
         services.AddHealthChecks()
             .AddDbContextCheck<AppDbContext>("database");

@@ -28,6 +28,9 @@ public sealed class TestDatabase : IAsyncLifetime
 
     public bool IsAvailable => _connectionString is not null;
 
+    public string ConnectionString =>
+        _connectionString ?? throw new InvalidOperationException($"{ConnectionStringVariable} não definida.");
+
     public void SkipIfUnavailable() =>
         Skip.IfNot(IsAvailable, $"Defina {ConnectionStringVariable} para rodar os testes de banco.");
 
