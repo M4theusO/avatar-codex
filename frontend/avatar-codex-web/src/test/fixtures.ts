@@ -1,3 +1,7 @@
+import { AxiosError, AxiosHeaders } from 'axios'
+import { vi } from 'vitest'
+import { restoreSession } from '../services/authService'
+import type { User } from '../types/auth'
 import type {
   CharacterDetails,
   CharacterListItem,
@@ -59,4 +63,40 @@ export function characterDetails(overrides: Partial<CharacterDetails> = {}): Cha
     ],
     ...overrides,
   }
+}
+
+export function user(overrides: Partial<User> = {}): User {
+  return {
+    id: '4f1c2b7e-0000-4000-8000-000000000001',
+    username: 'toph',
+    email: 'toph@example.com',
+    avatarUrl: null,
+    element: null,
+    level: 1,
+    experiencePoints: 0,
+    createdAt: '2026-10-26T12:00:00Z',
+    ...overrides,
+  }
+}
+
+/** Simula um usuário com sessão ativa (o refresh da abertura da página funciona). */
+export function mockSession(signedUser: User = user()) {
+  vi.mocked(restoreSession).mockResolvedValue(signedUser)
+  return signedUser
+}
+
+/** Erro da API no formato padrão (docs/api.md §3). */
+export function apiError(
+  status: number,
+  message: string,
+  errors: { field: string; message: string }[] = [],
+) {
+  const config = { headers: new AxiosHeaders() }
+  return new AxiosError(message, 'ERR_BAD_REQUEST', config, null, {
+    status,
+    statusText: '',
+    data: { status, message, errors },
+    headers: {},
+    config,
+  })
 }

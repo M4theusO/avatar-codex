@@ -2,6 +2,7 @@ import { Hourglass, House, Landmark, Menu, Users, X } from 'lucide-react'
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router'
 import styles from './Navbar.module.css'
+import UserMenu from './UserMenu'
 
 const links = [
   { to: '/', label: 'Início', icon: House, end: true },
@@ -38,7 +39,7 @@ export default function Navbar() {
           className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}
           aria-label="Principal"
         >
-          <ul className={styles.list}>
+          <ul className={styles.list} aria-label="Seções">
             {links.map(({ to, label, icon: Icon, end }) => (
               <li key={to}>
                 <NavLink
@@ -53,6 +54,9 @@ export default function Navbar() {
               </li>
             ))}
           </ul>
+          <div className={styles.session}>
+            <UserMenu onNavigate={closeMenu} />
+          </div>
         </nav>
       </div>
     </header>
