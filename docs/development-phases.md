@@ -25,8 +25,8 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | Fase | Nome | Prioridade | Entregas | Critério de aceite |
 |---|---|---|---|---|
 | 0 | Planejamento | P0 | Análise da especificação, decisões, arquitetura, entidades, relacionamentos, rotas, endpoints, páginas, componentes, documentação inicial | Docs aprovados pelo usuário ✅ (2026-10-26) |
-| 1 | Setup | P0 | Repositório, solução .NET (4 projetos + 2 de teste), projeto React/TS/Vite, Docker com PostgreSQL, configuração de ambiente, `.gitignore`, `.env.example`, README inicial | Frontend e backend executando separadamente; API conecta no banco |
-| 2 | Banco e domínio | P0 | Element, BendingSubtype, Nation, Series, Character, Ability e tabelas de junção, User, RefreshToken; configurações EF, DbContext, migrations, seed | Banco sobe do zero com dados de demonstração |
+| 1 | Setup | P0 | Repositório, solução .NET (4 projetos + 2 de teste), projeto React/TS/Vite, Docker com PostgreSQL, configuração de ambiente, `.gitignore`, `.env.example`, README inicial | Frontend e backend executando separadamente; API conecta no banco ✅ (2026-10-26) |
+| 2 | Banco e domínio | P0 | Element, BendingSubtype, Nation, Series, Character, Ability e tabelas de junção, User, RefreshToken; configurações EF, DbContext, migrations, seed | Banco sobe do zero com dados de demonstração ✅ (2026-10-26) |
 | 3 | API de conteúdo | P0 | Characters, Nations, Elements, Abilities, Series; busca, filtros, paginação, ordenação; middleware de erros; Swagger | Endpoints funcionando e com testes de integração básicos |
 | 4 | Frontend base | P0 | Tokens/tema (paleta DA-02, fontes Cinzel/Inter DA-03, validação de contraste), layout, navbar, rotas, componentes base, cards, loading/error/empty, responsividade; páginas Home, Characters, CharacterDetails, Nations, Timeline (placeholder) | Navegação completa sobre dados reais, mobile-first; foco visual |
 | 5 | Autenticação | P0 | Cadastro, login, logout, JWT + refresh, recuperação de sessão, rotas protegidas, perfil básico | Usuário real cria conta, loga, recarrega a página e continua logado |
@@ -35,7 +35,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 8 | Conquistas | P1 | Achievement, UserAchievement, regras, desbloqueio, página de conquistas, notificações | Conquistas desbloqueiam automaticamente e uma única vez |
 | 9 | Quiz | P1 | Quizzes, perguntas, opções, submissão, validação, resultado, XP, histórico; UI atraente | `isCorrect` nunca exposto antes da submissão; testes cobrindo isso |
 | 10 | Dashboard | P1/P2 | Endpoint agregado + página: XP, nível, progresso, conquistas, desafios, descobertas, quiz recomendado, favoritos | Destino padrão após login |
-| 11 | Desafios diários | P2 | ChallengeTemplate, geração diária, progresso, conclusão automática, recompensa, histórico | Testes com `IClock` simulando dias |
+| 11 | Desafios diários | P2 | ChallengeTemplate, geração diária, progresso, conclusão automática, recompensa, histórico | Testes com `TimeProvider` simulando dias |
 | 12 | Timeline | P2 | Era, TimelineEvent, personagens relacionados, navegação visual, filtros | — |
 | 13 | Comparação | P2 | Atributos, seleção de dois personagens, visualização (barras/radar), aviso de não-canonicidade | — |
 | 14 | Testes | — | Completar unit, integração, frontend e E2E (ver abaixo) | Regras de negócio cobertas; E2E verde |
@@ -106,3 +106,20 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - **Portas:** API `5080` (http) / `7080` (https), frontend `5173`, PostgreSQL via Docker `5433`.
 
 **Resultado esperado:** frontend e backend executando separadamente, com a API conectada ao PostgreSQL. ✅ Concluído.
+
+## Fase 2 — Banco e domínio (concluída)
+
+- [x] Entidades: `Element`, `BendingSubtype`, `Nation`, `Series`, `Ability`, `Character`, `CharacterRelationship`, `User`, `RefreshToken` + value object `ImageInfo`
+- [x] Configurações EF (`IEntityTypeConfiguration`), `snake_case`, FKs, índices, uniques, check constraints, `citext` para email/username
+- [x] `AppDbContext` com timestamps automáticos via `TimeProvider`
+- [x] Migration `InitialContentSchema`
+- [x] Seed em JSON com validação e upsert idempotente (37 personagens, 23 habilidades, 9 subtipos, 5 nações, 4 elementos, 2 séries, 79 relações)
+- [x] Migrate + seed automáticos no startup em Development
+- [x] Testes: 5 unitários (validação do seed) + 8 de integração com PostgreSQL real (seed, idempotência, atualização, uniques case-insensitive, check constraints, timestamps)
+
+**Ajustes em relação ao planejado:**
+- `Character.Name` passou a ser **único**: é a chave natural do seed.
+- `IClock` foi substituído pelo `TimeProvider` nativo do .NET.
+- Testes de integração usam um banco descartável no PostgreSQL configurado em `AVATARCODEX_TEST_DB` em vez de Testcontainers, porque não há Docker no ambiente atual. A troca para Testcontainers fica restrita a `TestDatabase.cs`.
+- `CharacterRelationship` entrou já na Fase 2 (estava implícita), por fazer parte do conteúdo do personagem.
+- Imagens e usuário de demonstração ficam para as Fases 4 e 5.

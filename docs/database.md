@@ -107,7 +107,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 | Campo | Tipo | Restrições |
 |---|---|---|
 | Id | int | PK |
-| Name | varchar(100) | obrigatório, índice |
+| Name | varchar(100) | obrigatório, único (chave natural do seed) |
 | Aliases | text[] | apelidos |
 | Description | varchar(500) | resumo para cards |
 | Biography | text | |
@@ -117,7 +117,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 | IsBender | bool | |
 | IsAvatar | bool | |
 | Status | enum | `Alive`, `Deceased`, `Unknown` |
-| FirstAppearance | varchar(150) | ex. "ATLA 1x01 – O Garoto no Iceberg" |
+| FirstAppearance | varchar(150)? | ex. "ATLA – Livro 1, Ep. 1"; nulo quando não confirmado |
 | CreatedAt / UpdatedAt | timestamptz | |
 
 > O `BendingType` da especificação foi substituído pela N:N com `BendingSubtype`, que permite crescer (D6). O filtro "Tipo" (Avatar / dobrador / não-dobrador) é derivado de `IsAvatar`/`IsBender`.
@@ -321,24 +321,29 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 
 ## 4. Seed
 
-- Dados em arquivos JSON versionados em `Infrastructure/Data/Seed/`, aplicados por um seeder idempotente (upsert por chave natural/`Code`) em Development.
+- Dados em arquivos JSON versionados em `Infrastructure/Data/Seed/Content/` (embutidos no assembly), aplicados pelo `ContentSeeder` no startup da API quando `Database:MigrateAndSeedOnStartup = true` (apenas `appsettings.Development.json`).
+- O seeder é **idempotente**: faz upsert pela chave natural (nome; `Code` para séries), sincroniza as N:N e as relações, e **não remove** conteúdo que não esteja nos JSON. Rodar duas vezes não altera nenhuma linha.
+- Antes de gravar, `ContentSeedData.Validate()` verifica nomes duplicados e referências inexistentes entre os arquivos. Um seed inválido impede o startup.
+- Referências entre arquivos são feitas por nome (ex.: `"nation": "Nação do Fogo"`).
+- Imagens ainda não fazem parte do seed: os campos `ImageInfo` ficam nulos até a curadoria de imagens (Fase 4).
 - Conteúdo mínimo para demonstração:
 
-| Tabela | Quantidade alvo |
-|---|---|
-| Element | 4 |
-| BendingSubtype | ~8 |
-| Nation | 5 (4 nações + República Unida) |
-| Series | 2 |
-| Character | ~40 (ATLA + LOK) |
-| Ability | ~25 |
-| ComparisonAttribute | 5 |
-| Era / TimelineEvent | 3–4 / ~20 |
-| Quiz / Question | 3–5 / ~10 por quiz |
-| Achievement | ~12 |
-| ChallengeTemplate | ~8 |
+| Tabela | Quantidade alvo | Atual (Fase 2) |
+|---|---|---|
+| Element | 4 | 4 |
+| BendingSubtype | ~8 | 9 |
+| Nation | 5 (4 nações + República Unida) | 5 |
+| Series | 2 | 2 |
+| Character | ~40 (ATLA + LOK) | 37 |
+| Ability | ~25 | 23 |
+| CharacterRelationship | — | 79 |
+| ComparisonAttribute | 5 | — |
+| Era / TimelineEvent | 3–4 / ~20 | — |
+| Quiz / Question | 3–5 / ~10 por quiz | — |
+| Achievement | ~12 | — |
+| ChallengeTemplate | ~8 | — |
 
-- Usuário de demonstração apenas em Development (credenciais documentadas no README).
+- Usuário de demonstração apenas em Development (credenciais documentadas no README), criado na Fase 5 junto com o hash de senha.
 
 ## 5. Migrations
 
@@ -348,3 +353,11 @@ dotnet ef database update      -p backend/src/AvatarCodex.Infrastructure -s back
 ```
 
 Uma migration por mudança coesa de esquema, com nome descritivo (ex.: `AddQuizTables`).
+
+| Migration | Conteúdo |
+|---|---|
+| `InitialContentSchema` | Extensão `citext`; `elements`, `bending_subtypes`, `nations`, `series`, `abilities`, `characters`, `character_relationships`, `character_abilities`, `character_bending_subtypes`, `character_series`, `users`, `refresh_tokens` |
+
+## 6. Testes de banco
+
+Os testes de integração em `tests/AvatarCodex.IntegrationTests/Database` criam um banco descartável por classe de teste (`avatar_codex_test_<guid>`), aplicam as migrations e o removem no final. O servidor vem da variável de ambiente `AVATARCODEX_TEST_DB` (connection string **sem** `Database`); sem ela, esses testes são ignorados.

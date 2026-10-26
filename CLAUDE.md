@@ -13,7 +13,7 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 ## Status atual
 
-**Fase 1 — Setup** (em andamento). Fase 0 concluída: todas as decisões aprovadas (`docs/architecture.md` §9).
+**Fase 3 — API de conteúdo** (próxima). Fases 0, 1 e 2 concluídas (`docs/development-phases.md`).
 **Não iniciar a Fase 1 sem confirmação explícita do usuário.**
 
 ## Decisões aprovadas
@@ -84,8 +84,11 @@ docker compose up -d
 cd backend && dotnet build && dotnet test
 dotnet run --project src/AvatarCodex.Api --launch-profile http
 
-# Migrations (a partir da Fase 2)
+# Migrations (o startup em Development aplica migrations + seed automaticamente)
 dotnet ef migrations add <Nome> -p src/AvatarCodex.Infrastructure -s src/AvatarCodex.Api
+
+# Testes de banco (sem a variável, são ignorados)
+AVATARCODEX_TEST_DB="Host=localhost;Port=5432;Username=postgres;Password=..." dotnet test
 
 # Frontend (http://localhost:5173)
 cd frontend/avatar-codex-web
