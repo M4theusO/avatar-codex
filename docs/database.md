@@ -204,6 +204,8 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 
 ### 3.3 Exploração e favoritos
 
+> ✅ Fase 6. Tabelas: `character_discoveries`, `nation_discoveries`, `favorite_characters`. FK do usuário em CASCADE; FK do conteúdo em RESTRICT.
+
 **UserCharacterDiscovery** — PK (`UserId`, `CharacterId`), `DiscoveredAt`; índice (`UserId`, `DiscoveredAt DESC`).
 
 **UserNationDiscovery** — PK (`UserId`, `NationId`), `DiscoveredAt`. A 1ª descoberta concede +10 XP (`ExperienceTransaction.Type = NationDiscovered`, `SourceId = NationId`; DA-01).
@@ -357,6 +359,7 @@ Uma migration por mudança coesa de esquema, com nome descritivo (ex.: `AddQuizT
 | Migration | Conteúdo |
 |---|---|
 | `InitialContentSchema` | Extensão `citext`; `elements`, `bending_subtypes`, `nations`, `series`, `abilities`, `characters`, `character_relationships`, `character_abilities`, `character_bending_subtypes`, `character_series`, `users`, `refresh_tokens` |
+| `AddFavoritesDiscoveriesAndExperience` | `character_discoveries` (UserCharacterDiscovery), `nation_discoveries` (UserNationDiscovery), `favorite_characters` (UserFavoriteCharacter), `experience_transactions` com unique (`user_id`, `type`, `source_id`) e `CHECK amount > 0`. `type` gravado como texto. |
 
 ## 6. Testes de banco
 

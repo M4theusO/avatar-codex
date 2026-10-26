@@ -105,7 +105,7 @@ Exemplo de resposta de login:
 | GET | `/api/eras` | 🔓 | Eras (P2) | Fase 12 |
 | GET | `/api/series` | 🔓 | Séries (para filtro) | ✅ Fase 3 |
 
-> Os campos dependentes do usuário (`isFavorite`, `isDiscovered`) dos endpoints 🔓* entram na Fase 6, junto com a autenticação opcional.
+> Com token, os endpoints 🔓* preenchem `isFavorite` e `isDiscovered` (✅ Fase 6). Sem token, ou com token inválido, respondem como para um visitante (`false`).
 
 Exemplo de item da listagem:
 
@@ -126,10 +126,10 @@ Exemplo de item da listagem:
 ### Descoberta e favoritos
 | Método | Rota | | Descrição | Respostas |
 |---|---|---|---|---|
-| POST | `/api/characters/{id}/discovery` | 🔒 | Registra a descoberta (idempotente). Retorna `{ isNew, reward }`. | 200, 404 |
-| POST | `/api/nations/{id}/discovery` | 🔒 | Registra a descoberta da nação (idempotente): **+10 XP** na primeira vez (DA-01). Retorna `{ isNew, reward }`. | 200, 404 |
-| POST | `/api/characters/{id}/favorite` | 🔒 | Adiciona favorito (idempotente) | 204, 404 |
-| DELETE | `/api/characters/{id}/favorite` | 🔒 | Remove favorito | 204, 404 |
+| POST | `/api/characters/{id}/discovery` | 🔒 | Registra a descoberta (idempotente): **+10 XP** na primeira vez. Retorna `{ isNew, reward }`. ✅ Fase 6 | 200, 401, 404 |
+| POST | `/api/nations/{id}/discovery` | 🔒 | Registra a descoberta da nação (idempotente): **+10 XP** na primeira vez (DA-01). Retorna `{ isNew, reward }`. ✅ Fase 6 | 200, 401, 404 |
+| POST | `/api/characters/{id}/favorite` | 🔒 | Adiciona favorito (idempotente, inclusive em paralelo) ✅ Fase 6 | 204, 401, 404 |
+| DELETE | `/api/characters/{id}/favorite` | 🔒 | Remove favorito (idempotente) ✅ Fase 6 | 204, 401, 404 |
 
 Regras de descoberta (RN-12):
 - O frontend chama o endpoint **somente depois que o conteúdo principal da página foi carregado e exibido**, e uma única vez por montagem da página.
@@ -145,10 +145,10 @@ Regras de descoberta (RN-12):
 |---|---|---|---|
 | GET | `/api/users/me` | 🔒 | Perfil completo (nível, XP atual, XP do próximo nível, % de progresso) |
 | PATCH | `/api/users/me` | 🔒 | Atualiza `avatarUrl`, `elementId` |
-| GET | `/api/users/me/statistics` | 🔒 | Descobertos x/total, favoritos, quizzes, taxa de acerto, conquistas x/total |
+| GET | `/api/users/me/statistics` | 🔒 | Descobertos x/total, favoritos, quizzes, taxa de acerto, conquistas x/total. ✅ Fase 6 (parcial): `{ discoveredCharacters, totalCharacters, discoveredNations, totalNations, favorites }`; quizzes e conquistas entram nas Fases 8 e 9 |
 | GET | `/api/users/me/dashboard` | 🔒 | Agregado do dashboard (evita várias chamadas) |
-| GET | `/api/users/me/favorites` | 🔒 | Favoritos (paginado) |
-| GET | `/api/users/me/discoveries` | 🔒 | Descobertas (paginado, mais recentes primeiro) |
+| GET | `/api/users/me/favorites` | 🔒 | Favoritos (`PagedResult<CharacterListItemDto>`, `?page`/`?pageSize`), mais recentes primeiro ✅ Fase 6 |
+| GET | `/api/users/me/discoveries` | 🔒 | Descobertas de personagens e nações (`PagedResult<DiscoveryDto>`: `kind` = `Character`/`Nation`, `id`, `name`, `image`, `element`, `discoveredAt`), mais recentes primeiro ✅ Fase 6 |
 | GET | `/api/users/me/experience` | 🔒 | Histórico de transações de XP (paginado) |
 | GET | `/api/users/me/quiz-history` | 🔒 | Tentativas: pontuação, %, data e melhor resultado por quiz |
 | GET | `/api/users/me/achievements` | 🔒 | Conquistas desbloqueadas + progresso das bloqueadas |

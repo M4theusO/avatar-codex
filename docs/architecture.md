@@ -120,6 +120,11 @@ tudo em uma única transação de banco
 
 O `RewardResult` volta na resposta do endpoint que originou o evento, e o frontend usa esse retorno para os toasts de XP, nível e conquista. Assim nenhuma regra de gamificação é duplicada no frontend.
 
+**Implementado na Fase 6 (passos 1–3 e 6):** `ProgressionService.GrantAsync` usa a tabela de XP de `ExperienceRewards` (único lugar com os valores, RN-04) e o `IProgressionRepository`, que numa transação grava o registro da atividade (ex.: a descoberta) e a `ExperienceTransaction` e soma o XP com `UPDATE ... SET experience_points = experience_points + n` (sem perder XP com recompensas simultâneas diferentes). Violação de unicidade → rollback e `null` ("já concedido", sem erro). Desafios (passo 4) e conquistas (passo 5) entram nas Fases 11 e 8.
+
+- **Token opcional:** `GET /api/characters`, `/api/characters/{id}` e `/api/nations/{id}` leem o usuário do token quando ele existe e preenchem `isFavorite`/`isDiscovered` com uma consulta extra pelos ids da página (`IUserCollectionRepository.GetMarksAsync`).
+- **Frontend:** as queries de personagens incluem o id do usuário na chave e só disparam depois que a sessão foi verificada; a descoberta é enviada por `useDiscovery` (uma vez por página, só com o conteúdo já exibido) e o `reward` atualiza XP/nível em memória (`AuthProvider.updateUser`).
+
 ### 3.4 Autenticação
 
 - **Access token JWT** de curta duração (15 min), enviado no header `Authorization: Bearer`.
