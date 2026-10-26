@@ -10,7 +10,8 @@
 ## 2. Autenticação
 
 - `Authorization: Bearer <accessToken>` em endpoints 🔒.
-- Refresh token em cookie `httpOnly` (`refresh_token`, `Path=/api/auth`), rotacionado a cada `/refresh` (ver `architecture.md` §3.4).
+- Refresh token em cookie `httpOnly` + `Secure` + `SameSite=Strict` (`refresh_token`, `Path=/api/auth`), rotacionado a cada `/refresh` (ver `architecture.md` §3.4).
+- Sem token ou com token inválido/expirado, endpoints 🔒 respondem `401` no formato padrão de erro (`"Você precisa estar autenticado."`).
 - Endpoints públicos que mudam conforme o usuário (ex.: listagem de personagens com `isFavorite`/`isDiscovered`) aceitam token **opcional**.
 
 ## 3. Formato de erro
@@ -71,11 +72,13 @@ Endpoints que geram progresso retornam um objeto `reward`, que o frontend usa no
 ### Auth
 | Método | Rota | | Descrição | Respostas |
 |---|---|---|---|---|
-| POST | `/api/auth/register` | 🔓 | Cadastro (`username`, `email`, `password`, `confirmPassword`). Desbloqueia "Primeiro passo". | 201, 400, 409 |
-| POST | `/api/auth/login` | 🔓 | Login (`email`, `password`) → `accessToken`, `user` + cookie de refresh | 200, 400, 401 |
-| POST | `/api/auth/refresh` | 🔓 (cookie) | Novo access token, refresh rotacionado | 200, 401 |
-| POST | `/api/auth/logout` | 🔒 | Revoga o refresh token e limpa o cookie | 204 |
-| GET | `/api/auth/me` | 🔒 | Usuário autenticado (resumo) | 200, 401 |
+| POST | `/api/auth/register` | 🔓 | Cadastro (`username`, `email`, `password`, `confirmPassword`) que já inicia a sessão (mesmo corpo do login + cookie). A conquista "Primeiro passo" entra na Fase 8. ✅ Fase 5 | 201, 400, 409 |
+| POST | `/api/auth/login` | 🔓 | Login (`email`, `password`) → `accessToken`, `user` + cookie de refresh. Email inexistente e senha errada têm a mesma mensagem. ✅ Fase 5 | 200, 400, 401 |
+| POST | `/api/auth/refresh` | 🔓 (cookie) | Novo access token, refresh rotacionado. Cookie inválido/expirado/revogado → 401 e o cookie é apagado. ✅ Fase 5 | 200, 401 |
+| POST | `/api/auth/logout` | 🔓 (cookie) | Revoga o refresh token e limpa o cookie. Idempotente e funciona com o access token expirado. ✅ Fase 5 | 204 |
+| GET | `/api/auth/me` | 🔒 | Usuário autenticado (`UserDto`) ✅ Fase 5 | 200, 401 |
+
+Validação do cadastro (mensagens em português, um item em `errors` por campo): `username` com 3–30 caracteres (`A-Z a-z 0-9 . _ -`), `email` válido (máx. 254), `password` com 8–128 caracteres, ao menos uma letra e um número (RN-02), `confirmPassword` igual à senha. Email é normalizado (trim + minúsculas) e email/username são únicos sem diferenciar maiúsculas (RN-01, `citext`).
 
 Exemplo de resposta de login:
 
@@ -83,7 +86,7 @@ Exemplo de resposta de login:
 {
   "accessToken": "eyJ...",
   "expiresIn": 900,
-  "user": { "id": "4f1c…", "username": "matheus", "email": "m@ex.com", "avatarUrl": null, "element": null, "level": 1, "experiencePoints": 0 }
+  "user": { "id": "4f1c…", "username": "matheus", "email": "m@ex.com", "avatarUrl": null, "element": null, "level": 1, "experiencePoints": 0, "createdAt": "2026-10-26T12:00:00Z" }
 }
 ```
 

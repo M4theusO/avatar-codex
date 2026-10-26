@@ -29,7 +29,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 2 | Banco e domínio | P0 | Element, BendingSubtype, Nation, Series, Character, Ability e tabelas de junção, User, RefreshToken; configurações EF, DbContext, migrations, seed | Banco sobe do zero com dados de demonstração ✅ (2026-10-26) |
 | 3 | API de conteúdo | P0 | Characters, Nations, Elements, Abilities, Series; busca, filtros, paginação, ordenação; middleware de erros; Swagger | Endpoints funcionando e com testes de integração básicos ✅ (2026-10-26) |
 | 4 | Frontend base | P0 | Tokens/tema (paleta DA-02, fontes Cinzel/Inter DA-03, validação de contraste), layout, navbar, rotas, componentes base, cards, loading/error/empty, responsividade; páginas Home, Characters, CharacterDetails, Nations, Timeline (placeholder) | Navegação completa sobre dados reais, mobile-first; foco visual ✅ (2026-10-26) |
-| 5 | Autenticação | P0 | Cadastro, login, logout, JWT + refresh, recuperação de sessão, rotas protegidas, perfil básico | Usuário real cria conta, loga, recarrega a página e continua logado |
+| 5 | Autenticação | P0 | Cadastro, login, logout, JWT + refresh, recuperação de sessão, rotas protegidas, perfil básico | Usuário real cria conta, loga, recarrega a página e continua logado ✅ (2026-10-26) |
 | 6 | Favoritos e descoberta | P0/P1 | Favoritos, descoberta de personagens e nações, histórico de descobertas, XP inicial | Experiência personalizada; descoberta de personagem e de nação (+10 XP, DA-01) registrada só após o conteúdo ser exibido, sem XP duplicado mesmo com requisições concorrentes (testado) |
 | 7 | XP e níveis | P1 | ExperienceTransaction, ProgressionService, LevelCalculator, XpBar, notificações de nível, `RewardResult` | Regras centralizadas no backend, com testes unitários |
 | 8 | Conquistas | P1 | Achievement, UserAchievement, regras, desbloqueio, página de conquistas, notificações | Conquistas desbloqueiam automaticamente e uma única vez |
@@ -158,3 +158,25 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - No mobile o card de personagem vira item de lista (avatar ao lado do texto), mais compacto que o grid de 2 colunas.
 - O status da API saiu da Home: cada seção trata o próprio erro.
 - MSW não foi adotado: os testes mockam `contentService` com `vi.mock`, o que é suficiente para o volume atual.
+
+## Fase 5 — Autenticação (concluída)
+
+- [x] `POST /api/auth/register` (já inicia a sessão), `login`, `refresh`, `logout` e `GET /api/auth/me`
+- [x] Access token JWT (15 min, HMAC-SHA256) no header; refresh token opaco (7 dias) em cookie `httpOnly`/`Secure`/`SameSite=Strict`, salvo como hash e rotacionado a cada uso
+- [x] Senhas com PBKDF2 (`PasswordHasher<User>`), mesma mensagem para email inexistente e senha errada
+- [x] Validação com FluentValidation (RN-01, RN-02), conflito de email/username → 409, inclusive na corrida entre cadastros simultâneos (unique do banco)
+- [x] 401 no formato padrão de erro, inclusive o desafio do JwtBearer
+- [x] `LevelCalculator` (RN-07) antecipado da Fase 7, para o `level` do usuário vir do backend
+- [x] Usuário demo em Development (README)
+- [x] Frontend: token só em memória, refresh automático após 401 com uma única chamada simultânea, recuperação de sessão ao recarregar, `AuthProvider`/`useAuth`, toasts (`ToastProvider`/`useToast`)
+- [x] Páginas Login e Cadastro (erros da API por campo com `aria-describedby`, mostrar senha), Perfil básico (`/profile`), rotas `RequireAuth`/`GuestOnly` com `?redirect=` protegido contra open redirect
+- [x] Navbar com sessão (entrar/criar conta ou usuário + sair), CTA de cadastro na Home para visitantes
+- [x] Testes: backend 111 (59 unitários + 52 de integração) e frontend 67
+- [x] Fluxo validado num Chrome real: cadastro inválido → cadastro → reload (sessão mantida) → logout → rota protegida → senha errada → login → reload no mobile
+
+**Ajustes em relação ao planejado:**
+- `logout` passou a ser 🔓 com cookie (em vez de 🔒): funciona mesmo com o access token expirado e é idempotente.
+- O cadastro já devolve a sessão (corpo do login + cookie), para o usuário não precisar logar logo depois de criar a conta.
+- O frontend **não repete as regras de validação**: os erros por campo vêm da resposta 400 da API (regra "não duplicar lógica"). Os textos de ajuda dos campos só descrevem o formato esperado.
+- Destino padrão depois do login é `/profile`, até o Dashboard existir (Fase 10).
+- O "Primeiro passo" (conquista de cadastro) fica para a Fase 8.

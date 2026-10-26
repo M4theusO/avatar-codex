@@ -13,14 +13,15 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 ## Status atual
 
-**Fase 5 — Autenticação** (próxima, ainda não iniciada). Fases 0 a 4 concluídas (`docs/development-phases.md`).
+**Fase 6 — Favoritos e descoberta** (próxima, ainda não iniciada). Fases 0 a 5 concluídas (`docs/development-phases.md`).
 
 **Onde paramos (2026-10-26):**
 - Backend pronto até a API de conteúdo: entidades, migration, seed (37 personagens), endpoints de personagens/nações/elementos/habilidades/séries, tratamento global de erros, 64 testes passando.
-- Frontend base pronto: layout, navbar, rotas com lazy loading, componentes base, Home, Characters (busca/filtros/ordenação/paginação na URL), CharacterDetails, Nations, NationDetails, Timeline (placeholder), 404; 43 testes passando.
+- Frontend base pronto: layout, navbar, rotas com lazy loading, componentes base, Home, Characters (busca/filtros/ordenação/paginação na URL), CharacterDetails, Nations, NationDetails, Timeline (placeholder), 404.
+- Autenticação pronta: cadastro, login, logout, JWT + refresh em cookie httpOnly, sessão recuperada ao recarregar, rotas protegidas, perfil básico, usuário demo (README). Backend 111 testes, frontend 67.
 - **Não iniciar uma nova fase sem confirmação explícita do usuário.**
 
-**Ambiente local:** sem Docker; PostgreSQL 18 local na porta 5432, banco `avatar_codex`, connection string nos user-secrets do `AvatarCodex.Api`. Testes de banco precisam de `AVATARCODEX_TEST_DB` (connection string do servidor, sem `Database`).
+**Ambiente local:** sem Docker; PostgreSQL 18 local na porta 5432, banco `avatar_codex`, connection string e `Jwt:Secret` nos user-secrets do `AvatarCodex.Api`. Testes de banco precisam de `AVATARCODEX_TEST_DB` (connection string do servidor, sem `Database`).
 
 ## Decisões aprovadas
 

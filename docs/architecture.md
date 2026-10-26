@@ -127,6 +127,10 @@ O `RewardResult` volta na resposta do endpoint que originou o evento, e o fronte
 - O frontend guarda o access token **apenas em memória**. Ao recarregar a página, chama `POST /api/auth/refresh` para recuperar a sessão.
 - Senhas com `PasswordHasher<User>` do ASP.NET Core Identity (PBKDF2), sem usar o Identity completo.
 - CORS restrito à origem do frontend, com `AllowCredentials` por causa do cookie.
+- **Implementação (Fase 5):** `AuthService` (Application) concentra cadastro, login, refresh, logout e "me"; `JwtTokenService` e `PasswordHasher` (Infrastructure/Security) ficam atrás de `ITokenService`/`IPasswordHasher`. O refresh token é um valor aleatório de 512 bits; no banco fica só o SHA-256 dele. O access token leva apenas `sub`, `unique_name` e `jti`.
+- **Frontend:** `services/api.ts` guarda o access token em memória, injeta o header e, ao receber 401, faz **um** refresh e repete a requisição. Refreshes simultâneos compartilham a mesma promessa, porque cada refresh token só vale uma vez (isso também evita a corrida do StrictMode ao recuperar a sessão). Se o refresh falha, a sessão local é encerrada.
+- **Cookie em produção:** `SameSite=Strict` funciona em dev porque `localhost:5173` e `localhost:5080` são o mesmo site. Com frontend e API em domínios diferentes (Fase 17), será preciso `SameSite=None` (ou servir a API sob o mesmo domínio).
+- **Fora do escopo por enquanto:** detecção de reuso de refresh token (revogar todas as sessões ao reapresentar um token já rotacionado) e limite de tentativas de login. Ficam registrados como melhorias de segurança.
 
 > **Decisão D2:** existe uma alternativa mais simples, com JWT único no `localStorage`. Ela é mais vulnerável a XSS e contraria a regra de não guardar informação sensível no frontend.
 
@@ -154,6 +158,7 @@ src/
 │   ├── layout/        # AppLayout (skip link, rodapé), Navbar
 │   ├── characters/    # CharacterCard, CharacterGrid, CharacterFilters, CharacterHero, AbilityList, RelationshipList
 │   ├── nations/       # NationCard
+│   ├── auth/          # AuthCard, RouteGuards (RequireAuth, GuestOnly)
 │   ├── quiz/
 │   ├── achievements/
 │   └── profile/
@@ -161,8 +166,8 @@ src/
 │                      # Timeline, Compare, Quizzes, QuizPlay, QuizHistory, Profile, Favorites, Achievements,
 │                      # Challenges, NotFound
 ├── services/          # api.ts (Axios + interceptors), contentService, authService, quizService…
-├── hooks/             # useContent (queries de conteúdo), useCharacterQueryParams (estado na URL), useAuth…
-├── contexts/          # AuthContext, ToastContext
+├── hooks/             # useContent, useCharacterQueryParams, useAuth, useAuthForm, useLogout, useToast…
+├── contexts/          # AuthProvider/authContext (sessão), ToastProvider/toastContext
 ├── lib/               # queryClient (padrões do TanStack Query)
 ├── types/             # tipos espelhando os DTOs da API
 ├── styles/            # tokens.css, global.css

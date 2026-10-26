@@ -61,10 +61,20 @@ dotnet user-secrets set "ConnectionStrings:Default" \
   "Host=localhost;Port=5433;Database=avatar_codex;Username=avatar;Password=<sua-senha>" \
   --project src/AvatarCodex.Api
 
+# Chave de assinatura dos tokens JWT (mínimo de 32 bytes; gere um valor aleatório)
+dotnet user-secrets set "Jwt:Secret" "<valor-aleatorio-longo>" --project src/AvatarCodex.Api
+
 dotnet run --project src/AvatarCodex.Api --launch-profile http
 ```
 
-Em Development, o startup aplica as migrations e o seed de conteúdo automaticamente (personagens, nações, elementos, habilidades). O seed é idempotente e pode rodar quantas vezes for preciso.
+Para gerar o `Jwt:Secret`: `openssl rand -base64 48` (Git Bash) ou, no PowerShell, `$b = New-Object byte[] 48; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); [Convert]::ToBase64String($b)`. Sem ele, a API não sobe.
+
+Em Development, o startup aplica as migrations, o seed de conteúdo (personagens, nações, elementos, habilidades) e cria um **usuário de demonstração**. O seed é idempotente e pode rodar quantas vezes for preciso.
+
+| Usuário demo (só em Development) | |
+|---|---|
+| Email | `demo@avatarcodex.dev` |
+| Senha | `Avatar123` |
 
 - API: http://localhost:5080
 - Health check: http://localhost:5080/api/health
@@ -79,7 +89,7 @@ npm install
 npm run dev
 ```
 
-Aplicação: http://localhost:5173. A página inicial mostra se a API e o banco estão conectados.
+Aplicação: http://localhost:5173.
 
 ## Testes e qualidade
 
@@ -105,6 +115,8 @@ npm run build
 |---|---|---|
 | `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_PORT` | `.env` (raiz) | Usadas pelo `docker-compose.yml` |
 | `ConnectionStrings:Default` | user-secrets ou env `ConnectionStrings__Default` | Conexão do backend com o PostgreSQL |
+| `Jwt:Secret` | user-secrets ou env `Jwt__Secret` | Chave de assinatura dos access tokens (≥ 32 bytes) |
+| `Jwt:Issuer`, `Jwt:Audience`, `Jwt:AccessTokenMinutes`, `Jwt:RefreshTokenDays` | `appsettings.json` ou env | Emissor/público do token e duração do access token (15 min) e do refresh token (7 dias) |
 | `Cors:AllowedOrigins` | `appsettings.Development.json` ou env | Origens permitidas do frontend |
 | `AVATARCODEX_TEST_DB` | variável de ambiente (opcional) | Servidor PostgreSQL para os testes de integração de banco |
 | `VITE_API_URL` | `frontend/avatar-codex-web/.env.local` | URL base da API |
