@@ -25,8 +25,11 @@ public class HealthCheckTests(HealthCheckTests.UnreachableDatabaseFactory factor
 
     public class UnreachableDatabaseFactory : WebApplicationFactory<Program>
     {
-        protected override void ConfigureWebHost(IWebHostBuilder builder) =>
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
+        {
             builder.UseSetting("ConnectionStrings:Default",
                 "Host=127.0.0.1;Port=1;Database=none;Username=none;Password=none;Timeout=1");
+            builder.UseSetting("Database:MigrateAndSeedOnStartup", "false");
+        }
     }
 }
