@@ -21,7 +21,15 @@ public sealed class ContentApiFixture : WebApplicationFactory<Program>, IAsyncLi
     {
         builder.UseSetting("ConnectionStrings:Default", Database.ConnectionString);
         builder.UseSetting("Database:MigrateAndSeedOnStartup", "true");
+        builder.UseSetting("Jwt:Secret", TestSettings.JwtSecret);
     }
+
+    /// <summary>
+    /// Cliente com cookies, em https porque o cookie de refresh é Secure
+    /// (o TestServer não exige TLS de verdade).
+    /// </summary>
+    public HttpClient CreateBrowserClient() =>
+        CreateClient(new WebApplicationFactoryClientOptions { BaseAddress = new Uri("https://localhost") });
 
     public async Task<T> GetJsonAsync<T>(string url)
     {

@@ -30,6 +30,7 @@ public class HealthCheckTests(HealthCheckTests.UnreachableDatabaseFactory factor
             builder.UseSetting("ConnectionStrings:Default",
                 "Host=127.0.0.1;Port=1;Database=none;Username=none;Password=none;Timeout=1");
             builder.UseSetting("Database:MigrateAndSeedOnStartup", "false");
+            builder.UseSetting("Jwt:Secret", TestSettings.JwtSecret);
         }
     }
 }
