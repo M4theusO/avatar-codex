@@ -15,6 +15,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TimeProvider t
     public DbSet<CharacterRelationship> CharacterRelationships => Set<CharacterRelationship>();
     public DbSet<User> Users => Set<User>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<UserCharacterDiscovery> CharacterDiscoveries => Set<UserCharacterDiscovery>();
+    public DbSet<UserNationDiscovery> NationDiscoveries => Set<UserNationDiscovery>();
+    public DbSet<UserFavoriteCharacter> FavoriteCharacters => Set<UserFavoriteCharacter>();
+    public DbSet<ExperienceTransaction> ExperienceTransactions => Set<ExperienceTransaction>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

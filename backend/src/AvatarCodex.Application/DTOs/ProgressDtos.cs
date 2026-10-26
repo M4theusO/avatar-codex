@@ -1,0 +1,45 @@
+namespace AvatarCodex.Application.DTOs;
+
+public record AchievementRewardDto(int Id, string Name, string Icon, int ExperienceReward);
+
+public record ChallengeRewardDto(int Id, string Title, int ExperienceReward);
+
+/// <summary>Envelope de recompensa (docs/api.md §5). O frontend só exibe; nunca calcula.</summary>
+public record RewardResult(
+    int XpGained,
+    int TotalXp,
+    int Level,
+    bool LeveledUp,
+    IReadOnlyList<AchievementRewardDto> AchievementsUnlocked,
+    IReadOnlyList<ChallengeRewardDto> ChallengesCompleted);
+
+/// <summary>Resposta de POST .../discovery. Repetida ou simultânea: IsNew = false e Reward = null.</summary>
+public record DiscoveryResultDto(bool IsNew, RewardResult? Reward);
+
+public enum DiscoveryKind
+{
+    Character,
+    Nation
+}
+
+public record DiscoveryDto(
+    DiscoveryKind Kind,
+    int Id,
+    string Name,
+    ImageDto? Image,
+    ElementSummaryDto? Element,
+    DateTimeOffset DiscoveredAt);
+
+public record UserStatisticsDto(
+    int DiscoveredCharacters,
+    int TotalCharacters,
+    int DiscoveredNations,
+    int TotalNations,
+    int Favorites);
+
+/// <summary>Paginação simples das listas do usuário (?page=1&amp;pageSize=12).</summary>
+public class PageQueryParameters
+{
+    public int Page { get; set; } = 1;
+    public int PageSize { get; set; } = 12;
+}

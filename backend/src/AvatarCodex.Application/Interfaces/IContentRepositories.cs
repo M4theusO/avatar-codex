@@ -40,6 +40,9 @@ public interface ICharacterRepository
 
     Task<bool> ExistsAsync(int id, CancellationToken cancellationToken);
 
+    /// <summary>Nome do personagem, ou null se não existir.</summary>
+    Task<string?> GetNameAsync(int id, CancellationToken cancellationToken);
+
     Task<IReadOnlyList<Ability>> GetAbilitiesAsync(int characterId, CancellationToken cancellationToken);
 }
 
@@ -49,6 +52,9 @@ public interface INationRepository
 
     /// <summary>Nação com Element e personagens (com Nation e Element) carregados, ou null.</summary>
     Task<Nation?> GetDetailsAsync(int id, CancellationToken cancellationToken);
+
+    /// <summary>Nome da nação, ou null se não existir.</summary>
+    Task<string?> GetNameAsync(int id, CancellationToken cancellationToken);
 }
 
 public interface ICatalogRepository

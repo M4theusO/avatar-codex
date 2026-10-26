@@ -46,6 +46,9 @@ public static class AuthExtensions
 
     /// <summary>Id do usuário autenticado (claim "sub" do access token).</summary>
     public static Guid GetUserId(this ClaimsPrincipal principal) =>
-        Guid.Parse(principal.FindFirstValue(JwtRegisteredClaimNames.Sub)
-            ?? throw new InvalidOperationException("Token sem a claim 'sub'."));
+        principal.GetUserIdOrNull() ?? throw new InvalidOperationException("Token sem a claim 'sub'.");
+
+    /// <summary>Para endpoints com token opcional: null quando a requisição é de um visitante.</summary>
+    public static Guid? GetUserIdOrNull(this ClaimsPrincipal principal) =>
+        Guid.TryParse(principal.FindFirstValue(JwtRegisteredClaimNames.Sub), out var id) ? id : null;
 }

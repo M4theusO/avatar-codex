@@ -30,4 +30,7 @@ public class NationRepository(AppDbContext db) : INationRepository
             .Include(n => n.Element)
             .Include(n => n.Characters).ThenInclude(c => c.Element)
             .FirstOrDefaultAsync(n => n.Id == id, cancellationToken);
+
+    public Task<string?> GetNameAsync(int id, CancellationToken cancellationToken) =>
+        db.Nations.Where(n => n.Id == id).Select(n => n.Name).FirstOrDefaultAsync(cancellationToken);
 }
