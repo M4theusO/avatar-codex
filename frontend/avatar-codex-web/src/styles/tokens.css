@@ -1,5 +1,6 @@
-/* Paleta (DA-02) e tipografia (DA-03) — ver docs/ui-ux.md §2 e §3 */
+/* Paleta (DA-02) e tipografia (DA-03) — ver docs/ui-ux.md §2 a §4 */
 :root {
+  /* Neutros */
   --color-bg: #101820;
   --color-surface: #1b2835;
   --color-surface-raised: #243445;
@@ -7,11 +8,55 @@
   --color-text: #e8edf2;
   --color-text-muted: #9fb0c0;
 
+  /* Elementos (acentos; Água/Fogo/Terra nunca como texto pequeno) */
   --color-water: #3186b5;
   --color-fire: #b86b35;
   --color-earth: #638b58;
   --color-air: #d5c7a2;
 
+  /* Feedback (≥ 4,5:1 sobre bg e surface, validado em tokens.test.ts) */
+  --color-success: #5fc28a;
+  --color-danger: #f07167;
+  --color-warning: #f0a35e;
+
+  /* Cor de acento padrão; componentes de conteúdo sobrescrevem com a cor do elemento */
+  --element-color: var(--color-air);
+
+  /* Tipografia */
   --font-display: 'Cinzel', serif;
   --font-body: 'Inter', system-ui, sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.5rem;
+
+  /* Espaçamento (escala de 4px) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Forma e profundidade */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.35);
+  --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.45);
+
+  /* Layout e movimento */
+  --content-max-width: 1200px;
+  --navbar-height: 4rem;
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
 }
