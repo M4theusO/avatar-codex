@@ -11,6 +11,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
-    css: { modules: { classNameStrategy: 'non-scoped' } },
+    // tokens.css é processado para que tokens.test.ts leia os valores reais (?raw).
+    css: { include: [/tokens\.css/], modules: { classNameStrategy: 'non-scoped' } },
   },
 })
