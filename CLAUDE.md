@@ -13,8 +13,15 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 ## Status atual
 
-**Fase 4 — Frontend base** (próxima). Fases 0 a 3 concluídas (`docs/development-phases.md`).
-**Não iniciar a Fase 1 sem confirmação explícita do usuário.**
+**Fase 4 — Frontend base** (próxima, ainda não iniciada). Fases 0 a 3 concluídas e publicadas no GitHub (`docs/development-phases.md`).
+
+**Onde paramos (2026-10-26):**
+- Backend pronto até a API de conteúdo: entidades, migration, seed (37 personagens), endpoints de personagens/nações/elementos/habilidades/séries, tratamento global de erros, 64 testes passando.
+- Frontend ainda é só o setup da Fase 1 (página inicial com status da API).
+- **Decisão pendente antes da Fase 4:** imagens dos personagens. Recomendação apresentada: placeholders próprios (iniciais + cor do elemento) agora e curadoria de imagens reais na Fase 15. Aguardando resposta do usuário.
+- **Não iniciar uma nova fase sem confirmação explícita do usuário.**
+
+**Ambiente local:** sem Docker; PostgreSQL 18 local na porta 5432, banco `avatar_codex`, connection string nos user-secrets do `AvatarCodex.Api`. Testes de banco precisam de `AVATARCODEX_TEST_DB` (connection string do servidor, sem `Database`).
 
 ## Decisões aprovadas
 
