@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { useLogout } from '../../hooks/useLogout'
 import { ButtonLink } from '../common/Button'
 import CharacterAvatar from '../common/CharacterAvatar'
+import XpBar from '../progress/XpBar'
 import styles from './UserMenu.module.css'
 
 /** Área de sessão da navbar: entrar/criar conta ou usuário logado + sair. */
@@ -31,8 +32,16 @@ export default function UserMenu({ onNavigate }: { onNavigate: () => void }) {
     <div className={styles.menu}>
       <Link to="/profile" className={styles.profile} onClick={onNavigate}>
         <CharacterAvatar name={user.username} image={null} color={user.element?.color} size="sm" />
-        <span className={styles.username}>{user.username}</span>
-        <span className="visually-hidden">(meu perfil)</span>
+        <span className={styles.identity}>
+          <span className={styles.username}>
+            {user.username}
+            <span className="visually-hidden"> (meu perfil)</span>
+          </span>
+          <span className={styles.levelRow}>
+            <span className={styles.level}>Nv. {user.level}</span>
+            <XpBar user={user} variant="compact" />
+          </span>
+        </span>
       </Link>
       <NavLink
         to="/favorites"

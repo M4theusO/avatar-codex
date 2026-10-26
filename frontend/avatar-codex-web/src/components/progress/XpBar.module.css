@@ -1,0 +1,63 @@
+.xp {
+  /* DA-02: sem elemento definido, a barra usa o neutro claro (o componente sobrescreve com a cor do elemento) */
+  --xp-color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.level {
+  font-weight: 600;
+}
+
+.amount {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg);
+}
+
+.full .track {
+  height: 0.625rem;
+  border: 1px solid var(--color-border);
+}
+
+.compact .track {
+  height: 0.25rem;
+}
+
+.fill {
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--xp-color);
+  transition: width 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Brilho que atravessa a barra quando o usuário ganha XP */
+.pulse {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
+  transform: translateX(-100%);
+  animation: sweep 900ms ease-out forwards;
+}
+
+@keyframes sweep {
+  to {
+    transform: translateX(100%);
+  }
+}

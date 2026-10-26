@@ -7,6 +7,9 @@ export interface Reward {
   totalXp: number
   level: number
   leveledUp: boolean
+  currentLevelXp: number
+  nextLevelXp: number
+  levelProgress: number
   achievementsUnlocked: { id: number; name: string; icon: string; experienceReward: number }[]
   challengesCompleted: { id: number; title: string; experienceReward: number }[]
 }
@@ -25,6 +28,22 @@ export interface Discovery {
   image: Image | null
   element: ElementSummary | null
   discoveredAt: string
+}
+
+export type ExperienceType =
+  | 'CharacterDiscovered'
+  | 'NationDiscovered'
+  | 'QuizCompleted'
+  | 'QuizPerfect'
+  | 'ChallengeCompleted'
+  | 'AchievementUnlocked'
+
+export interface ExperienceTransaction {
+  id: number
+  amount: number
+  type: ExperienceType
+  description: string
+  createdAt: string
 }
 
 export interface UserStatistics {

@@ -10,6 +10,10 @@ export interface User {
   element: ElementSummary | null
   level: number
   experiencePoints: number
+  /** XP mínimo do nível atual e do próximo, e a porcentagem da barra: tudo calculado no backend. */
+  currentLevelXp: number
+  nextLevelXp: number
+  levelProgress: number
   createdAt: string
 }
 

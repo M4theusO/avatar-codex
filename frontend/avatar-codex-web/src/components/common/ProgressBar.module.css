@@ -8,7 +8,7 @@
 .fill {
   height: 100%;
   border-radius: inherit;
-  /* DA-02: sem elemento definido, o progresso usa o neutro claro */
-  background-color: var(--element-color, var(--color-text));
+  /* Acento do contexto (cor do elemento ou, por padrão, o Ar dos tokens) */
+  background-color: var(--element-color);
   transition: width var(--transition-base);
 }

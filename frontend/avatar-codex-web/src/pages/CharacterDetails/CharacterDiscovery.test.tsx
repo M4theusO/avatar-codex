@@ -13,6 +13,9 @@ const reward = {
   totalXp: 110,
   level: 2,
   leveledUp: true,
+  currentLevelXp: 100,
+  nextLevelXp: 250,
+  levelProgress: 6,
   achievementsUnlocked: [],
   challengesCompleted: [],
 }
@@ -28,7 +31,9 @@ describe('descoberta (RN-12)', () => {
     expect(
       await screen.findByText('✨ Nova descoberta — Você descobriu Zuko! +10 XP'),
     ).toBeInTheDocument()
-    expect(screen.getByText('🎉 Novo nível! Você alcançou o nível 2.')).toBeInTheDocument()
+    expect(screen.getByRole('dialog', { name: 'Novo nível!' })).toHaveTextContent(
+      'Você alcançou o nível 2.',
+    )
 
     // O refetch depois da descoberta não dispara outra chamada.
     await waitFor(() => expect(getCharacter).toHaveBeenCalledTimes(2))
