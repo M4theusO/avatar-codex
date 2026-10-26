@@ -1,0 +1,117 @@
+[
+  {
+    "name": "Estado Avatar",
+    "element": null,
+    "description": "Estado em que o Avatar canaliza o poder e o conhecimento de todas as suas vidas passadas."
+  },
+  {
+    "name": "Dobra de energia",
+    "element": null,
+    "description": "Dobra da energia vital de uma pessoa, capaz de retirar ou restaurar a capacidade de dobrar."
+  },
+  {
+    "name": "Projeção espiritual",
+    "element": null,
+    "description": "Capacidade de projetar o próprio espírito para fora do corpo e viajar até outros lugares."
+  },
+  {
+    "name": "Bloqueio de chi",
+    "element": null,
+    "description": "Golpes precisos em pontos de pressão que paralisam temporariamente os membros e a dobra do oponente."
+  },
+  {
+    "name": "Combate com espadas",
+    "element": null,
+    "description": "Domínio de espadas em combate, seja com lâmina única, espadas duplas ou espadas de gancho."
+  },
+  {
+    "name": "Bumerangue",
+    "element": null,
+    "description": "Uso preciso do bumerangue como arma de longo alcance."
+  },
+  {
+    "name": "Arremesso de armas",
+    "element": null,
+    "description": "Arremesso de facas, dardos e lâminas escondidas com precisão quase perfeita."
+  },
+  {
+    "name": "Acrobacia",
+    "element": null,
+    "description": "Agilidade e flexibilidade extremas para esquivar e se movimentar em combate."
+  },
+  {
+    "name": "Combate dos Guerreiros Kyoshi",
+    "element": null,
+    "description": "Estilo de luta com leques e armaduras, que usa a força do oponente contra ele."
+  },
+  {
+    "name": "Esfera de ar",
+    "element": "Ar",
+    "description": "Bola de ar giratória usada como meio de transporte rápido."
+  },
+  {
+    "name": "Planador",
+    "element": "Ar",
+    "description": "Voo com o planador tradicional dos Nômades do Ar, sustentado por correntes de ar."
+  },
+  {
+    "name": "Tornado",
+    "element": "Ar",
+    "description": "Criação de redemoinhos e tornados para defesa e ataque."
+  },
+  {
+    "name": "Chicote d'água",
+    "element": "Água",
+    "description": "Técnica básica e versátil que transforma a água em um chicote."
+  },
+  {
+    "name": "Polvo d'água",
+    "element": "Água",
+    "description": "Forma defensiva que envolve o dobrador em vários tentáculos de água."
+  },
+  {
+    "name": "Criação de gelo",
+    "element": "Água",
+    "description": "Congelamento da água para criar muralhas, lâminas e prisões de gelo."
+  },
+  {
+    "name": "Sentido sísmico",
+    "element": "Terra",
+    "description": "Percepção das vibrações do solo para enxergar o ambiente ao redor."
+  },
+  {
+    "name": "Armadura de terra",
+    "element": "Terra",
+    "description": "Revestimento do corpo com rocha ou cristal para proteção."
+  },
+  {
+    "name": "Muralha de terra",
+    "element": "Terra",
+    "description": "Elevação de paredes e colunas de pedra para defesa e controle do campo de batalha."
+  },
+  {
+    "name": "Rajada de fogo",
+    "element": "Fogo",
+    "description": "Ataque direto com jatos e bolas de fogo, base da dobra de fogo."
+  },
+  {
+    "name": "Propulsão de fogo",
+    "element": "Fogo",
+    "description": "Uso de jatos de fogo nos pés e mãos para se impulsionar ou voar."
+  },
+  {
+    "name": "Fogo azul",
+    "element": "Fogo",
+    "description": "Chamas azuis, mais quentes e intensas que o fogo comum."
+  },
+  {
+    "name": "Redirecionamento de relâmpago",
+    "element": "Fogo",
+    "description": "Técnica criada por Iroh que conduz o relâmpago pelo corpo e o devolve para longe do coração."
+  },
+  {
+    "name": "Dança do Dragão",
+    "element": "Fogo",
+    "description": "Forma ancestral de dobra de fogo ensinada pelos dragões Ran e Shaw."
+  }
+]

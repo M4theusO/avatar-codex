@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Tribos da Água",
+    "element": "Água",
+    "description": "Povos dos polos Norte e Sul, organizados em tribos. Vivem em harmonia com o oceano e com a Lua, e valorizam a comunidade e a tradição."
+  },
+  {
+    "name": "Reino da Terra",
+    "element": "Terra",
+    "description": "A maior e mais diversa das nações, com grandes cidades como Ba Sing Se e Omashu. Conhecido pela resistência e pela diversidade de seus povos."
+  },
+  {
+    "name": "Nação do Fogo",
+    "element": "Fogo",
+    "description": "Nação insular governada pelo Senhor do Fogo. Iniciou a Guerra dos Cem Anos e, depois dela, buscou reconstruir a paz e sua própria identidade."
+  },
+  {
+    "name": "Nômades do Ar",
+    "element": "Ar",
+    "description": "Monges e monjas que viviam em templos nas montanhas, guiados pelo desapego e pela paz. Foram quase extintos no início da Guerra dos Cem Anos."
+  },
+  {
+    "name": "República Unida",
+    "element": null,
+    "description": "Nação fundada por Aang e Zuko após a guerra, onde pessoas de todas as nações convivem. Sua capital é Cidade República."
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Cura",
+    "element": "Água",
+    "description": "Uso da água para canalizar energia e curar ferimentos. Tradicionalmente praticada pelas curandeiras da Tribo da Água do Norte."
+  },
+  {
+    "name": "Dobra de sangue",
+    "element": "Água",
+    "description": "Controle da água presente no corpo de outro ser vivo. Técnica perigosa, normalmente dependente da lua cheia, e proibida após os eventos da Guerra dos Cem Anos."
+  },
+  {
+    "name": "Dobra de plantas",
+    "element": "Água",
+    "description": "Controle da água contida em plantas, praticada pelos habitantes do pântano do Reino da Terra."
+  },
+  {
+    "name": "Dobra de metal",
+    "element": "Terra",
+    "description": "Controle das impurezas de terra presentes no metal. Criada por Toph Beifong e base da força policial de Cidade República."
+  },
+  {
+    "name": "Dobra de lava",
+    "element": "Terra",
+    "description": "Capacidade raríssima de aquecer a terra até transformá-la em lava e de solidificá-la novamente."
+  },
+  {
+    "name": "Dobra de areia",
+    "element": "Terra",
+    "description": "Variação da dobra de terra adaptada à areia fina dos desertos, usada para navegar e lutar no deserto Si Wong."
+  },
+  {
+    "name": "Geração de relâmpago",
+    "element": "Fogo",
+    "description": "Separação das energias yin e yang para criar relâmpagos. Exige calma e precisão; é chamada de \"fogo frio\"."
+  },
+  {
+    "name": "Combustão",
+    "element": "Fogo",
+    "description": "Criação de explosões concentradas com a mente, geralmente canalizadas por um terceiro olho. Habilidade muito rara."
+  },
+  {
+    "name": "Voo",
+    "element": "Ar",
+    "description": "Capacidade de voar sem planador ou apoio, alcançada ao abandonar todos os apegos terrenos."
+  }
+]
