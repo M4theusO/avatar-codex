@@ -59,6 +59,10 @@ public interface IUserCollectionRepository
         Guid userId, int page, int pageSize, CancellationToken cancellationToken);
 
     Task<UserStatisticsDto> GetStatisticsAsync(Guid userId, CancellationToken cancellationToken);
+
+    /// <summary>Movimentações de XP, mais recentes primeiro.</summary>
+    Task<(IReadOnlyList<ExperienceTransaction> Items, int TotalItems)> GetExperienceAsync(
+        Guid userId, int page, int pageSize, CancellationToken cancellationToken);
 }
 
 public static class UserCollectionRepositoryExtensions

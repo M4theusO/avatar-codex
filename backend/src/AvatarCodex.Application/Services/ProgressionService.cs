@@ -39,7 +39,16 @@ public class ProgressionService(IProgressionRepository repository, TimeProvider 
             return null;
 
         var previousLevel = LevelCalculator.GetLevel(totalXp.Value - amount);
-        var level = LevelCalculator.GetLevel(totalXp.Value);
-        return new RewardResult(amount, totalXp.Value, level, level > previousLevel, [], []);
+        var progress = LevelCalculator.GetProgress(totalXp.Value);
+        return new RewardResult(
+            amount,
+            totalXp.Value,
+            progress.Level,
+            progress.Level > previousLevel,
+            progress.CurrentLevelXp,
+            progress.NextLevelXp,
+            progress.ProgressPercent,
+            [],
+            []);
     }
 }

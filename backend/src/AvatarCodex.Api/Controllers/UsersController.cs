@@ -32,6 +32,14 @@ public class UsersController(
         [FromQuery] PageQueryParameters query, CancellationToken cancellationToken) =>
         Ok(await favorites.GetPagedAsync(User.GetUserId(), query, cancellationToken));
 
+    /// <summary>Histórico de XP (cada movimentação), mais recente primeiro.</summary>
+    [HttpGet("experience")]
+    [ProducesResponseType<PagedResult<ExperienceTransactionDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PagedResult<ExperienceTransactionDto>>> GetExperience(
+        [FromQuery] PageQueryParameters query, CancellationToken cancellationToken) =>
+        Ok(await users.GetExperienceHistoryAsync(User.GetUserId(), query, cancellationToken));
+
     /// <summary>Descobertas de personagens e nações, mais recentes primeiro.</summary>
     [HttpGet("discoveries")]
     [ProducesResponseType<PagedResult<DiscoveryDto>>(StatusCodes.Status200OK)]

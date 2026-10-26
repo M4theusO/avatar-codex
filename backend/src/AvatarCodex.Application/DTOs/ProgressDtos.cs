@@ -1,3 +1,5 @@
+using AvatarCodex.Domain.Enums;
+
 namespace AvatarCodex.Application.DTOs;
 
 public record AchievementRewardDto(int Id, string Name, string Icon, int ExperienceReward);
@@ -10,8 +12,19 @@ public record RewardResult(
     int TotalXp,
     int Level,
     bool LeveledUp,
+    int CurrentLevelXp,
+    int NextLevelXp,
+    int LevelProgress,
     IReadOnlyList<AchievementRewardDto> AchievementsUnlocked,
     IReadOnlyList<ChallengeRewardDto> ChallengesCompleted);
+
+/// <summary>Item do histórico de XP (RF-XP-01: cada movimentação é auditável).</summary>
+public record ExperienceTransactionDto(
+    long Id,
+    int Amount,
+    ExperienceType Type,
+    string Description,
+    DateTimeOffset CreatedAt);
 
 /// <summary>Resposta de POST .../discovery. Repetida ou simultânea: IsNew = false e Reward = null.</summary>
 public record DiscoveryResultDto(bool IsNew, RewardResult? Reward);

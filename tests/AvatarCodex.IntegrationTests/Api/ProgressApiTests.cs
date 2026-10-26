@@ -134,6 +134,7 @@ public class ProgressApiTests(ContentApiFixture api)
     [InlineData("GET", "/api/users/me/favorites")]
     [InlineData("GET", "/api/users/me/discoveries")]
     [InlineData("GET", "/api/users/me/statistics")]
+    [InlineData("GET", "/api/users/me/experience")]
     public async Task UserEndpoints_WithoutToken_ReturnUnauthorized(string method, string url)
     {
         api.Database.SkipIfUnavailable();
@@ -198,6 +199,31 @@ public class ProgressApiTests(ContentApiFixture api)
         var anonymous = await api.GetJsonAsync<CharacterDetailsDto>($"/api/characters/{zuko}");
         Assert.False(anonymous.IsFavorite);
         Assert.False(anonymous.IsDiscovered);
+    }
+
+    [SkippableFact]
+    public async Task ExperienceHistoryAndLevelProgress_ReflectRewards()
+    {
+        api.Database.SkipIfUnavailable();
+        var (client, auth) = await NewUserClientAsync();
+        Assert.Equal((1, 0, 100, 0), (auth.User.Level, auth.User.CurrentLevelXp, auth.User.NextLevelXp, auth.User.LevelProgress));
+
+        var zuko = await CharacterIdAsync("Zuko");
+        var fireNation = await NationIdAsync("Nação do Fogo");
+        var discovery = await ReadAsync<DiscoveryResultDto>(await client.PostAsync($"/api/characters/{zuko}/discovery", null));
+        await client.PostAsync($"/api/nations/{fireNation}/discovery", null);
+
+        Assert.Equal((10, 0, 100, 10), (discovery.Reward!.TotalXp, discovery.Reward.CurrentLevelXp, discovery.Reward.NextLevelXp, discovery.Reward.LevelProgress));
+
+        var history = await client.GetFromJsonAsync<PagedResult<ExperienceTransactionDto>>(
+            "/api/users/me/experience", ContentApiFixture.JsonOptions);
+        Assert.Equal(2, history!.TotalItems);
+        Assert.Equal(
+            [(ExperienceType.NationDiscovered, "Descobriu Nação do Fogo"), (ExperienceType.CharacterDiscovered, "Descobriu Zuko")],
+            history.Items.Select(t => (t.Type, t.Description)));
+
+        var me = await client.GetFromJsonAsync<UserDto>("/api/auth/me", ContentApiFixture.JsonOptions);
+        Assert.Equal((20, 20), (me!.ExperiencePoints, me.LevelProgress));
     }
 
     [SkippableFact]
