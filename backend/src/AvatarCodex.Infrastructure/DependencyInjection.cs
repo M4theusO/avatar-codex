@@ -13,6 +13,8 @@ public static class DependencyInjection
             ?? throw new InvalidOperationException(
                 "Connection string 'Default' não configurada. Veja a seção 'Variáveis de ambiente' do README.");
 
+        services.AddSingleton(TimeProvider.System);
+
         services.AddDbContext<AppDbContext>(options => options
             .UseNpgsql(connectionString)
             .UseSnakeCaseNamingConvention());
