@@ -28,7 +28,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 1 | Setup | P0 | Repositório, solução .NET (4 projetos + 2 de teste), projeto React/TS/Vite, Docker com PostgreSQL, configuração de ambiente, `.gitignore`, `.env.example`, README inicial | Frontend e backend executando separadamente; API conecta no banco ✅ (2026-10-26) |
 | 2 | Banco e domínio | P0 | Element, BendingSubtype, Nation, Series, Character, Ability e tabelas de junção, User, RefreshToken; configurações EF, DbContext, migrations, seed | Banco sobe do zero com dados de demonstração ✅ (2026-10-26) |
 | 3 | API de conteúdo | P0 | Characters, Nations, Elements, Abilities, Series; busca, filtros, paginação, ordenação; middleware de erros; Swagger | Endpoints funcionando e com testes de integração básicos ✅ (2026-10-26) |
-| 4 | Frontend base | P0 | Tokens/tema (paleta DA-02, fontes Cinzel/Inter DA-03, validação de contraste), layout, navbar, rotas, componentes base, cards, loading/error/empty, responsividade; páginas Home, Characters, CharacterDetails, Nations, Timeline (placeholder) | Navegação completa sobre dados reais, mobile-first; foco visual |
+| 4 | Frontend base | P0 | Tokens/tema (paleta DA-02, fontes Cinzel/Inter DA-03, validação de contraste), layout, navbar, rotas, componentes base, cards, loading/error/empty, responsividade; páginas Home, Characters, CharacterDetails, Nations, Timeline (placeholder) | Navegação completa sobre dados reais, mobile-first; foco visual ✅ (2026-10-26) |
 | 5 | Autenticação | P0 | Cadastro, login, logout, JWT + refresh, recuperação de sessão, rotas protegidas, perfil básico | Usuário real cria conta, loga, recarrega a página e continua logado |
 | 6 | Favoritos e descoberta | P0/P1 | Favoritos, descoberta de personagens e nações, histórico de descobertas, XP inicial | Experiência personalizada; descoberta de personagem e de nação (+10 XP, DA-01) registrada só após o conteúdo ser exibido, sem XP duplicado mesmo com requisições concorrentes (testado) |
 | 7 | XP e níveis | P1 | ExperienceTransaction, ProgressionService, LevelCalculator, XpBar, notificações de nível, `RewardResult` | Regras centralizadas no backend, com testes unitários |
@@ -138,3 +138,23 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - Personagens sem nação/elemento ficam sempre no fim da ordenação por esses campos, e o desempate por id garante paginação estável.
 - `%` e `_` na busca são tratados como texto, não como curinga.
 - Os campos `isFavorite`/`isDiscovered` dos endpoints públicos ficam para a Fase 6.
+
+## Fase 4 — Frontend base (concluída)
+
+- [x] Tokens completos: paleta DA-02, cores de feedback (`success`/`danger`/`warning`), escala tipográfica, espaçamento, raios, sombras, transições
+- [x] Validação automática de contraste (`tokens.test.ts` lê os valores reais de `tokens.css`)
+- [x] Layout com navbar fixa (menu hambúrguer no mobile), skip link, rodapé com aviso de direitos autorais
+- [x] Rotas com React Router (data router) e code splitting por página; Home no bundle principal
+- [x] Componentes base: `Button`/`ButtonLink`, `Badge`/`ElementBadge`, `ElementIcon`, `CharacterAvatar`, `SearchInput`, `Select`, `Pagination`, `Skeleton`, `EmptyState`, `ErrorState`, `PageHeader`, `Section`, `BackLink`
+- [x] Páginas: Home (hero, Avatares, elementos), Characters (busca com debounce, filtros, ordenação, paginação, tudo na URL), CharacterDetails, Nations, NationDetails, Timeline (placeholder), NotFound
+- [x] Loading com skeletons, empty state com ação, error state com "Tentar novamente", 404 de conteúdo
+- [x] Placeholders de personagem com iniciais e cor do elemento (DA-04)
+- [x] Testes: 43 (contraste, parse da URL, paginação, iniciais, listagem, detalhe, navegação/404)
+- [x] Verificação visual em 1366px e 390px com dados reais
+
+**Ajustes em relação ao planejado:**
+- A cor de acento dos componentes vem do campo `color` do elemento retornado pela API (`--element-color` inline), em vez de `data-element`: o conteúdo continua no banco e não há mapeamento duplicado no frontend.
+- Filtros no mobile/tablet ficam num painel recolhível (botão "Filtros" com `aria-expanded`) em vez de drawer com trap de foco; no desktop viram sidebar. O drawer pode entrar na Fase 15 se fizer falta.
+- No mobile o card de personagem vira item de lista (avatar ao lado do texto), mais compacto que o grid de 2 colunas.
+- O status da API saiu da Home: cada seção trata o próprio erro.
+- MSW não foi adotado: os testes mockam `contentService` com `vi.mock`, o que é suficiente para o volume atual.

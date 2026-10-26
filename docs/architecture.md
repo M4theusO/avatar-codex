@@ -150,29 +150,33 @@ Um `IExceptionHandler` (`Api/Middleware/GlobalExceptionHandler.cs`) converte exc
 src/
 ├── assets/
 ├── components/
-│   ├── common/        # Button, Card, Badge, Modal, Toast, Spinner, Skeleton, EmptyState, ErrorState, ProgressBar…
-│   ├── layout/        # AppLayout, Navbar, Sidebar, Footer, PageHeader
-│   ├── character/     # CharacterCard, CharacterGrid, CharacterFilters, FavoriteButton…
+│   ├── common/        # Button, Badge, CharacterAvatar, Field, Pagination, Skeleton, StatusMessage, PageHeader, Section…
+│   ├── layout/        # AppLayout (skip link, rodapé), Navbar
+│   ├── characters/    # CharacterCard, CharacterGrid, CharacterFilters, CharacterHero, AbilityList, RelationshipList
+│   ├── nations/       # NationCard
 │   ├── quiz/
 │   ├── achievements/
 │   └── profile/
 ├── pages/             # Home, Login, Register, Dashboard, Characters, CharacterDetails, Nations, NationDetails,
 │                      # Timeline, Compare, Quizzes, QuizPlay, QuizHistory, Profile, Favorites, Achievements,
 │                      # Challenges, NotFound
-├── services/          # api.ts (Axios + interceptors), authService, characterService, quizService, userService…
-├── hooks/             # useAuth, useCharacters, useRewardNotifications…
+├── services/          # api.ts (Axios + interceptors), contentService, authService, quizService…
+├── hooks/             # useContent (queries de conteúdo), useCharacterQueryParams (estado na URL), useAuth…
 ├── contexts/          # AuthContext, ToastContext
+├── lib/               # queryClient (padrões do TanStack Query)
 ├── types/             # tipos espelhando os DTOs da API
-├── routes/            # definição de rotas, PrivateRoute
 ├── styles/            # tokens.css, global.css
-├── utils/
+├── test/              # setup, renderRoute (app completo em memória), fixtures
+├── utils/             # parse da query de personagens, rótulos dos enums, paginação, contraste
+├── router.tsx         # rotas (data router) com lazy loading
 └── App.tsx
 ```
 
 - **Axios** com interceptors: injeta o access token e, quando recebe 401, tenta `refresh` uma vez e repete a requisição.
 - **TanStack Query** para cache, deduplicação de chamadas e estados de loading/erro. *(Decisão D3.)*
 - **CSS Modules + CSS custom properties** (design tokens) para estilização, e **lucide-react** para ícones. *(Decisão D4.)*
-- Rotas carregadas com `React.lazy` (code splitting).
+- Rotas carregadas sob demanda com `lazy` do React Router (code splitting); a Home fica no bundle principal.
+- Estado de listagem (busca, filtros, ordenação, página) vive na URL: é compartilhável e funciona com "voltar". Valores inválidos na URL são descartados antes de chegar à API.
 - Componentes só cuidam da interface; regras ficam no backend e a orquestração em hooks/services.
 
 ## 5. Configuração e ambiente
