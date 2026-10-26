@@ -35,7 +35,11 @@ Neutros derivados do fundo oficial, para completar a interface.
 | `--color-border` | `#2E4052` | bordas e divisores | — |
 | `--color-text` | `#E8EDF2` | texto principal | 12,7:1 |
 | `--color-text-muted` | `#9FB0C0` | texto secundário | 6,7:1 |
-| `--color-success` / `--color-danger` / `--color-warning` | a definir na Fase 4 | feedback | ≥ 4,5:1 |
+| `--color-success` | `#5FC28A` | feedback positivo | ≥ 4,5:1 |
+| `--color-danger` | `#F07167` | erros | ≥ 4,5:1 |
+| `--color-warning` | `#F0A35E` | avisos | ≥ 4,5:1 |
+
+> Todos os pares texto/fundo são verificados automaticamente por `src/styles/tokens.test.ts`.
 
 > O antigo acento dourado (`#E0B354`) **foi removido**: ficaria visualmente próximo do Ar (`#D5C7A2`) e criaria um quinto acento competindo com os elementos. Botões primários usam fundo neutro claro (`--color-text`) com texto em `--color-bg`. A barra de XP usa a cor do elemento do usuário, ou o neutro claro se ele ainda não tiver elemento.
 
@@ -56,7 +60,8 @@ Consequências:
 - **Ar** pode ser usada como texto em qualquer tamanho.
 - Badges de elemento: fundo com a cor em baixa opacidade (~15–20%), borda na cor sólida e **texto em `--color-text`**, sempre acompanhado de ícone/nome do elemento (nunca só cor).
 - Texto branco sobre as cores sólidas também fica abaixo de 4,5:1 (≈ 3,9–4,0:1), por isso evitar botões com fundo sólido de elemento e texto pequeno.
-- Os componentes recebem o elemento via `data-element="fire"`, que define `--element-color`. Cards, badges e bordas se adaptam sem lógica extra.
+- Os componentes recebem a cor do elemento que vem da API (campo `color`) na variável `--element-color`. Cards, badges e bordas se adaptam sem lógica extra. Sem elemento (não dobradores), o acento é o neutro `--color-text-muted`.
+- **Imagens de personagem (DA-04):** até a curadoria da Fase 15, o `CharacterAvatar` mostra as iniciais sobre um círculo com borda e brilho na cor do elemento. Quando houver `image`, a imagem real substitui o placeholder sem mudança nas páginas.
 
 ## 3. Tipografia (DA-03 — aprovada)
 
@@ -133,7 +138,7 @@ Zuko · Toph · Korra         [card]
 Também mostra recomendações (personagens ainda não descobertos) e favoritos.
 
 ### Listagem de personagens
-Grid de `CharacterCard` (imagem, nome, badge de elemento, nação, indicador "descoberto", botão de favorito). Busca com debounce, filtros (nação, elemento, tipo, status, série), ordenação e paginação numérica sincronizada com a URL. Em mobile, os filtros ficam em um drawer.
+Grid de `CharacterCard` (imagem, nome, badge de elemento, nação, indicador "descoberto", botão de favorito). Busca com debounce, filtros (nação, elemento, tipo, status, série), ordenação e paginação numérica sincronizada com a URL. Em mobile/tablet, os filtros ficam num painel recolhível aberto pelo botão "Filtros" e os cards viram itens de lista; a partir de 1024px, os filtros ficam numa sidebar fixa.
 
 ### Detalhe do personagem
 Imagem grande sobre um gradiente atmosférico sutil na cor do elemento, nome, apelidos, nação, elemento, subtipos de dobra, descrição, biografia, habilidades (cards), aparições/séries, relações e relacionados. Botão `☆ Favoritar` que vira `★ Favoritado` (atualização otimista com rollback em erro). Na primeira visita de um usuário logado aparece o toast de descoberta (registrada só depois que o conteúdo principal foi exibido; ver RN-12).
