@@ -30,7 +30,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 3 | API de conteúdo | P0 | Characters, Nations, Elements, Abilities, Series; busca, filtros, paginação, ordenação; middleware de erros; Swagger | Endpoints funcionando e com testes de integração básicos ✅ (2026-10-26) |
 | 4 | Frontend base | P0 | Tokens/tema (paleta DA-02, fontes Cinzel/Inter DA-03, validação de contraste), layout, navbar, rotas, componentes base, cards, loading/error/empty, responsividade; páginas Home, Characters, CharacterDetails, Nations, Timeline (placeholder) | Navegação completa sobre dados reais, mobile-first; foco visual ✅ (2026-10-26) |
 | 5 | Autenticação | P0 | Cadastro, login, logout, JWT + refresh, recuperação de sessão, rotas protegidas, perfil básico | Usuário real cria conta, loga, recarrega a página e continua logado ✅ (2026-10-26) |
-| 6 | Favoritos e descoberta | P0/P1 | Favoritos, descoberta de personagens e nações, histórico de descobertas, XP inicial | Experiência personalizada; descoberta de personagem e de nação (+10 XP, DA-01) registrada só após o conteúdo ser exibido, sem XP duplicado mesmo com requisições concorrentes (testado) |
+| 6 | Favoritos e descoberta | P0/P1 | Favoritos, descoberta de personagens e nações, histórico de descobertas, XP inicial | Experiência personalizada; descoberta de personagem e de nação (+10 XP, DA-01) registrada só após o conteúdo ser exibido, sem XP duplicado mesmo com requisições concorrentes (testado) ✅ (2026-10-26) |
 | 7 | XP e níveis | P1 | ExperienceTransaction, ProgressionService, LevelCalculator, XpBar, notificações de nível, `RewardResult` | Regras centralizadas no backend, com testes unitários |
 | 8 | Conquistas | P1 | Achievement, UserAchievement, regras, desbloqueio, página de conquistas, notificações | Conquistas desbloqueiam automaticamente e uma única vez |
 | 9 | Quiz | P1 | Quizzes, perguntas, opções, submissão, validação, resultado, XP, histórico; UI atraente | `isCorrect` nunca exposto antes da submissão; testes cobrindo isso |
@@ -180,3 +180,20 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - O frontend **não repete as regras de validação**: os erros por campo vêm da resposta 400 da API (regra "não duplicar lógica"). Os textos de ajuda dos campos só descrevem o formato esperado.
 - Destino padrão depois do login é `/profile`, até o Dashboard existir (Fase 10).
 - O "Primeiro passo" (conquista de cadastro) fica para a Fase 8.
+
+## Fase 6 — Favoritos e descoberta (concluída)
+
+- [x] Entidades `UserCharacterDiscovery`, `UserNationDiscovery`, `UserFavoriteCharacter`, `ExperienceTransaction` (+ enum `ExperienceType`) e migration `AddFavoritesDiscoveriesAndExperience`
+- [x] `ProgressionService` (XP idempotente + subida de nível) e `ExperienceRewards` (tabela oficial de XP em um só lugar)
+- [x] `POST /api/characters/{id}/discovery` e `POST /api/nations/{id}/discovery` (+10 XP só na 1ª vez, DA-01), `POST/DELETE /api/characters/{id}/favorite`, `GET /api/users/me/favorites|discoveries|statistics`
+- [x] `isFavorite`/`isDiscovered` na listagem, no detalhe do personagem e nos personagens da nação (token opcional)
+- [x] Frontend: botão de favoritar otimista com rollback (cards e detalhe), selo "Descoberto", descoberta enviada uma vez por página e só depois do conteúdo exibido, toasts de descoberta/nível com o `reward` da API, página `/favorites`, perfil com exploração (x / total com barras) e descobertas recentes, atalho de favoritos na navbar
+- [x] Testes: backend 150 (81 unitários + 69 de integração), incluindo **10 descobertas simultâneas do mesmo personagem → 1 XP** e **10 descobertas diferentes em paralelo → 100 XP**; frontend 79
+- [x] Validado num Chrome real: 1ª visita com toast e +10 XP, reload sem toast (uma chamada por visita, mesmo em StrictMode), favoritar, nação, favoritos, perfil com 20 XP e 1/37 · 1/5
+
+**Ajustes em relação ao planejado:**
+- O `ProgressionService` entrou já nesta fase (a Fase 7 completa com XpBar, modal de nível e histórico de XP); o toast de "Novo nível" é provisório até o modal da Fase 7.
+- `GET /api/users/me/statistics` saiu parcial (descobertas e favoritos); quizzes e conquistas entram com as fases deles.
+- O histórico de descobertas junta personagens e nações em memória antes de paginar: são dezenas de itens por usuário, e isso evita um UNION com tipos owned. Rever se o conteúdo crescer muito.
+- Favoritos ficam como ícone (estrela) na área do usuário da navbar, para não apertar a navbar em 1024px.
+- Nos testes de frontend, a espera padrão do Testing Library subiu para 3s: com a suíte inteira em paralelo, o primeiro carregamento lazy de uma página podia passar de 1s.
