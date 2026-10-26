@@ -84,7 +84,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - [x] CORS para `http://localhost:5173` com credenciais
 - [x] Swagger em Development (`/swagger`)
 - [x] `dotnet build` (0 avisos) e `dotnet test` passando
-- [ ] Conexão real com o banco validada *(pendente: precisa da connection string do ambiente do usuário)*
+- [x] Conexão real com o banco validada (PostgreSQL 18 local, `/api/health` → 200 Healthy)
 
 **Frontend**
 - [x] `frontend/avatar-codex-web` com Vite 8 + React 19 + TypeScript (strict)
@@ -105,4 +105,4 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - **Pastas vazias** da estrutura (`components/`, `hooks/`, `Controllers/`…) serão criadas quando receberem o primeiro arquivo, porque o Git não versiona pastas vazias.
 - **Portas:** API `5080` (http) / `7080` (https), frontend `5173`, PostgreSQL via Docker `5433`.
 
-**Resultado esperado:** frontend e backend executando separadamente, com a API conectada ao PostgreSQL. ✅ Executando separadamente; conexão real com o banco aguardando a configuração local.
+**Resultado esperado:** frontend e backend executando separadamente, com a API conectada ao PostgreSQL. ✅ Concluído.
