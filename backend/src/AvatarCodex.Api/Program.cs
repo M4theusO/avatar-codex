@@ -1,11 +1,13 @@
 using AvatarCodex.Api.Extensions;
+using AvatarCodex.Application;
 using AvatarCodex.Infrastructure;
 using AvatarCodex.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddApiControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddFrontendCors(builder.Configuration);
 
@@ -15,6 +17,8 @@ if (app.Configuration.GetValue<bool>("Database:MigrateAndSeedOnStartup"))
 {
     await app.Services.InitializeDatabaseAsync();
 }
+
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
