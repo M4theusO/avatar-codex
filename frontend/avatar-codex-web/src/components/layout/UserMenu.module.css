@@ -28,7 +28,7 @@
   white-space: nowrap;
 }
 
-.logout {
+.iconButton {
   display: grid;
   flex-shrink: 0;
   place-items: center;
@@ -44,7 +44,8 @@
     border-color var(--transition-fast);
 }
 
-.logout:hover {
+.iconButton:hover,
+.iconActive {
   border-color: var(--color-text-muted);
   color: var(--color-text);
 }

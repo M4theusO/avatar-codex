@@ -1,5 +1,5 @@
-import { LogOut } from 'lucide-react'
-import { Link } from 'react-router'
+import { LogOut, Star } from 'lucide-react'
+import { Link, NavLink } from 'react-router'
 import { useAuth } from '../../hooks/useAuth'
 import { useLogout } from '../../hooks/useLogout'
 import { ButtonLink } from '../common/Button'
@@ -34,9 +34,17 @@ export default function UserMenu({ onNavigate }: { onNavigate: () => void }) {
         <span className={styles.username}>{user.username}</span>
         <span className="visually-hidden">(meu perfil)</span>
       </Link>
+      <NavLink
+        to="/favorites"
+        className={({ isActive }) => `${styles.iconButton} ${isActive ? styles.iconActive : ''}`}
+        onClick={onNavigate}
+        aria-label="Favoritos"
+      >
+        <Star size={18} aria-hidden="true" />
+      </NavLink>
       <button
         type="button"
-        className={styles.logout}
+        className={styles.iconButton}
         onClick={() => {
           onNavigate()
           void logout()

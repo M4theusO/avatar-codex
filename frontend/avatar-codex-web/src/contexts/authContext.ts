@@ -9,6 +9,8 @@ export interface AuthContextValue {
   login: (data: LoginData) => Promise<User>
   register: (data: RegisterData) => Promise<User>
   logout: () => Promise<void>
+  /** Atualiza o usuário em memória com dados vindos da API (ex.: XP e nível de um `reward`). */
+  updateUser: (changes: Partial<User>) => void
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null)

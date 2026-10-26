@@ -36,6 +36,13 @@
   --toast-color: var(--color-danger);
 }
 
+.reward {
+  --toast-color: var(--color-air);
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--color-air) 14%, transparent), transparent 70%),
+    var(--color-surface-raised);
+}
+
 .icon {
   flex-shrink: 0;
   color: var(--toast-color);

@@ -39,7 +39,10 @@ export const routes: RouteObject[] = [
       },
       {
         element: <RequireAuth />,
-        children: [{ path: 'profile', lazy: page(() => import('./pages/Profile/ProfilePage')) }],
+        children: [
+          { path: 'profile', lazy: page(() => import('./pages/Profile/ProfilePage')) },
+          { path: 'favorites', lazy: page(() => import('./pages/Favorites/FavoritesPage')) },
+        ],
       },
       { path: '*', lazy: page(() => import('./pages/NotFound/NotFoundPage')) },
     ],
