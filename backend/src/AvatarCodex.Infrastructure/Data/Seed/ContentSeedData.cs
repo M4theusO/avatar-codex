@@ -14,6 +14,15 @@ public record SeriesSeed(string Code, string Name);
 
 public record AbilitySeed(string Name, string? Element, string Description);
 
+public record AchievementSeed(
+    string Code,
+    string Name,
+    string Description,
+    string Icon,
+    AchievementRequirementType RequirementType,
+    int RequirementValue,
+    int ExperienceReward);
+
 public record RelationshipSeed(string Related, RelationshipType Type, string? Description);
 
 public record CharacterSeed(
@@ -49,6 +58,7 @@ public class ContentSeedData
     public required List<SeriesSeed> Series { get; init; }
     public required List<AbilitySeed> Abilities { get; init; }
     public required List<CharacterSeed> Characters { get; init; }
+    public required List<AchievementSeed> Achievements { get; init; }
 
     public static ContentSeedData Load() => new()
     {
@@ -57,7 +67,8 @@ public class ContentSeedData
         Nations = Read<NationSeed>("nations.json"),
         Series = Read<SeriesSeed>("series.json"),
         Abilities = Read<AbilitySeed>("abilities.json"),
-        Characters = Read<CharacterSeed>("characters.json")
+        Characters = Read<CharacterSeed>("characters.json"),
+        Achievements = Read<AchievementSeed>("achievements.json")
     };
 
     /// <summary>Retorna os problemas encontrados (nomes duplicados ou referências inexistentes).</summary>
@@ -107,6 +118,22 @@ public class ContentSeedData
                 errors.Add($"{owner} é Avatar, mas não está marcado como dobrador.");
             if (character.IsBender != (character.Element is not null))
                 errors.Add($"{owner} deve ter elemento se, e somente se, for dobrador.");
+        }
+
+        UniqueNames(Achievements.Select(a => a.Code), "conquista (código)", errors);
+        foreach (var achievement in Achievements)
+        {
+            var owner = $"Conquista '{achievement.Code}'";
+            if (achievement.ExperienceReward <= 0)
+                errors.Add($"{owner} deve dar XP (experienceReward > 0).");
+
+            // Nesses dois tipos a meta é fixa (conta criada) ou vem do conteúdo (todas as nações).
+            var usesValue = achievement.RequirementType is not (
+                AchievementRequirementType.AccountCreated or AchievementRequirementType.AllNationsDiscovered);
+            if (usesValue && achievement.RequirementValue <= 0)
+                errors.Add($"{owner} precisa de requirementValue > 0.");
+            if (!usesValue && achievement.RequirementValue != 0)
+                errors.Add($"{owner} não usa requirementValue (deve ser 0).");
         }
 
         return errors;

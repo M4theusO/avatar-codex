@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace AvatarCodex.Application.Services;
 
-/// <summary>Dados agregados do usuário autenticado. Quizzes e conquistas entram nas próximas fases.</summary>
+/// <summary>Dados agregados do usuário autenticado. Quizzes entram na Fase 9.</summary>
 public class UserService(IUserCollectionRepository collection, IValidator<PageQueryParameters> pageValidator)
 {
     public Task<UserStatisticsDto> GetStatisticsAsync(Guid userId, CancellationToken cancellationToken = default) =>

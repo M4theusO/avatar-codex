@@ -48,7 +48,9 @@ public record UserStatisticsDto(
     int TotalCharacters,
     int DiscoveredNations,
     int TotalNations,
-    int Favorites);
+    int Favorites,
+    int UnlockedAchievements,
+    int TotalAchievements);
 
 /// <summary>Paginação simples das listas do usuário (?page=1&amp;pageSize=12).</summary>
 public class PageQueryParameters

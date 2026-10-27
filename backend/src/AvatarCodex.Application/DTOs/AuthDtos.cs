@@ -21,8 +21,11 @@ public record UserDto(
     int LevelProgress,
     DateTimeOffset CreatedAt);
 
-/// <summary>Corpo das respostas de login, cadastro e refresh.</summary>
-public record AuthResponse(string AccessToken, int ExpiresIn, UserDto User);
+/// <summary>
+/// Corpo das respostas de login, cadastro e refresh. Reward só vem no cadastro, com a conquista
+/// "Primeiro passo"; nas demais é null.
+/// </summary>
+public record AuthResponse(string AccessToken, int ExpiresIn, UserDto User, RewardResult? Reward = null);
 
 /// <summary>
 /// Resultado interno da autenticação. O refresh token só sai daqui para o cookie httpOnly,

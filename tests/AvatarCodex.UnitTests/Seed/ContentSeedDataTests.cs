@@ -16,6 +16,7 @@ public class ContentSeedDataTests
         Assert.NotEmpty(data.Series);
         Assert.NotEmpty(data.Abilities);
         Assert.NotEmpty(data.Characters);
+        Assert.Contains(data.Achievements, a => a.Code == "FIRST_STEP");
     }
 
     [Fact]
@@ -60,6 +61,27 @@ public class ContentSeedDataTests
         Assert.Contains(errors, e => e.Contains("consigo mesmo"));
     }
 
+    [Fact]
+    public void Validate_ReportsInvalidAchievements()
+    {
+        var data = MinimalData();
+        data.Achievements.AddRange(
+        [
+            Achievement("CURIOUS", AchievementRequirementType.CharactersDiscovered, value: 0, xp: 50),
+            Achievement("CURIOUS", AchievementRequirementType.AllNationsDiscovered, value: 5, xp: 0)
+        ]);
+
+        var errors = data.Validate();
+
+        Assert.Contains(errors, e => e.Contains("conquista (código) duplicado: 'CURIOUS'"));
+        Assert.Contains(errors, e => e.Contains("precisa de requirementValue > 0"));
+        Assert.Contains(errors, e => e.Contains("não usa requirementValue"));
+        Assert.Contains(errors, e => e.Contains("deve dar XP"));
+    }
+
+    private static AchievementSeed Achievement(string code, AchievementRequirementType type, int value, int xp) =>
+        new(code, code, "Descrição", "award", type, value, xp);
+
     private static ContentSeedData MinimalData(params CharacterSeed[] characters) => new()
     {
         Elements = [new ElementSeed("Ar", "Elemento do ar", "#D5C7A2", "wind")],
@@ -67,7 +89,8 @@ public class ContentSeedDataTests
         Nations = [],
         Series = [],
         Abilities = [],
-        Characters = [.. characters]
+        Characters = [.. characters],
+        Achievements = []
     };
 
     private static CharacterSeed Character(

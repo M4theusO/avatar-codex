@@ -36,7 +36,7 @@ public sealed class FakeUserCollectionRepository : IUserCollectionRepository
         Task.FromResult<(IReadOnlyList<DiscoveryEntry>, int)>(([], 0));
 
     public Task<UserStatisticsDto> GetStatisticsAsync(Guid userId, CancellationToken cancellationToken) =>
-        Task.FromResult(new UserStatisticsDto(0, 0, 0, 0, Favorites.Count(f => f.UserId == userId)));
+        Task.FromResult(new UserStatisticsDto(0, 0, 0, 0, Favorites.Count(f => f.UserId == userId), 0, 0));
 
     public List<ExperienceTransaction> Experience { get; } = [];
 
@@ -71,4 +71,32 @@ public sealed class FakeProgressionRepository : IProgressionRepository
         TotalXp[transaction.UserId] = TotalXp.GetValueOrDefault(transaction.UserId) + transaction.Amount;
         return Task.FromResult<int?>(TotalXp[transaction.UserId]);
     }
+}
+
+/// <summary>
+/// Catálogo configurável. Desbloqueios e descobertas são lidos dos registros gravados no
+/// FakeProgressionRepository, como o banco faria.
+/// </summary>
+public sealed class FakeAchievementRepository(FakeProgressionRepository progression) : IAchievementRepository
+{
+    public List<Achievement> Catalog { get; } = [];
+    public int TotalNations { get; set; } = 5;
+    public int CorrectAnswers { get; set; }
+
+    public Task<IReadOnlyList<Achievement>> GetCatalogAsync(CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<Achievement>>(Catalog);
+
+    public Task<IReadOnlyDictionary<int, DateTimeOffset>> GetUnlockedAsync(Guid userId, CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyDictionary<int, DateTimeOffset>>(progression.Records
+            .OfType<UserAchievement>()
+            .Where(u => u.UserId == userId)
+            .ToDictionary(u => u.AchievementId, u => u.UnlockedAt));
+
+    public Task<ProgressMetrics> GetMetricsAsync(Guid userId, CancellationToken cancellationToken) =>
+        Task.FromResult(new ProgressMetrics(
+            progression.TotalXp.GetValueOrDefault(userId),
+            progression.Records.OfType<UserCharacterDiscovery>().Count(d => d.UserId == userId),
+            progression.Records.OfType<UserNationDiscovery>().Count(d => d.UserId == userId),
+            TotalNations,
+            CorrectAnswers: CorrectAnswers));
 }

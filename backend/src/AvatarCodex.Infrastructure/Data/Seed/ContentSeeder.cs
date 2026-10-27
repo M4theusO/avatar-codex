@@ -101,6 +101,21 @@ public class ContentSeeder(AppDbContext db)
         foreach (var seed in data.Characters)
             SyncRelationships(characters[seed.Name], seed.Relationships, characters);
 
+        var achievements = await db.Achievements.ToDictionaryAsync(a => a.Code, cancellationToken);
+        foreach (var seed in data.Achievements)
+        {
+            var achievement = GetOrAdd(achievements, seed.Code, () => new Achievement
+            {
+                Code = seed.Code, Name = seed.Name, Description = seed.Description, Icon = seed.Icon
+            });
+            achievement.Name = seed.Name;
+            achievement.Description = seed.Description;
+            achievement.Icon = seed.Icon;
+            achievement.RequirementType = seed.RequirementType;
+            achievement.RequirementValue = seed.RequirementValue;
+            achievement.ExperienceReward = seed.ExperienceReward;
+        }
+
         await db.SaveChangesAsync(cancellationToken);
     }
 

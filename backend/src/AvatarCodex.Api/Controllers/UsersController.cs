@@ -16,9 +16,10 @@ namespace AvatarCodex.Api.Controllers;
 public class UsersController(
     UserService users,
     FavoriteService favorites,
-    DiscoveryService discoveries) : ControllerBase
+    DiscoveryService discoveries,
+    AchievementService achievements) : ControllerBase
 {
-    /// <summary>Descobertas, total de personagens/nações e favoritos.</summary>
+    /// <summary>Descobertas, total de personagens/nações, favoritos e conquistas.</summary>
     [HttpGet("statistics")]
     [ProducesResponseType<UserStatisticsDto>(StatusCodes.Status200OK)]
     public async Task<ActionResult<UserStatisticsDto>> GetStatistics(CancellationToken cancellationToken) =>
@@ -39,6 +40,12 @@ public class UsersController(
     public async Task<ActionResult<PagedResult<ExperienceTransactionDto>>> GetExperience(
         [FromQuery] PageQueryParameters query, CancellationToken cancellationToken) =>
         Ok(await users.GetExperienceHistoryAsync(User.GetUserId(), query, cancellationToken));
+
+    /// <summary>Catálogo completo: desbloqueadas com data, bloqueadas com progresso.</summary>
+    [HttpGet("achievements")]
+    [ProducesResponseType<IReadOnlyList<UserAchievementDto>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<UserAchievementDto>>> GetAchievements(CancellationToken cancellationToken) =>
+        Ok(await achievements.GetForUserAsync(User.GetUserId(), cancellationToken));
 
     /// <summary>Descobertas de personagens e nações, mais recentes primeiro.</summary>
     [HttpGet("discoveries")]

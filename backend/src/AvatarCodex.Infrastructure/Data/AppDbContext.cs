@@ -19,6 +19,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TimeProvider t
     public DbSet<UserNationDiscovery> NationDiscoveries => Set<UserNationDiscovery>();
     public DbSet<UserFavoriteCharacter> FavoriteCharacters => Set<UserFavoriteCharacter>();
     public DbSet<ExperienceTransaction> ExperienceTransactions => Set<ExperienceTransaction>();
+    public DbSet<Achievement> Achievements => Set<Achievement>();
+    public DbSet<UserAchievement> UserAchievements => Set<UserAchievement>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

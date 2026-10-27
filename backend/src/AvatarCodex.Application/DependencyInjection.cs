@@ -18,6 +18,7 @@ public static class DependencyInjection
         services.AddScoped<DiscoveryService>();
         services.AddScoped<FavoriteService>();
         services.AddScoped<UserService>();
+        services.AddScoped<AchievementService>();
 
         return services;
     }
