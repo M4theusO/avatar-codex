@@ -1,4 +1,6 @@
-import type { ElementSummary, Image } from './content'
+import type { User } from './auth'
+import type { CharacterListItem, ElementSummary, Image } from './content'
+import type { QuizListItem } from './quiz'
 
 // Espelham os DTOs de progresso da API (docs/api.md §5 e §6).
 
@@ -80,4 +82,20 @@ export interface UserAchievement {
   unlockedAt: string | null
   progress: number
   target: number
+}
+
+/** Página inicial do usuário (GET /api/users/me/dashboard): as escolhas vêm prontas do backend. */
+export interface Dashboard {
+  user: User
+  statistics: UserStatistics
+  /** Desbloqueadas, mais recentes primeiro. */
+  recentAchievements: UserAchievement[]
+  /** A bloqueada mais perto da meta; null quando todas foram desbloqueadas. */
+  nextAchievement: UserAchievement | null
+  recentDiscoveries: Discovery[]
+  /** Personagens ainda não descobertos (mudam uma vez por dia). */
+  recommendations: CharacterListItem[]
+  /** null quando todos os quizzes foram gabaritados. */
+  featuredQuiz: QuizListItem | null
+  favorites: CharacterListItem[]
 }

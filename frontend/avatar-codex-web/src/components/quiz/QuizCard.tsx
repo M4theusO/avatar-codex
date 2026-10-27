@@ -5,7 +5,13 @@ import { Badge } from '../common/Badge'
 import { ButtonLink } from '../common/Button'
 import styles from './QuizCard.module.css'
 
-export default function QuizCard({ quiz }: { quiz: QuizListItem }) {
+interface QuizCardProps {
+  quiz: QuizListItem
+  /** h3 quando o card fica dentro de uma seção com título próprio (ex.: dashboard). */
+  headingLevel?: 'h2' | 'h3'
+}
+
+export default function QuizCard({ quiz, headingLevel: Heading = 'h2' }: QuizCardProps) {
   const { id, title, description, category, difficulty, questionCount, bestResult } = quiz
 
   return (
@@ -18,7 +24,7 @@ export default function QuizCard({ quiz }: { quiz: QuizListItem }) {
         </span>
       </div>
 
-      <h2 className={styles.title}>{title}</h2>
+      <Heading className={styles.title}>{title}</Heading>
       <p className={styles.description}>{description}</p>
 
       <div className={styles.footer}>

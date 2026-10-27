@@ -1,6 +1,8 @@
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import {
   getAchievements,
+  getDashboard,
   getDiscoveries,
   getExperience,
   getFavorites,
@@ -52,6 +54,30 @@ export function useStatistics() {
 export function useAchievements() {
   const { userId, enabled } = useUserKey()
   return useQuery({ queryKey: ['me', userId, 'achievements'], queryFn: getAchievements, enabled })
+}
+
+/**
+ * Dashboard numa chamada. O XP/nível que vem nele atualiza o usuário em memória (navbar e saudação),
+ * caso tenha mudado em outra aba ou dispositivo.
+ */
+export function useDashboard() {
+  const { userId, enabled } = useUserKey()
+  const { updateUser } = useAuth()
+  const query = useQuery({ queryKey: ['me', userId, 'dashboard'], queryFn: getDashboard, enabled })
+  const freshUser = query.data?.user
+
+  useEffect(() => {
+    if (!freshUser) return
+    updateUser({
+      experiencePoints: freshUser.experiencePoints,
+      level: freshUser.level,
+      currentLevelXp: freshUser.currentLevelXp,
+      nextLevelXp: freshUser.nextLevelXp,
+      levelProgress: freshUser.levelProgress,
+    })
+  }, [freshUser, updateUser])
+
+  return query
 }
 
 /**

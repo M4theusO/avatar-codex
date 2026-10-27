@@ -55,7 +55,7 @@ describe('LoginPage', () => {
 
     await fillAndSubmit('toph@example.com', 'Metal2024')
 
-    await waitFor(() => expect(router.state.location.pathname).toBe('/profile'))
+    await waitFor(() => expect(router.state.location.pathname).toBe('/dashboard'))
   })
 
   it('quem já está logado é levado direto ao destino', async () => {

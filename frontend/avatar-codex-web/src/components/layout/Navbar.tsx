@@ -1,11 +1,24 @@
-import { BookOpenCheck, Hourglass, House, Landmark, Menu, Users, X } from 'lucide-react'
+import {
+  BookOpenCheck,
+  Hourglass,
+  House,
+  Landmark,
+  LayoutDashboard,
+  Menu,
+  Users,
+  X,
+} from 'lucide-react'
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router'
+import { useAuth } from '../../hooks/useAuth'
 import styles from './Navbar.module.css'
 import UserMenu from './UserMenu'
 
-const links = [
-  { to: '/', label: 'Início', icon: House, end: true },
+// Para quem está logado, o primeiro link leva ao painel; a Home continua no logo.
+const homeLink = { to: '/', label: 'Início', icon: House, end: true }
+const dashboardLink = { to: '/dashboard', label: 'Painel', icon: LayoutDashboard, end: false }
+
+const sectionLinks = [
   { to: '/characters', label: 'Personagens', icon: Users, end: false },
   { to: '/nations', label: 'Nações', icon: Landmark, end: false },
   { to: '/quizzes', label: 'Quizzes', icon: BookOpenCheck, end: false },
@@ -13,7 +26,9 @@ const links = [
 ]
 
 export default function Navbar() {
+  const { user } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
+  const links = [user ? dashboardLink : homeLink, ...sectionLinks]
   const closeMenu = () => setMenuOpen(false)
 
   return (

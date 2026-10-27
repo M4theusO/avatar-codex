@@ -1,4 +1,4 @@
-export const DEFAULT_AFTER_LOGIN = '/profile'
+export const DEFAULT_AFTER_LOGIN = '/dashboard'
 
 /**
  * Aceita só caminhos internos em `?redirect=`, para que um link malicioso

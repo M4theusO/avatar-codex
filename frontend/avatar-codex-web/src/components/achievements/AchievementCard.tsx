@@ -6,7 +6,16 @@ import styles from './AchievementCard.module.css'
 
 const dateFormat = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short' })
 
-export default function AchievementCard({ achievement }: { achievement: UserAchievement }) {
+interface AchievementCardProps {
+  achievement: UserAchievement
+  /** h3 quando o card fica dentro de uma seção com título próprio (ex.: dashboard). */
+  headingLevel?: 'h2' | 'h3'
+}
+
+export default function AchievementCard({
+  achievement,
+  headingLevel: Heading = 'h2',
+}: AchievementCardProps) {
   const { name, description, icon, experienceReward, isUnlocked, unlockedAt, progress, target } =
     achievement
 
@@ -23,7 +32,7 @@ export default function AchievementCard({ achievement }: { achievement: UserAchi
 
       <div className={styles.body}>
         <div className={styles.heading}>
-          <h2 className={styles.name}>{name}</h2>
+          <Heading className={styles.name}>{name}</Heading>
           <span className={styles.xp}>+{experienceReward} XP</span>
         </div>
         <p className={styles.description}>{description}</p>
