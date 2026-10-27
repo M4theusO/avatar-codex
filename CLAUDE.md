@@ -13,17 +13,18 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 ## Status atual
 
-**Fase 8 — Conquistas** (próxima, ainda não iniciada). Fases 0 a 7 concluídas (`docs/development-phases.md`).
+**Fase 9 — Quiz** (próxima, ainda não iniciada). Fases 0 a 8 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-26, fim do dia):** Fase 7 concluída, commitada e publicada no GitHub (`main` = `origin/main`, último commit `19e70ad`). Nenhum trabalho pendente.
-- **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos), API com busca/filtros/paginação, tratamento global de erros.
+**Onde paramos (2026-10-26, noite):** Fase 8 concluída e commitada localmente (ainda **sem push**).
+- **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas), API com busca/filtros/paginação, tratamento global de erros.
 - **Frontend base:** layout, navbar, rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, Timeline (placeholder), 404.
 - **Autenticação:** cadastro, login, logout, JWT (15 min, em memória) + refresh rotacionado em cookie httpOnly, sessão recuperada ao recarregar, rotas protegidas, usuário demo (README).
 - **Favoritos e descoberta:** favoritar otimista, descoberta de personagem/nação com +10 XP idempotente (testado com concorrência), `/favorites`, perfil com exploração.
 - **XP e níveis:** `ProgressionService` + `ExperienceRewards` + `LevelCalculator` (fórmula só no backend), XpBar (perfil e navbar), modal de novo nível em fila, histórico de XP.
-- **Testes:** backend 158 (87 unitários + 71 integração), frontend 83. Lint, format e build passando.
+- **Conquistas:** `Achievement`/`UserAchievement`, `AchievementRules` (desbloqueio e progresso num só lugar), avaliação no `ProgressionService` após cada evento sem cascata (RN-08) e desbloqueio único garantido pelo banco (RN-05), "Primeiro passo" no cadastro (`reward` em `/auth/register`), `/achievements`, toasts de conquista, conquistas no perfil. Conhecedor de Avatar e Mestre dos elementos esperam quizzes/desafios (progresso 0).
+- **Testes:** backend 179 (102 unitários + 77 integração), frontend 90. Lint, format e build passando.
 
-**Próximo passo — Fase 8 (Conquistas):** entidades `Achievement`/`UserAchievement` + seed (RF-ACH-01: Primeiro passo, Curioso, Explorador, Historiador, Mestre dos elementos, Conhecedor de Avatar), avaliação no `ProgressionService` após cada evento sem cascata (RN-08) e desbloqueio único (RN-05), "Primeiro passo" no cadastro (adiado da Fase 5), `achievementsUnlocked` no `reward`, `GET /api/users/me/achievements`, página `/achievements`, toast de conquista, conquistas (x / total) no perfil e nas estatísticas.
+**Próximo passo — Fase 9 (Quiz):** quizzes, perguntas e opções no banco + seed, `GET /api/quizzes` e `/api/quizzes/{id}` **sem `isCorrect`**, submissão `POST /api/quizzes/{id}/attempts` com validação e correção no backend, XP (`QuizCompleted`/`QuizPerfect`) pelo `ProgressionService`, métricas de quiz em `ProgressMetrics` (destrava "Conhecedor de Avatar"), histórico, UI de jogo e resultado.
 - **Não iniciar uma nova fase sem confirmação explícita do usuário.**
 
 **Fluxo de trabalho combinado:** ao fim de cada fase → testes + lint + build + teste num Chrome real (CDP) → docs → commits pequenos → **push só quando o usuário pedir**. O usuário costuma pedir "rode o projeto para eu testar" (subir API + Vite em background) e depois "pare de rodar".

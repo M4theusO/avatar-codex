@@ -32,7 +32,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 5 | Autenticação | P0 | Cadastro, login, logout, JWT + refresh, recuperação de sessão, rotas protegidas, perfil básico | Usuário real cria conta, loga, recarrega a página e continua logado ✅ (2026-10-26) |
 | 6 | Favoritos e descoberta | P0/P1 | Favoritos, descoberta de personagens e nações, histórico de descobertas, XP inicial | Experiência personalizada; descoberta de personagem e de nação (+10 XP, DA-01) registrada só após o conteúdo ser exibido, sem XP duplicado mesmo com requisições concorrentes (testado) ✅ (2026-10-26) |
 | 7 | XP e níveis | P1 | ExperienceTransaction, ProgressionService, LevelCalculator, XpBar, notificações de nível, `RewardResult` | Regras centralizadas no backend, com testes unitários ✅ (2026-10-26) |
-| 8 | Conquistas | P1 | Achievement, UserAchievement, regras, desbloqueio, página de conquistas, notificações | Conquistas desbloqueiam automaticamente e uma única vez |
+| 8 | Conquistas | P1 | Achievement, UserAchievement, regras, desbloqueio, página de conquistas, notificações | Conquistas desbloqueiam automaticamente e uma única vez ✅ (2026-10-26) |
 | 9 | Quiz | P1 | Quizzes, perguntas, opções, submissão, validação, resultado, XP, histórico; UI atraente | `isCorrect` nunca exposto antes da submissão; testes cobrindo isso |
 | 10 | Dashboard | P1/P2 | Endpoint agregado + página: XP, nível, progresso, conquistas, desafios, descobertas, quiz recomendado, favoritos | Destino padrão após login |
 | 11 | Desafios diários | P2 | ChallengeTemplate, geração diária, progresso, conclusão automática, recompensa, histórico | Testes com `TimeProvider` simulando dias |
@@ -214,3 +214,22 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 **Ajustes em relação ao planejado:**
 - `GET /api/users/me` não foi criado: `GET /api/auth/me` já devolve o perfil com XP e progresso. Ele entra quando houver dados de perfil a mais (ex.: `PATCH` de avatar/elemento).
 - O `<dialog>` nativo não existe no jsdom; os testes usam um polyfill mínimo em `test/setup.ts`.
+
+## Fase 8 — Conquistas (concluída)
+
+- [x] Entidades `Achievement` (`Code` único, `RequirementType`, `RequirementValue`, `ExperienceReward > 0`) e `UserAchievement` (PK `UserId + AchievementId`), migration `AddAchievements`
+- [x] Seed em `achievements.json` (upsert por `Code`, validado no carregamento): Primeiro passo, Curioso, Explorador, Historiador, Conhecedor de Avatar e Mestre dos elementos
+- [x] `AchievementRules`: um só lugar decide o desbloqueio e o progresso exibido (meta, valor atual, progresso limitado à meta)
+- [x] `ProgressionService` avalia as conquistas depois de cada evento de XP: métricas lidas uma vez, antes do XP das conquistas, então esse XP não dispara nova avaliação (RN-08); cada desbloqueio grava `UserAchievement` + `ExperienceTransaction` numa transação, e a unicidade do banco impede desbloquear duas vezes (RN-05)
+- [x] "Primeiro passo" no cadastro (`ProgressionService.EvaluateAchievementsAsync`), com o `reward` na resposta de `/api/auth/register`
+- [x] `GET /api/achievements` (catálogo público), `GET /api/users/me/achievements` (desbloqueadas com data, bloqueadas com progresso) e `unlockedAchievements`/`totalAchievements` em `/api/users/me/statistics`
+- [x] Frontend: página `/achievements` (resumo x / total, cards desbloqueados com data e bloqueados esmaecidos com barra de progresso, loading/erro/vazio), toast de conquista (um por conquista, separado do toast da descoberta), atalho com troféu na navbar, conquistas no perfil e troféu no histórico de XP
+- [x] Testes: backend 179 (102 unitários + 77 de integração), incluindo **10 descobertas diferentes em paralelo → "Curioso" desbloqueado uma única vez (160 XP)**, Historiador na última nação e ausência de cascata; frontend 90
+- [x] Validado num Chrome real (CDP): cadastro → toast "Primeiro passo" → 10 descobertas → toast "Curioso" junto do da descoberta → revisita sem toast → `/achievements` 2 de 6 (desktop e 390px) → perfil "Conquistas 2 / 6" e "Conquista: Curioso" no histórico
+
+**Ajustes em relação ao planejado:**
+- **Explorador** pede 30 personagens, não 50: o seed tem 37, e com 50 a conquista seria impossível. A meta volta a subir quando o conteúdo crescer (só muda o JSON).
+- `ExperienceReward` é `> 0` (e não `≥ 0`): todo desbloqueio gera uma `ExperienceTransaction`, que exige `amount > 0`.
+- O evento e cada conquista são gravados em transações separadas, não numa só: se algo falhar entre elas, a conquista pendente é desbloqueada no próximo evento (a avaliação sempre olha todas as conquistas ainda bloqueadas). Pelo mesmo motivo, usuários criados antes desta fase recebem o "Primeiro passo" na próxima atividade.
+- Conhecedor de Avatar e Mestre dos elementos já estão no catálogo, com progresso 0 até os quizzes (Fase 9) e os desafios (Fase 11) existirem.
+- `xpGained` do `reward` soma o XP do evento e o das conquistas; o toast da descoberta mostra só a parte do evento (`utils/reward.ts`) e cada conquista tem o seu toast.
