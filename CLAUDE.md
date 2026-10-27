@@ -13,18 +13,19 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 ## Status atual
 
-**Fase 9 — Quiz** (próxima, ainda não iniciada). Fases 0 a 8 concluídas (`docs/development-phases.md`).
+**Fase 10 — Dashboard** (próxima, ainda não iniciada). Fases 0 a 9 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-26, noite):** Fase 8 concluída, commitada e publicada no GitHub (`main` = `origin/main`). Nenhum trabalho pendente.
-- **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas), API com busca/filtros/paginação, tratamento global de erros.
-- **Frontend base:** layout, navbar, rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, Timeline (placeholder), 404.
+**Onde paramos (2026-10-26, noite):** Fase 9 concluída e commitada localmente (ainda **sem push**).
+- **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas, 4 quizzes × 10 perguntas), API com busca/filtros/paginação, tratamento global de erros.
+- **Frontend base:** layout, navbar (completa a partir de 1280px), rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, Timeline (placeholder), 404.
 - **Autenticação:** cadastro, login, logout, JWT (15 min, em memória) + refresh rotacionado em cookie httpOnly, sessão recuperada ao recarregar, rotas protegidas, usuário demo (README).
 - **Favoritos e descoberta:** favoritar otimista, descoberta de personagem/nação com +10 XP idempotente (testado com concorrência), `/favorites`, perfil com exploração.
-- **XP e níveis:** `ProgressionService` + `ExperienceRewards` + `LevelCalculator` (fórmula só no backend), XpBar (perfil e navbar), modal de novo nível em fila, histórico de XP.
-- **Conquistas:** `Achievement`/`UserAchievement`, `AchievementRules` (desbloqueio e progresso num só lugar), avaliação no `ProgressionService` após cada evento sem cascata (RN-08) e desbloqueio único garantido pelo banco (RN-05), "Primeiro passo" no cadastro (`reward` em `/auth/register`), `/achievements`, toasts de conquista, conquistas no perfil. Conhecedor de Avatar e Mestre dos elementos esperam quizzes/desafios (progresso 0).
-- **Testes:** backend 179 (102 unitários + 77 integração), frontend 90. Lint, format e build passando.
+- **XP e níveis:** `ProgressionService` (`GrantAsync` para um evento simples, `GrantAllAsync` para várias recompensas) + `ExperienceRewards` + `LevelCalculator` (fórmula só no backend), XpBar, modal de novo nível, histórico de XP.
+- **Conquistas:** `AchievementRules` (desbloqueio e progresso num só lugar), avaliação após cada evento sem cascata (RN-08), desbloqueio único pelo banco (RN-05), "Primeiro passo" no cadastro, `/achievements`, toasts. Só "Mestre dos elementos" espera os desafios (Fase 11).
+- **Quiz:** `QuizService` (correção no backend, validação das respostas), `GET /api/quizzes/{id}` sem `isCorrect`/explicação, XP só na 1ª conclusão (+20) e no 1º gabarito (+50), toda tentativa no histórico, `/quizzes`, `/quizzes/:id` (uma pergunta por vez + resultado com correção), `/quizzes/history`, quizzes e taxa de acerto no perfil.
+- **Testes:** backend 208 (124 unitários + 84 integração), frontend 103. Lint, format e build passando.
 
-**Próximo passo — Fase 9 (Quiz):** quizzes, perguntas e opções no banco + seed, `GET /api/quizzes` e `/api/quizzes/{id}` **sem `isCorrect`**, submissão `POST /api/quizzes/{id}/attempts` com validação e correção no backend, XP (`QuizCompleted`/`QuizPerfect`) pelo `ProgressionService`, métricas de quiz em `ProgressMetrics` (destrava "Conhecedor de Avatar"), histórico, UI de jogo e resultado.
+**Próximo passo — Fase 10 (Dashboard):** endpoint agregado `GET /api/users/me/dashboard` (XP, nível, progresso, últimas conquistas, descobertas recentes, quiz recomendado, favoritos; desafios entram na Fase 11) e página `/dashboard` como destino padrão após o login.
 - **Não iniciar uma nova fase sem confirmação explícita do usuário.**
 
 **Fluxo de trabalho combinado:** ao fim de cada fase → testes + lint + build + teste num Chrome real (CDP) → docs → commits pequenos → **push só quando o usuário pedir**. O usuário costuma pedir "rode o projeto para eu testar" (subir API + Vite em background) e depois "pare de rodar".
