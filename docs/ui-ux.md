@@ -85,8 +85,8 @@ Consequências:
 | base | < 640px | 1 coluna, navegação inferior ou menu hambúrguer, cards em lista/grid de 2 |
 | `sm` | ≥ 640px | grid de 2–3 colunas |
 | `md` | ≥ 768px | tablet, grid de 3, filtros em drawer |
-| `lg` | ≥ 1024px | desktop, navbar completa, filtros em sidebar, grid de 4 |
-| `xl` | ≥ 1280px | conteúdo com largura máxima (~1200px) |
+| `lg` | ≥ 1024px | desktop, filtros em sidebar, grid de 4 |
+| `xl` | ≥ 1280px | navbar completa (abaixo disso, menu recolhido; ✅ Fase 9), conteúdo com largura máxima (~1200px) |
 
 As telas são desenhadas primeiro para mobile e expandidas. Não vale fazer o desktop e só "quebrar" para mobile.
 
@@ -155,6 +155,12 @@ Dois seletores com busca. Colunas lado a lado: imagem, elemento, nação, habili
 ### Quiz
 Uma pergunta por vez, com barra de progresso, opções como botões grandes e acessíveis, e possibilidade de voltar antes de enviar. Ao submeter: tela de resultado com pontuação, %, correção pergunta a pergunta (certa/errada + explicação), XP ganho e eventuais conquistas.
 
+✅ Fase 9:
+- **Lista** (`/quizzes`): cards com categoria, dificuldade (texto + barrinha de 1 a 3 níveis), nº de perguntas e "Melhor: 8/10 (80%)" para quem já jogou; filtros de categoria e dificuldade na URL; "Meu histórico" para quem está logado.
+- **Jogo** (`/quizzes/:id`): cartão com "Pergunta n de 10" + barra, enunciado e opções A–D. As opções são rádios nativos estilizados (setas do teclado, leitor de tela, foco visível); ao trocar de pergunta o foco vai para o enunciado. "Próxima" só com a pergunta respondida; "Enviar respostas" só com todas. Se o envio falhar, as respostas ficam.
+- **Resultado**: título conforme o desempenho ("Gabaritou!", "Mandou bem!"…), "9 / 10" + %, XP do quiz ou o aviso de que a tentativa não rende XP, conquistas desbloqueadas, e a correção com borda verde/vermelha, "Sua resposta", "Resposta correta" e a explicação. Ações: jogar novamente, ver histórico, outros quizzes.
+- **Histórico** (`/quizzes/history`): lista com quiz, data, pontuação, % e XP ("Sem XP" nas tentativas repetidas).
+
 ### Perfil
 ```text
 MATHEUS
@@ -196,6 +202,7 @@ Disparados a partir do `reward` retornado pela API (nunca calculados no frontend
 - **Descoberta** (personagem ou nação): `✨ NOVA DESCOBERTA — Você descobriu Zuko! +10 XP` (toast). Só aparece quando a API retorna `isNew: true`.
 - **XP**: animação curta na `XpBar` (a barra cresce e um brilho a atravessa). A `XpBar` aparece completa no perfil e compacta na navbar, sob o nome do usuário; usa a cor do elemento do usuário ou o neutro claro (DA-02). ✅ Fase 7
 - **Nível**: modal `Novo nível! Você alcançou o nível 10. Continue sua jornada!` com `<dialog>` nativo (foco preso, Esc fecha, fundo inerte), foco inicial em "Continuar". Vários níveis entram numa fila e aparecem um de cada vez. ✅ Fase 7
+- **Quiz**: toast `🎯 Quiz concluído — 9/10! +20 XP` só quando a tentativa rende XP. ✅ Fase 9
 - **Conquista**: toast com troféu, `Conquista desbloqueada — Curioso! +50 XP`, um por conquista, logo depois do toast do evento que a causou (que mostra só o XP do próprio evento). No cadastro, aparece junto da boas-vindas ("Primeiro passo"). ✅ Fase 8
 - **Desafio concluído**: toast com recompensa.
 

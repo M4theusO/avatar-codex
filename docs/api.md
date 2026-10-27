@@ -150,20 +150,20 @@ Regras de descoberta (RN-12):
 |---|---|---|---|
 | GET | `/api/users/me` | 🔒 | Perfil completo (nível, XP atual, XP do próximo nível, % de progresso) |
 | PATCH | `/api/users/me` | 🔒 | Atualiza `avatarUrl`, `elementId` |
-| GET | `/api/users/me/statistics` | 🔒 | Descobertos x/total, favoritos, quizzes, taxa de acerto, conquistas x/total. ✅ Fase 6 (parcial): `{ discoveredCharacters, totalCharacters, discoveredNations, totalNations, favorites }` + `unlockedAchievements`, `totalAchievements` ✅ Fase 8; quizzes entram na Fase 9 |
+| GET | `/api/users/me/statistics` | 🔒 | Descobertos x/total, favoritos, quizzes, taxa de acerto, conquistas x/total. ✅ Fase 6 (parcial): `{ discoveredCharacters, totalCharacters, discoveredNations, totalNations, favorites }` + `unlockedAchievements`, `totalAchievements` ✅ Fase 8 + `completedQuizzes`, `totalQuizzes`, `quizAttempts`, `accuracyPercent` (acertos / respostas de todas as tentativas, `null` sem tentativas) ✅ Fase 9 |
 | GET | `/api/users/me/dashboard` | 🔒 | Agregado do dashboard (evita várias chamadas) |
 | GET | `/api/users/me/favorites` | 🔒 | Favoritos (`PagedResult<CharacterListItemDto>`, `?page`/`?pageSize`), mais recentes primeiro ✅ Fase 6 |
 | GET | `/api/users/me/discoveries` | 🔒 | Descobertas de personagens e nações (`PagedResult<DiscoveryDto>`: `kind` = `Character`/`Nation`, `id`, `name`, `image`, `element`, `discoveredAt`), mais recentes primeiro ✅ Fase 6 |
 | GET | `/api/users/me/experience` | 🔒 | Histórico de transações de XP (`PagedResult<ExperienceTransactionDto>`: `id`, `amount`, `type`, `description`, `createdAt`), mais recente primeiro ✅ Fase 7 |
-| GET | `/api/users/me/quiz-history` | 🔒 | Tentativas: pontuação, %, data e melhor resultado por quiz |
+| GET | `/api/users/me/quiz-history` | 🔒 | Todas as tentativas, mais recentes primeiro (`PagedResult<QuizAttemptDto>`: `id`, `quizId`, `quizTitle`, `score`, `totalQuestions`, `percentage`, `experienceEarned`, `completedAt`). O melhor resultado por quiz vem em `GET /api/quizzes` ✅ Fase 9 |
 | GET | `/api/users/me/achievements` | 🔒 | Catálogo completo do ponto de vista do usuário (`UserAchievementDto[]`: `id`, `name`, `description`, `icon`, `experienceReward`, `isUnlocked`, `unlockedAt`, `progress`, `target`). Bloqueadas trazem o progresso (limitado à meta); desbloqueadas, a data ✅ Fase 8 |
 
 ### Quiz
 | Método | Rota | | Descrição | Respostas |
 |---|---|---|---|---|
-| GET | `/api/quizzes` | 🔓* | Lista (filtros `category`, `difficulty`), com melhor resultado do usuário se autenticado | 200 |
-| GET | `/api/quizzes/{id}` | 🔒 | Quiz com perguntas e opções **sem `isCorrect`** | 200, 404 |
-| POST | `/api/quizzes/{id}/attempts` | 🔒 | Submete as respostas e devolve o resultado | 201, 400, 404 |
+| GET | `/api/quizzes` | 🔓* | Lista (filtros `category` sem diferenciar maiúsculas e `difficulty` = `Easy`/`Medium`/`Hard`), sem paginação: `id`, `title`, `description`, `category`, `difficulty`, `image`, `questionCount` e `bestResult` (`score`, `totalQuestions`, `percentage`, `attempts`) do usuário autenticado ✅ Fase 9 | 200, 400 |
+| GET | `/api/quizzes/{id}` | 🔒 | Quiz com perguntas e opções na ordem de exibição, **sem `isCorrect` e sem `explanation`** (opção = `id`, `text`) ✅ Fase 9 | 200, 401, 404 |
+| POST | `/api/quizzes/{id}/attempts` | 🔒 | Submete as respostas e devolve o resultado. Toda tentativa é gravada; XP só na 1ª conclusão (+20) e no 1º gabarito (+50) de cada quiz (RN-06) ✅ Fase 9 | 201, 400, 401, 404 |
 
 Requisição de submissão:
 
@@ -179,6 +179,7 @@ Resposta:
   "score": 8,
   "totalQuestions": 10,
   "percentage": 80,
+  "experienceEarned": 20,
   "results": [
     { "questionId": 10, "selectedOptionId": 42, "correctOptionId": 42, "isCorrect": true, "explanation": "..." }
   ],
@@ -186,7 +187,7 @@ Resposta:
 }
 ```
 
-Validações: todas as perguntas do quiz respondidas uma única vez, e cada opção deve pertencer à sua pergunta (senão 400).
+Validações: todas as perguntas do quiz respondidas uma única vez, e cada opção deve pertencer à sua pergunta (senão 400, com as mensagens no campo `answers`). `experienceEarned` é o XP do quiz nesta tentativa (sem o das conquistas); `reward` é `null` quando a tentativa não rendeu XP nem conquista.
 
 > A especificação usava `POST /api/quizzes/{id}/attempt`; aqui foi pluralizado (`attempts`) por consistência REST.
 

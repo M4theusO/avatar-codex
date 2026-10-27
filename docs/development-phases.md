@@ -33,7 +33,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 6 | Favoritos e descoberta | P0/P1 | Favoritos, descoberta de personagens e nações, histórico de descobertas, XP inicial | Experiência personalizada; descoberta de personagem e de nação (+10 XP, DA-01) registrada só após o conteúdo ser exibido, sem XP duplicado mesmo com requisições concorrentes (testado) ✅ (2026-10-26) |
 | 7 | XP e níveis | P1 | ExperienceTransaction, ProgressionService, LevelCalculator, XpBar, notificações de nível, `RewardResult` | Regras centralizadas no backend, com testes unitários ✅ (2026-10-26) |
 | 8 | Conquistas | P1 | Achievement, UserAchievement, regras, desbloqueio, página de conquistas, notificações | Conquistas desbloqueiam automaticamente e uma única vez ✅ (2026-10-26) |
-| 9 | Quiz | P1 | Quizzes, perguntas, opções, submissão, validação, resultado, XP, histórico; UI atraente | `isCorrect` nunca exposto antes da submissão; testes cobrindo isso |
+| 9 | Quiz | P1 | Quizzes, perguntas, opções, submissão, validação, resultado, XP, histórico; UI atraente | `isCorrect` nunca exposto antes da submissão; testes cobrindo isso ✅ (2026-10-26) |
 | 10 | Dashboard | P1/P2 | Endpoint agregado + página: XP, nível, progresso, conquistas, desafios, descobertas, quiz recomendado, favoritos | Destino padrão após login |
 | 11 | Desafios diários | P2 | ChallengeTemplate, geração diária, progresso, conclusão automática, recompensa, histórico | Testes com `TimeProvider` simulando dias |
 | 12 | Timeline | P2 | Era, TimelineEvent, personagens relacionados, navegação visual, filtros | — |
@@ -233,3 +233,21 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - O evento e cada conquista são gravados em transações separadas, não numa só: se algo falhar entre elas, a conquista pendente é desbloqueada no próximo evento (a avaliação sempre olha todas as conquistas ainda bloqueadas). Pelo mesmo motivo, usuários criados antes desta fase recebem o "Primeiro passo" na próxima atividade.
 - Conhecedor de Avatar e Mestre dos elementos já estão no catálogo, com progresso 0 até os quizzes (Fase 9) e os desafios (Fase 11) existirem.
 - `xpGained` do `reward` soma o XP do evento e o das conquistas; o toast da descoberta mostra só a parte do evento (`utils/reward.ts`) e cada conquista tem o seu toast.
+
+## Fase 9 — Quiz (concluída)
+
+- [x] Entidades `Quiz` (`Title` único, `Category` texto livre, `Difficulty`), `Question` (`Order` único por quiz, `Explanation`), `QuestionOption` (índice único parcial: no máximo uma correta por pergunta), `UserQuizAttempt` e `UserQuizAnswer`; migration `AddQuizTables`
+- [x] Seed em `quizzes.json`: 4 quizzes × 10 perguntas (Personagens/Fácil, Dobra/Médio, História/Difícil, A Lenda de Korra/Médio), validado (≥ 2 opções e exatamente uma correta por pergunta); perguntas e opções sincronizadas pela posição, sem remover nada
+- [x] `GET /api/quizzes` (público, filtros `category`/`difficulty`, melhor resultado com token), `GET /api/quizzes/{id}` (🔒, **sem `isCorrect` nem explicação**: o DTO de opção só tem `id` e `text`), `POST /api/quizzes/{id}/attempts` (correção no backend, 201) e `GET /api/users/me/quiz-history`
+- [x] Validação da submissão: todas as perguntas respondidas uma única vez e cada opção pertencente à sua pergunta (400 com erro em `answers`)
+- [x] XP pelo `ProgressionService.GrantAllAsync` (várias recompensas de um evento, conquistas avaliadas uma vez): +20 na 1ª conclusão e +50 no 1º gabarito de cada quiz (RN-06); toda tentativa é gravada, inclusive sem XP
+- [x] Métricas de quiz nas conquistas (quizzes concluídos, perfeitos e respostas corretas): "Conhecedor de Avatar" agora pode ser desbloqueada; estatísticas com `completedQuizzes`, `totalQuizzes`, `quizAttempts` e `accuracyPercent`
+- [x] Frontend: `/quizzes` (cards com categoria, dificuldade, nº de perguntas e melhor resultado; filtros na URL), `/quizzes/:id` (uma pergunta por vez com rádios nativos estilizados, voltar, enviar só com tudo respondido; resultado com pontuação, XP, conquistas e correção com explicação; jogar de novo), `/quizzes/history`, "Quizzes" na navbar, quizzes e taxa de acerto no perfil
+- [x] Testes: backend 208 (124 unitários + 84 de integração), incluindo o JSON de `GET /api/quizzes/{id}` sem `isCorrect`/`explanation`, **5 primeiras tentativas simultâneas → XP uma vez** e "Conhecedor de Avatar" na 10ª tentativa perfeita; frontend 103
+- [x] Validado num Chrome real (CDP): cadastro → lista → jogo 9/10 (+20) → resposta de `GET /api/quizzes/1` sem `isCorrect` → gabarito (+50) → refeito (sem XP, aviso) → histórico com as 3 tentativas → "Melhor: 10/10" → perfil "1 / 4" e "97%"; pergunta em 390px
+
+**Ajustes em relação ao planejado:**
+- "Conhecedor de Avatar" conta as respostas corretas de **todas** as tentativas, inclusive quizzes refeitos: contando só perguntas distintas, o máximo seria 40 e a meta de 100 ficaria impossível. Refazer não rende XP do quiz, só ajuda nessa conquista.
+- A tentativa é gravada antes do XP (para as conquistas contarem as respostas dela), e o `ExperienceEarned` é atualizado depois; se algo falhar entre as duas gravações, a tentativa fica com 0 XP no histórico, mas o XP do usuário está correto.
+- Sem paginação em `GET /api/quizzes`: o catálogo tem poucos itens. As categorias do filtro vêm do próprio catálogo.
+- A navbar completa passou de 1024px para **1280px**: com "Quizzes" (cinco seções + área do usuário), entre 1024 e 1279px a barra transbordava. Abaixo de 1280px, menu recolhido.

@@ -273,6 +273,8 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 
 ### 3.5 Quiz
 
+✅ Fase 9 (migration `AddQuizTables`). `Quiz.Title` é único (chave do seed); `Question` e `QuestionOption` têm `Order` único dentro do pai; `UserQuizAttempt` tem CHECK `0 ≤ score ≤ total_questions` e `experience_earned ≥ 0`; o quiz é `RESTRICT` para as tentativas e as respostas apontam para pergunta e opção com `RESTRICT` (o seed nunca remove perguntas nem opções).
+
 **Quiz**
 | Campo | Tipo | Restrições |
 |---|---|---|
@@ -341,7 +343,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 | CharacterRelationship | — | 79 |
 | ComparisonAttribute | 5 | — |
 | Era / TimelineEvent | 3–4 / ~20 | — |
-| Quiz / Question | 3–5 / ~10 por quiz | — |
+| Quiz / Question | 3–5 / ~10 por quiz | 4 / 10 por quiz (`quizzes.json`) |
 | Achievement | ~12 | 6 (`achievements.json`, upsert por `Code`) |
 | ChallengeTemplate | ~8 | — |
 
