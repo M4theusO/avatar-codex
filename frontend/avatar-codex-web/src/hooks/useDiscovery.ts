@@ -1,6 +1,7 @@
 import { useEffect, useEffectEvent, useRef } from 'react'
 import { discoverCharacter, discoverNation } from '../services/userService'
 import type { Reward } from '../types/progress'
+import { eventXp } from '../utils/reward'
 import { useAuth } from './useAuth'
 import { useRewardFeedback } from './useRewardFeedback'
 import { useInvalidateUserContent } from './useUserData'
@@ -22,7 +23,7 @@ export function useDiscovery(kind: 'character' | 'nation', id: number, name: str
   const onDiscovered = useEffectEvent((reward: Reward, discoveredName: string) => {
     celebrate(
       reward,
-      `✨ Nova descoberta — Você descobriu ${discoveredName}! +${reward.xpGained} XP`,
+      `✨ Nova descoberta — Você descobriu ${discoveredName}! +${eventXp(reward)} XP`,
     )
     invalidate()
   })

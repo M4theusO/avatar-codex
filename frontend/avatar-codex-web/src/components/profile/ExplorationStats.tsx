@@ -11,7 +11,7 @@ export default function ExplorationStats() {
   if (isPending) {
     return (
       <div className={styles.stats} aria-busy="true">
-        {Array.from({ length: 3 }, (_, index) => (
+        {Array.from({ length: 4 }, (_, index) => (
           <Skeleton key={index} height="6.5rem" />
         ))}
       </div>
@@ -52,6 +52,20 @@ export default function ExplorationStats() {
         <span className={styles.statValue}>{data.favorites}</span>
         <Link to="/favorites" className={styles.statLink}>
           Ver favoritos
+        </Link>
+      </li>
+      <li className={styles.stat}>
+        <span className={styles.statLabel}>Conquistas</span>
+        <span className={styles.statValue}>
+          {data.unlockedAchievements} <small>/ {data.totalAchievements}</small>
+        </span>
+        <ProgressBar
+          value={data.unlockedAchievements}
+          max={data.totalAchievements}
+          label="Conquistas desbloqueadas"
+        />
+        <Link to="/achievements" className={styles.statLink}>
+          Ver conquistas
         </Link>
       </li>
     </ul>

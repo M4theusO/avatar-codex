@@ -1,8 +1,9 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
-import type { User } from '../types/auth'
+import type { SessionResult, User } from '../types/auth'
 import { getApiError } from '../utils/apiError'
 import { safeRedirect } from '../utils/redirect'
+import { useAchievementToasts } from './useAchievementToasts'
 import { useToast } from './useToast'
 
 /**
@@ -11,12 +12,13 @@ import { useToast } from './useToast'
  */
 export function useAuthForm<T extends Record<string, string>>(
   initialValues: T,
-  submit: (values: T) => Promise<User>,
+  submit: (values: T) => Promise<SessionResult>,
   successMessage: (user: User) => string,
 ) {
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const { showToast } = useToast()
+  const announceAchievements = useAchievementToasts()
 
   const [values, setValues] = useState(initialValues)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -43,8 +45,10 @@ export function useAuthForm<T extends Record<string, string>>(
     setFormError(undefined)
     setFieldErrors({})
     try {
-      const user = await submit(values)
+      const { user, reward } = await submit(values)
       showToast(successMessage(user))
+      // O XP do "Primeiro passo" já vem no `user`; aqui só o anúncio da conquista.
+      if (reward) announceAchievements(reward.achievementsUnlocked)
       navigate(safeRedirect(redirectParam), { replace: true })
     } catch (error) {
       const details = getApiError(error)

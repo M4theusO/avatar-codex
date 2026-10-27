@@ -16,7 +16,7 @@ async function fillAndSubmit(email: string, password: string) {
 
 describe('LoginPage', () => {
   it('entra, mostra boas-vindas e volta para a página de origem', async () => {
-    vi.mocked(login).mockResolvedValue(user())
+    vi.mocked(login).mockResolvedValue({ user: user(), reward: null })
     const { router } = renderRoute('/login?redirect=%2Fprofile')
 
     await fillAndSubmit('toph@example.com', 'Metal2024')
@@ -50,7 +50,7 @@ describe('LoginPage', () => {
   })
 
   it('ignora redirect para outro site', async () => {
-    vi.mocked(login).mockResolvedValue(user())
+    vi.mocked(login).mockResolvedValue({ user: user(), reward: null })
     const { router } = renderRoute('/login?redirect=%2F%2Fevil.example.com')
 
     await fillAndSubmit('toph@example.com', 'Metal2024')

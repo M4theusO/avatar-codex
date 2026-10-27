@@ -1,4 +1,4 @@
-import { Eye, Landmark, Sparkles, type LucideIcon } from 'lucide-react'
+import { Eye, Landmark, Sparkles, Trophy, type LucideIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useExperienceHistory } from '../../hooks/useUserData'
 import type { ExperienceType } from '../../types/progress'
@@ -10,6 +10,7 @@ import styles from './Profile.module.css'
 const icons: Partial<Record<ExperienceType, LucideIcon>> = {
   CharacterDiscovered: Eye,
   NationDiscovered: Landmark,
+  AchievementUnlocked: Trophy,
 }
 
 const dateFormat = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' })

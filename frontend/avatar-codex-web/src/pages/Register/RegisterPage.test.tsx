@@ -16,7 +16,7 @@ async function fillForm() {
 
 describe('RegisterPage', () => {
   it('cria a conta e abre o perfil', async () => {
-    vi.mocked(register).mockResolvedValue(user())
+    vi.mocked(register).mockResolvedValue({ user: user(), reward: null })
     const { router } = renderRoute('/register')
 
     await fillForm()
@@ -29,6 +29,32 @@ describe('RegisterPage', () => {
     })
     await waitFor(() => expect(router.state.location.pathname).toBe('/profile'))
     expect(await screen.findByText('Conta criada! Boas-vindas, toph.')).toBeInTheDocument()
+  })
+
+  it('anuncia a conquista "Primeiro passo" devolvida pelo cadastro', async () => {
+    vi.mocked(register).mockResolvedValue({
+      user: user({ experiencePoints: 10, levelProgress: 10 }),
+      reward: {
+        xpGained: 10,
+        totalXp: 10,
+        level: 1,
+        leveledUp: false,
+        currentLevelXp: 0,
+        nextLevelXp: 100,
+        levelProgress: 10,
+        achievementsUnlocked: [
+          { id: 1, name: 'Primeiro passo', icon: 'footprints', experienceReward: 10 },
+        ],
+        challengesCompleted: [],
+      },
+    })
+    renderRoute('/register')
+
+    await fillForm()
+
+    expect(
+      await screen.findByText('Conquista desbloqueada — Primeiro passo! +10 XP'),
+    ).toBeInTheDocument()
   })
 
   it('mostra os erros de validação da API ao lado de cada campo', async () => {

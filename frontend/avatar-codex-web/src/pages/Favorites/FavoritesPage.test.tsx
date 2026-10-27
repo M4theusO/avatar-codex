@@ -45,6 +45,8 @@ describe('ProfilePage (exploração)', () => {
       discoveredNations: 1,
       totalNations: 5,
       favorites: 2,
+      unlockedAchievements: 1,
+      totalAchievements: 6,
     })
     vi.mocked(getDiscoveries).mockResolvedValue({
       items: [
@@ -78,6 +80,14 @@ describe('ProfilePage (exploração)', () => {
     expect(screen.getByRole('progressbar', { name: 'Nações descobertas' })).toHaveAttribute(
       'aria-valuemax',
       '5',
+    )
+    expect(screen.getByRole('progressbar', { name: 'Conquistas desbloqueadas' })).toHaveAttribute(
+      'aria-valuenow',
+      '1',
+    )
+    expect(screen.getByRole('link', { name: 'Ver conquistas' })).toHaveAttribute(
+      'href',
+      '/achievements',
     )
     expect(await screen.findByRole('link', { name: /Nação do Fogo/ })).toHaveAttribute(
       'href',
