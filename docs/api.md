@@ -77,7 +77,7 @@ Endpoints que geram progresso retornam um objeto `reward`, que o frontend usa no
 ### Auth
 | Método | Rota | | Descrição | Respostas |
 |---|---|---|---|---|
-| POST | `/api/auth/register` | 🔓 | Cadastro (`username`, `email`, `password`, `confirmPassword`) que já inicia a sessão (mesmo corpo do login + cookie). A conquista "Primeiro passo" entra na Fase 8. ✅ Fase 5 | 201, 400, 409 |
+| POST | `/api/auth/register` | 🔓 | Cadastro (`username`, `email`, `password`, `confirmPassword`) que já inicia a sessão (mesmo corpo do login + cookie). ✅ Fase 5. A resposta traz `reward` com a conquista "Primeiro passo" (nas demais respostas de auth, `reward` é `null`) ✅ Fase 8 | 201, 400, 409 |
 | POST | `/api/auth/login` | 🔓 | Login (`email`, `password`) → `accessToken`, `user` + cookie de refresh. Email inexistente e senha errada têm a mesma mensagem. ✅ Fase 5 | 200, 400, 401 |
 | POST | `/api/auth/refresh` | 🔓 (cookie) | Novo access token, refresh rotacionado. Cookie inválido/expirado/revogado → 401 e o cookie é apagado. ✅ Fase 5 | 200, 401 |
 | POST | `/api/auth/logout` | 🔓 (cookie) | Revoga o refresh token e limpa o cookie. Idempotente e funciona com o access token expirado. ✅ Fase 5 | 204 |
@@ -150,13 +150,13 @@ Regras de descoberta (RN-12):
 |---|---|---|---|
 | GET | `/api/users/me` | 🔒 | Perfil completo (nível, XP atual, XP do próximo nível, % de progresso) |
 | PATCH | `/api/users/me` | 🔒 | Atualiza `avatarUrl`, `elementId` |
-| GET | `/api/users/me/statistics` | 🔒 | Descobertos x/total, favoritos, quizzes, taxa de acerto, conquistas x/total. ✅ Fase 6 (parcial): `{ discoveredCharacters, totalCharacters, discoveredNations, totalNations, favorites }`; quizzes e conquistas entram nas Fases 8 e 9 |
+| GET | `/api/users/me/statistics` | 🔒 | Descobertos x/total, favoritos, quizzes, taxa de acerto, conquistas x/total. ✅ Fase 6 (parcial): `{ discoveredCharacters, totalCharacters, discoveredNations, totalNations, favorites }` + `unlockedAchievements`, `totalAchievements` ✅ Fase 8; quizzes entram na Fase 9 |
 | GET | `/api/users/me/dashboard` | 🔒 | Agregado do dashboard (evita várias chamadas) |
 | GET | `/api/users/me/favorites` | 🔒 | Favoritos (`PagedResult<CharacterListItemDto>`, `?page`/`?pageSize`), mais recentes primeiro ✅ Fase 6 |
 | GET | `/api/users/me/discoveries` | 🔒 | Descobertas de personagens e nações (`PagedResult<DiscoveryDto>`: `kind` = `Character`/`Nation`, `id`, `name`, `image`, `element`, `discoveredAt`), mais recentes primeiro ✅ Fase 6 |
 | GET | `/api/users/me/experience` | 🔒 | Histórico de transações de XP (`PagedResult<ExperienceTransactionDto>`: `id`, `amount`, `type`, `description`, `createdAt`), mais recente primeiro ✅ Fase 7 |
 | GET | `/api/users/me/quiz-history` | 🔒 | Tentativas: pontuação, %, data e melhor resultado por quiz |
-| GET | `/api/users/me/achievements` | 🔒 | Conquistas desbloqueadas + progresso das bloqueadas |
+| GET | `/api/users/me/achievements` | 🔒 | Catálogo completo do ponto de vista do usuário (`UserAchievementDto[]`: `id`, `name`, `description`, `icon`, `experienceReward`, `isUnlocked`, `unlockedAt`, `progress`, `target`). Bloqueadas trazem o progresso (limitado à meta); desbloqueadas, a data ✅ Fase 8 |
 
 ### Quiz
 | Método | Rota | | Descrição | Respostas |
@@ -193,7 +193,9 @@ Validações: todas as perguntas do quiz respondidas uma única vez, e cada opç
 ### Conquistas
 | Método | Rota | | Descrição |
 |---|---|---|---|
-| GET | `/api/achievements` | 🔓 | Catálogo de conquistas |
+| GET | `/api/achievements` | 🔓 | Catálogo de conquistas (`AchievementDto[]`: `id`, `name`, `description`, `icon`, `experienceReward`), do cadastro às metas maiores ✅ Fase 8 |
+
+Regras (RN-05, RN-08): as conquistas são avaliadas pelo backend depois de cada evento que gera XP e no cadastro. Cada uma é desbloqueada uma única vez (PK `UserId + AchievementId`, inclusive com requisições simultâneas), e o XP dela entra no mesmo `reward` (`xpGained` soma evento + conquistas), sem disparar nova avaliação. `icon` é o nome de um ícone do lucide-react.
 
 ### Desafios diários (P2)
 | Método | Rota | | Descrição |

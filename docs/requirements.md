@@ -76,7 +76,7 @@ Prioridades: **P0** essencial · **P1** núcleo de gamificação · **P2** compl
 | RF-ACH-01 | Catálogo de conquistas (desbloqueadas e bloqueadas) com progresso. |
 | RF-ACH-02 | Desbloqueio automático verificado pelo backend, com notificação. |
 
-Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personagens descobertos), **Explorador** (50 personagens), **Historiador** (todas as nações), **Mestre dos elementos** (N desafios concluídos), **Conhecedor de Avatar** (100 respostas corretas).
+Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personagens descobertos), **Explorador** (50 personagens; no seed atual, 30, porque há 37 personagens — ver Fase 8), **Historiador** (todas as nações), **Mestre dos elementos** (N desafios concluídos), **Conhecedor de Avatar** (100 respostas corretas).
 
 ### 4.7 Quiz — P1
 | ID | Requisito |

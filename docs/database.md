@@ -238,9 +238,9 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 | Icon | varchar(50) | |
 | RequirementType | enum | `AccountCreated`, `CharactersDiscovered`, `NationsDiscovered`, `AllNationsDiscovered`, `QuizzesCompleted`, `PerfectQuizzes`, `CorrectAnswers`, `ChallengesCompleted`, `LevelReached` |
 | RequirementValue | int | |
-| ExperienceReward | int | ≥ 0 |
+| ExperienceReward | int | > 0 (todo desbloqueio gera uma `ExperienceTransaction`) |
 
-**UserAchievement** — PK (`UserId`, `AchievementId`), `UnlockedAt`.
+**UserAchievement** — PK (`UserId`, `AchievementId`), `UnlockedAt`; índice (`UserId`, `UnlockedAt` desc). A PK garante o desbloqueio único (RN-05). ✅ Fase 8 (migration `AddAchievements`)
 
 **ChallengeTemplate** (pool definido no seed, D8)
 | Campo | Tipo | Restrições |
@@ -342,7 +342,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 | ComparisonAttribute | 5 | — |
 | Era / TimelineEvent | 3–4 / ~20 | — |
 | Quiz / Question | 3–5 / ~10 por quiz | — |
-| Achievement | ~12 | — |
+| Achievement | ~12 | 6 (`achievements.json`, upsert por `Code`) |
 | ChallengeTemplate | ~8 | — |
 
 - Usuário de demonstração apenas em Development (`DemoUserSeeder`, credenciais no README): criado no startup se ainda não existir, com a senha em hash PBKDF2. ✅ Fase 5

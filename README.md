@@ -4,7 +4,7 @@ Enciclopédia interativa + plataforma de exploração + sistema de evolução do
 
 O usuário explora personagens, nações, elementos, habilidades e a linha do tempo do universo, e constrói sua própria jornada: descobertas, favoritos, quizzes, XP, níveis, conquistas e desafios diários.
 
-> **Status:** Fase 3 concluída (API de conteúdo); próxima: Fase 4 (frontend base). Veja o plano completo em [docs/development-phases.md](docs/development-phases.md).
+> **Status:** Fase 8 concluída (conquistas); próxima: Fase 9 (quiz). Veja o plano completo em [docs/development-phases.md](docs/development-phases.md).
 
 ## Stack
 
@@ -69,7 +69,7 @@ dotnet run --project src/AvatarCodex.Api --launch-profile http
 
 Para gerar o `Jwt:Secret`: `openssl rand -base64 48` (Git Bash) ou, no PowerShell, `$b = New-Object byte[] 48; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); [Convert]::ToBase64String($b)`. Sem ele, a API não sobe.
 
-Em Development, o startup aplica as migrations, o seed de conteúdo (personagens, nações, elementos, habilidades) e cria um **usuário de demonstração**. O seed é idempotente e pode rodar quantas vezes for preciso.
+Em Development, o startup aplica as migrations, o seed de conteúdo (personagens, nações, elementos, habilidades, conquistas) e cria um **usuário de demonstração**. O seed é idempotente e pode rodar quantas vezes for preciso.
 
 | Usuário demo (só em Development) | |
 |---|---|

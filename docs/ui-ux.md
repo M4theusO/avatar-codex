@@ -171,6 +171,8 @@ Inclui abas/seções para descobertas, favoritos, conquistas e histórico de XP.
 ### Conquistas
 Grid com conquistas desbloqueadas (coloridas, com data) e bloqueadas (esmaecidas, com barra de progresso).
 
+✅ Fase 8: resumo "x de y conquistas desbloqueadas" com barra; cards na ordem do catálogo (cadastro → descobertas → quizzes → desafios). Desbloqueada: ícone sobre círculo com o acento do Ar, borda clara e "Desbloqueada em dd/mm/aaaa". Bloqueada: só o ícone fica esmaecido (com cadeado), os textos mantêm o contraste, e o progresso aparece como "3 / 10" + barra. Acesso pelo troféu na navbar e por "Ver conquistas" no perfil.
+
 ### Desafios
 Cards dos desafios do dia com progresso, recompensa e horário do próximo reset (UTC convertido para o horário local).
 
@@ -194,7 +196,7 @@ Disparados a partir do `reward` retornado pela API (nunca calculados no frontend
 - **Descoberta** (personagem ou nação): `✨ NOVA DESCOBERTA — Você descobriu Zuko! +10 XP` (toast). Só aparece quando a API retorna `isNew: true`.
 - **XP**: animação curta na `XpBar` (a barra cresce e um brilho a atravessa). A `XpBar` aparece completa no perfil e compacta na navbar, sob o nome do usuário; usa a cor do elemento do usuário ou o neutro claro (DA-02). ✅ Fase 7
 - **Nível**: modal `Novo nível! Você alcançou o nível 10. Continue sua jornada!` com `<dialog>` nativo (foco preso, Esc fecha, fundo inerte), foco inicial em "Continuar". Vários níveis entram numa fila e aparecem um de cada vez. ✅ Fase 7
-- **Conquista**: toast com ícone e nome.
+- **Conquista**: toast com troféu, `Conquista desbloqueada — Curioso! +50 XP`, um por conquista, logo depois do toast do evento que a causou (que mostra só o XP do próprio evento). No cadastro, aparece junto da boas-vindas ("Primeiro passo"). ✅ Fase 8
 - **Desafio concluído**: toast com recompensa.
 
 Quando chegam vários eventos de uma vez, eles entram numa fila e aparecem em sequência.
