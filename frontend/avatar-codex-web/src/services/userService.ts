@@ -1,5 +1,7 @@
 import type { CharacterListItem, PagedResult } from '../types/content'
 import type {
+  CompletedChallenge,
+  DailyChallenges,
   Dashboard,
   Discovery,
   DiscoveryResult,
@@ -60,5 +62,17 @@ export async function getAchievements(): Promise<UserAchievement[]> {
 
 export async function getDashboard(): Promise<Dashboard> {
   const { data } = await api.get<Dashboard>('/api/users/me/dashboard')
+  return data
+}
+
+export async function getDailyChallenges(): Promise<DailyChallenges> {
+  const { data } = await api.get<DailyChallenges>('/api/challenges/daily')
+  return data
+}
+
+export async function getChallengeHistory(page: number): Promise<PagedResult<CompletedChallenge>> {
+  const { data } = await api.get<PagedResult<CompletedChallenge>>('/api/users/me/challenges', {
+    params: { page, pageSize: 10 },
+  })
   return data
 }

@@ -21,6 +21,11 @@ describe('DashboardPage', () => {
     expect(
       await screen.findByRole('progressbar', { name: 'Personagens descobertos' }),
     ).toHaveAttribute('aria-valuemax', '37')
+    const challenges = screen.getByRole('region', { name: 'Desafios de hoje' })
+    expect(
+      within(challenges).getByRole('heading', { level: 3, name: 'Descubra 3 personagens' }),
+    ).toBeInTheDocument()
+    expect(within(challenges).getByText('0 de 1 concluídos')).toBeInTheDocument()
     expect(screen.getByText('Nenhuma conquista desbloqueada ainda.')).toBeInTheDocument()
     expect(screen.getByText('Você gabaritou todos os quizzes. Impressionante!')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Conhecer as nações' })).toHaveAttribute(

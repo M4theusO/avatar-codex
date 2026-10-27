@@ -2,6 +2,8 @@ import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-quer
 import { useEffect } from 'react'
 import {
   getAchievements,
+  getChallengeHistory,
+  getDailyChallenges,
   getDashboard,
   getDiscoveries,
   getExperience,
@@ -54,6 +56,26 @@ export function useStatistics() {
 export function useAchievements() {
   const { userId, enabled } = useUserKey()
   return useQuery({ queryKey: ['me', userId, 'achievements'], queryFn: getAchievements, enabled })
+}
+
+/** Ficam sob `['me', ...]`: qualquer evento de progresso os invalida junto com o resto. */
+export function useDailyChallenges() {
+  const { userId, enabled } = useUserKey()
+  return useQuery({
+    queryKey: ['me', userId, 'challenges', 'daily'],
+    queryFn: getDailyChallenges,
+    enabled,
+  })
+}
+
+export function useChallengeHistory(page: number) {
+  const { userId, enabled } = useUserKey()
+  return useQuery({
+    queryKey: ['me', userId, 'challenges', 'history', page],
+    queryFn: () => getChallengeHistory(page),
+    enabled,
+    placeholderData: keepPreviousData,
+  })
 }
 
 /**

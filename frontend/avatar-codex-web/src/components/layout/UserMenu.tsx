@@ -1,4 +1,4 @@
-import { LogOut, Star, Trophy } from 'lucide-react'
+import { LogOut, Star, Target, Trophy } from 'lucide-react'
 import { Link, NavLink } from 'react-router'
 import { useAuth } from '../../hooks/useAuth'
 import { useLogout } from '../../hooks/useLogout'
@@ -50,6 +50,14 @@ export default function UserMenu({ onNavigate }: { onNavigate: () => void }) {
         aria-label="Favoritos"
       >
         <Star size={18} aria-hidden="true" />
+      </NavLink>
+      <NavLink
+        to="/challenges"
+        className={({ isActive }) => `${styles.iconButton} ${isActive ? styles.iconActive : ''}`}
+        onClick={onNavigate}
+        aria-label="Desafios diários"
+      >
+        <Target size={18} aria-hidden="true" />
       </NavLink>
       <NavLink
         to="/achievements"
