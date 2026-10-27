@@ -1,5 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router'
+import DailyChallengeList from '../../components/challenges/DailyChallengeList'
 import { CharacterGrid, CharacterGridSkeleton } from '../../components/characters/CharacterGrid'
 import { ButtonLink } from '../../components/common/Button'
 import Section from '../../components/common/Section'
@@ -45,6 +46,10 @@ function DashboardContent({ dashboard }: { dashboard: Dashboard }) {
   return (
     <>
       <DashboardStats statistics={statistics} />
+
+      <Section title="Desafios de hoje" action={<SeeAll to="/challenges">Ver desafios</SeeAll>}>
+        <DailyChallengeList daily={dashboard.dailyChallenges} headingLevel="h3" />
+      </Section>
 
       <div className={styles.columns}>
         <Section title="Quiz em destaque" action={<SeeAll to="/quizzes">Ver quizzes</SeeAll>}>
@@ -116,6 +121,7 @@ function DashboardSkeleton() {
         Carregando seu painel…
       </span>
       <DashboardStatsSkeleton />
+      <Skeleton height="9rem" />
       <div className={styles.columns} aria-hidden="true">
         <Skeleton height="14rem" />
         <Skeleton height="14rem" />

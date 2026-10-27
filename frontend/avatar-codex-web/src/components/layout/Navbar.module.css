@@ -115,11 +115,16 @@
 /*
  * Desktop (docs/ui-ux.md §5): navbar completa com a área de sessão à direita. A partir de 1280px:
  * com cinco seções + a área do usuário, abaixo disso a barra não cabe e o menu continua recolhido.
+ * Entre 1280 e 1439px os espaçamentos ficam mais justos para caber a área do usuário com quatro atalhos.
  */
 @media (min-width: 1280px) {
   .bar {
     flex-wrap: nowrap;
-    gap: var(--space-6);
+    gap: var(--space-4);
+  }
+
+  .link {
+    padding: var(--space-2);
   }
 
   .menuButton {
@@ -140,8 +145,22 @@
 
   .session {
     margin: 0;
-    padding: 0 0 0 var(--space-4);
+    padding: 0 0 0 var(--space-3);
     border-top: 0;
     border-left: 1px solid var(--color-border);
+  }
+}
+
+@media (min-width: 1440px) {
+  .bar {
+    gap: var(--space-6);
+  }
+
+  .link {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .session {
+    padding-left: var(--space-4);
   }
 }

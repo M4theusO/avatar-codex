@@ -4,6 +4,12 @@ import type { QuizListItem } from './quiz'
 
 // Espelham os DTOs de progresso da API (docs/api.md §5 e §6).
 
+export interface ChallengeReward {
+  id: number
+  title: string
+  experienceReward: number
+}
+
 export interface AchievementReward {
   id: number
   name: string
@@ -21,7 +27,7 @@ export interface Reward {
   nextLevelXp: number
   levelProgress: number
   achievementsUnlocked: AchievementReward[]
-  challengesCompleted: { id: number; title: string; experienceReward: number }[]
+  challengesCompleted: ChallengeReward[]
 }
 
 export interface DiscoveryResult {
@@ -88,6 +94,7 @@ export interface UserAchievement {
 export interface Dashboard {
   user: User
   statistics: UserStatistics
+  dailyChallenges: DailyChallenges
   /** Desbloqueadas, mais recentes primeiro. */
   recentAchievements: UserAchievement[]
   /** A bloqueada mais perto da meta; null quando todas foram desbloqueadas. */
@@ -98,4 +105,36 @@ export interface Dashboard {
   /** null quando todos os quizzes foram gabaritados. */
   featuredQuiz: QuizListItem | null
   favorites: CharacterListItem[]
+}
+
+export type ChallengeType =
+  'DiscoverCharacters' | 'DiscoverNations' | 'CompleteQuizzes' | 'QuizScoreAtLeast'
+
+/** Desafio do dia: `progress`/`target` vêm prontos do backend (em `QuizScoreAtLeast`, são porcentagens). */
+export interface DailyChallenge {
+  id: number
+  title: string
+  description: string
+  type: ChallengeType
+  experienceReward: number
+  progress: number
+  target: number
+  isCompleted: boolean
+  completedAt: string | null
+}
+
+/** Desafios de hoje (UTC). `resetsAt` é quando os próximos aparecem. */
+export interface DailyChallenges {
+  date: string
+  resetsAt: string
+  challenges: DailyChallenge[]
+}
+
+export interface CompletedChallenge {
+  id: number
+  title: string
+  description: string
+  experienceReward: number
+  date: string
+  completedAt: string
 }

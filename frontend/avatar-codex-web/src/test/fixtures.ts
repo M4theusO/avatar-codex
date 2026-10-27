@@ -2,7 +2,7 @@ import { AxiosError, AxiosHeaders } from 'axios'
 import { vi } from 'vitest'
 import { restoreSession } from '../services/authService'
 import type { User } from '../types/auth'
-import type { Dashboard, UserAchievement } from '../types/progress'
+import type { DailyChallenge, Dashboard, UserAchievement } from '../types/progress'
 import type { QuizListItem } from '../types/quiz'
 import type {
   CharacterDetails,
@@ -115,6 +115,21 @@ export function quiz(overrides: Partial<QuizListItem> = {}): QuizListItem {
   }
 }
 
+export function challenge(overrides: Partial<DailyChallenge> = {}): DailyChallenge {
+  return {
+    id: 1,
+    title: 'Descubra 3 personagens',
+    description: 'Abra a página de 3 personagens que você ainda não conhece.',
+    type: 'DiscoverCharacters',
+    experienceReward: 30,
+    progress: 0,
+    target: 3,
+    isCompleted: false,
+    completedAt: null,
+    ...overrides,
+  }
+}
+
 /** Dashboard de um usuário que acabou de chegar (sem descobertas, favoritos nem quizzes). */
 export function dashboard(overrides: Partial<Dashboard> = {}): Dashboard {
   return {
@@ -131,6 +146,11 @@ export function dashboard(overrides: Partial<Dashboard> = {}): Dashboard {
       totalQuizzes: 4,
       quizAttempts: 0,
       accuracyPercent: null,
+    },
+    dailyChallenges: {
+      date: '2026-10-27',
+      resetsAt: '2026-10-28T00:00:00Z',
+      challenges: [challenge()],
     },
     recentAchievements: [],
     nextAchievement: null,

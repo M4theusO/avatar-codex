@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest'
 import { cleanup, configure } from '@testing-library/react'
 import { afterEach, beforeEach, vi } from 'vitest'
 import { restoreSession } from '../services/authService'
-import { dashboard } from './fixtures'
+import { challenge, dashboard } from './fixtures'
 import * as quizService from '../services/quizService'
 import * as userService from '../services/userService'
 
@@ -54,6 +54,12 @@ beforeEach(() => {
   vi.mocked(quizService.getQuizzes).mockResolvedValue([])
   vi.mocked(quizService.getQuizHistory).mockResolvedValue(emptyPage)
   vi.mocked(userService.getAchievements).mockResolvedValue([])
+  vi.mocked(userService.getDailyChallenges).mockResolvedValue({
+    date: '2026-10-27',
+    resetsAt: '2026-10-28T00:00:00Z',
+    challenges: [challenge()],
+  })
+  vi.mocked(userService.getChallengeHistory).mockResolvedValue(emptyPage)
   // O usuário do dashboard é o da sessão: assim a sincronização de XP não altera o usuário do teste.
   vi.mocked(userService.getDashboard).mockImplementation(async () =>
     dashboard({ user: await restoreSession() }),
