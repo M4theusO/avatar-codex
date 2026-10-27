@@ -164,14 +164,13 @@ Resposta de `GET /api/users/me/dashboard` (as escolhas são do backend; o fronte
 |---|---|
 | `user` | `UserDto` (nível, XP e progresso já calculados) |
 | `statistics` | Mesmo formato de `GET /api/users/me/statistics` |
+| `dailyChallenges` | Mesmo formato de `GET /api/challenges/daily` ✅ Fase 11 |
 | `recentAchievements` | Até 3 `UserAchievementDto` desbloqueadas, mais recentes primeiro |
 | `nextAchievement` | A bloqueada com maior fração da meta cumprida, ou `null` |
 | `recentDiscoveries` | Até 5 `DiscoveryDto`, mais recentes primeiro |
 | `recommendations` | 4 `CharacterListItemDto` ainda não descobertos; rotação diária estável por usuário |
 | `featuredQuiz` | `QuizListItemDto` (com `bestResult`): primeiro não concluído, senão o mais perto do gabarito; `null` se todos foram gabaritados |
 | `favorites` | Até 4 `CharacterListItemDto`, mais recentes primeiro |
-
-Desafios do dia entram na Fase 11.
 
 ### Quiz
 | Método | Rota | | Descrição | Respostas |
@@ -202,7 +201,7 @@ Resposta:
 }
 ```
 
-Validações: todas as perguntas do quiz respondidas uma única vez, e cada opção deve pertencer à sua pergunta (senão 400, com as mensagens no campo `answers`). `experienceEarned` é o XP do quiz nesta tentativa (sem o das conquistas); `reward` é `null` quando a tentativa não rendeu XP nem conquista.
+Validações: todas as perguntas do quiz respondidas uma única vez, e cada opção deve pertencer à sua pergunta (senão 400, com as mensagens no campo `answers`). `experienceEarned` é o XP do quiz nesta tentativa (sem o das conquistas e dos desafios concluídos no mesmo evento); `reward` é `null` quando a tentativa não rendeu XP nem conquista.
 
 > A especificação usava `POST /api/quizzes/{id}/attempt`; aqui foi pluralizado (`attempts`) por consistência REST.
 
@@ -216,8 +215,10 @@ Regras (RN-05, RN-08): as conquistas são avaliadas pelo backend depois de cada 
 ### Desafios diários (P2)
 | Método | Rota | | Descrição |
 |---|---|---|---|
-| GET | `/api/challenges/daily` | 🔒 | Desafios de hoje (UTC) com progresso do usuário; gera os do dia se ainda não existirem |
-| GET | `/api/users/me/challenges` | 🔒 | Histórico de desafios concluídos |
+| GET | `/api/challenges/daily` | 🔒 | Desafios de hoje (UTC) com progresso do usuário; gera os do dia se ainda não existirem. `DailyChallengesDto`: `date`, `resetsAt` (meia-noite UTC seguinte), `challenges[]` (`id`, `title`, `description`, `type`, `experienceReward`, `progress`, `target`, `isCompleted`, `completedAt`) ✅ Fase 11 |
+| GET | `/api/users/me/challenges` | 🔒 | Histórico de concluídos, mais recentes primeiro (`PagedResult<CompletedChallengeDto>`: `id`, `title`, `description`, `experienceReward`, `date`, `completedAt`) ✅ Fase 11 |
+
+Regras (RN-10, RN-05): 3 desafios por dia (UTC), sorteados de forma determinística pela data entre os modelos ativos, com tipos diferentes. `type` = `DiscoverCharacters` | `DiscoverNations` | `CompleteQuizzes` (quizzes diferentes no dia) | `QuizScoreAtLeast` (melhor % do dia; `progress`/`target` em porcentagem). O progresso é calculado pelas atividades do dia; quando a meta é atingida, o próprio evento conclui o desafio (uma única vez, PK `UserId + DailyChallengeId`) e o devolve em `reward.challengesCompleted`, com o XP somado em `xpGained`. Concluído aparece com `progress = target`.
 
 > `POST /api/challenges/{id}/complete` da especificação **foi removido** (D9): a conclusão é automática no backend quando o progresso atinge a meta, e a recompensa volta no `reward` do evento que a causou.
 

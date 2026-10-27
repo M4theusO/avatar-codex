@@ -35,7 +35,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 8 | Conquistas | P1 | Achievement, UserAchievement, regras, desbloqueio, página de conquistas, notificações | Conquistas desbloqueiam automaticamente e uma única vez ✅ (2026-10-26) |
 | 9 | Quiz | P1 | Quizzes, perguntas, opções, submissão, validação, resultado, XP, histórico; UI atraente | `isCorrect` nunca exposto antes da submissão; testes cobrindo isso ✅ (2026-10-26) |
 | 10 | Dashboard | P1/P2 | Endpoint agregado + página: XP, nível, progresso, conquistas, desafios, descobertas, quiz recomendado, favoritos | Destino padrão após login ✅ (2026-10-27) |
-| 11 | Desafios diários | P2 | ChallengeTemplate, geração diária, progresso, conclusão automática, recompensa, histórico | Testes com `TimeProvider` simulando dias |
+| 11 | Desafios diários | P2 | ChallengeTemplate, geração diária, progresso, conclusão automática, recompensa, histórico | Testes com `TimeProvider` simulando dias ✅ (2026-10-27) |
 | 12 | Timeline | P2 | Era, TimelineEvent, personagens relacionados, navegação visual, filtros | — |
 | 13 | Comparação | P2 | Atributos, seleção de dois personagens, visualização (barras/radar), aviso de não-canonicidade | — |
 | 14 | Testes | — | Completar unit, integração, frontend e E2E (ver abaixo) | Regras de negócio cobertas; E2E verde |
@@ -271,3 +271,23 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - `nextAchievement` não estava no plano: mostra uma meta concreta mesmo para quem só tem o "Primeiro passo".
 - As recomendações carregam os não descobertos e sorteiam em memória: são no máximo 37 personagens. Rever se o conteúdo crescer muito.
 - Nos estados vazios do dashboard, mensagens curtas no lugar do `EmptyState` grande, para o painel não ficar dominado por caixas vazias.
+
+## Fase 11 — Desafios diários (concluída)
+
+- [x] Entidades `ChallengeTemplate` (`Code` único, tipo, meta, XP, `IsActive`), `DailyChallenge` (UNIQUE `ChallengeTemplateId` + `Date`) e `UserDailyChallenge` (PK `UserId` + `DailyChallengeId`); migration `AddDailyChallenges`
+- [x] Seed em `challenges.json`: 8 modelos (descobrir 3/5 personagens, explorar 1/2 nações, completar 1/2 quizzes diferentes, acertar 80%, gabaritar), validados (meta > 0, XP > 0, porcentagem ≤ 100, ao menos um ativo) e sincronizados por `Code`
+- [x] `ChallengeRules` (puro): sorteio do dia determinístico pela data (prefere tipos diferentes), progresso, conclusão e o intervalo do dia em UTC
+- [x] `DailyChallengeService`: geração preguiçosa de 3 desafios na primeira consulta do dia (D8, sem job), progresso calculado pelas atividades do dia, histórico
+- [x] `ProgressionService` (passo 4 da arquitetura): depois do XP do evento, conclui os desafios cumpridos (`UserDailyChallenge` + `ExperienceTransaction` `ChallengeCompleted`) e só então avalia as conquistas, então **"Mestre dos elementos" pode desbloquear no mesmo evento**; `reward.challengesCompleted` passa a vir preenchido
+- [x] `GET /api/challenges/daily`, `GET /api/users/me/challenges` e `dailyChallenges` no dashboard; sem endpoint de conclusão (D9)
+- [x] Frontend: `/challenges` (desafios de hoje com progresso, "x de 3 concluídos", horário do próximo reset no fuso local, histórico paginado), seção "Desafios de hoje" no painel, toast "Desafio concluído" a partir de qualquer `reward`, atalho (alvo) na área do usuário da navbar
+- [x] Testes: backend 244 (153 unitários + 91 de integração), incluindo **virada do dia com `TimeProvider`**, desafio e "Mestre dos elementos" no mesmo evento, **descobertas em paralelo concluindo cada desafio uma única vez** e **5 gerações simultâneas do mesmo dia → 3 desafios**; frontend 115
+- [x] Validado num Chrome real (CDP): cadastro → painel com os 3 desafios → abrir 5 personagens e 2 nações → toasts "Desafio concluído — Descubra 3 personagens! +30 XP" e "Explore 2 nações! +40 XP" → `/challenges` com "2 de 3 concluídos" e histórico; navbar sem transbordo de 1280 a 1920px (nome de 30 caracteres); 390px sem rolagem horizontal; console sem erros
+
+**Ajustes em relação ao planejado:**
+- **Progresso calculado, não armazenado:** `UserDailyChallenge` guarda só a conclusão (sem `Progress`/`IsCompleted`). O progresso vem das descobertas e tentativas do dia (UTC), como nas conquistas: não há contador para dessincronizar com requisições simultâneas, e a PK garante XP uma única vez.
+- `ChallengeTemplate` ganhou `Code` (chave estável do seed, como em `Achievement`).
+- "Completar quiz" conta quizzes **diferentes** concluídos no dia, inclusive refeitos; "acertar X%" usa a melhor tentativa do dia. Quizzes sempre podem ser refeitos, então esses desafios são sempre possíveis.
+- Bug evitado: o `experienceEarned` da tentativa de quiz descontava só o XP das conquistas; agora também desconta o dos desafios concluídos no mesmo evento.
+- **Limitação conhecida:** os desafios do dia são os mesmos para todos. Quem já descobriu todas as nações (ou todos os personagens) não consegue cumprir os desafios de descoberta. Rever quando o conteúdo crescer (Fase 15) ou com desafios por usuário.
+- Navbar: entre 1280 e 1439px os espaçamentos ficaram mais justos para caber o quarto atalho da área do usuário.

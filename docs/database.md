@@ -242,15 +242,18 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 
 **UserAchievement** — PK (`UserId`, `AchievementId`), `UnlockedAt`; índice (`UserId`, `UnlockedAt` desc). A PK garante o desbloqueio único (RN-05). ✅ Fase 8 (migration `AddAchievements`)
 
+✅ Fase 11 (migration `AddDailyChallenges`).
+
 **ChallengeTemplate** (pool definido no seed, D8)
 | Campo | Tipo | Restrições |
 |---|---|---|
 | Id | int | PK |
+| Code | varchar(50) | único; chave estável do seed |
 | Title | varchar(100) | |
 | Description | varchar(300) | |
 | ChallengeType | enum | `DiscoverCharacters`, `DiscoverNations`, `CompleteQuizzes`, `QuizScoreAtLeast` |
-| TargetValue | int | quantidade, ou % para `QuizScoreAtLeast` |
-| ExperienceReward | int | |
+| TargetValue | int | quantidade, ou % para `QuizScoreAtLeast`; CHECK > 0 |
+| ExperienceReward | int | CHECK > 0 |
 | IsActive | bool | |
 
 **DailyChallenge**
@@ -262,14 +265,14 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 
 > Os campos da especificação (`Title`, `ChallengeType`, `TargetValue`, `ExperienceReward`) ficam no template, e o `DailyChallenge` apenas o instancia em uma data.
 
-**UserDailyChallenge**
+**UserDailyChallenge** (registro da conclusão)
 | Campo | Tipo | Restrições |
 |---|---|---|
-| UserId | uuid | PK composta, FK |
-| DailyChallengeId | int | PK composta, FK |
-| Progress | int | ≥ 0 |
-| IsCompleted | bool | |
-| CompletedAt | timestamptz? | |
+| UserId | uuid | PK composta, FK (CASCADE) |
+| DailyChallengeId | int | PK composta, FK (RESTRICT) |
+| CompletedAt | timestamptz | índice (`UserId`, `CompletedAt` desc) |
+
+> Diferente do planejado, não há `Progress`/`IsCompleted`: o progresso é calculado a partir das descobertas e tentativas de quiz do dia (como nas conquistas), e a linha só existe quando o desafio foi concluído. A PK impede concluir (e ganhar XP) duas vezes (RN-05).
 
 ### 3.5 Quiz
 
@@ -345,7 +348,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 | Era / TimelineEvent | 3–4 / ~20 | — |
 | Quiz / Question | 3–5 / ~10 por quiz | 4 / 10 por quiz (`quizzes.json`) |
 | Achievement | ~12 | 6 (`achievements.json`, upsert por `Code`) |
-| ChallengeTemplate | ~8 | — |
+| ChallengeTemplate | ~8 | 8 (`challenges.json`, upsert por `Code`) |
 
 - Usuário de demonstração apenas em Development (`DemoUserSeeder`, credenciais no README): criado no startup se ainda não existir, com a senha em hash PBKDF2. ✅ Fase 5
 
@@ -362,6 +365,7 @@ Uma migration por mudança coesa de esquema, com nome descritivo (ex.: `AddQuizT
 |---|---|
 | `InitialContentSchema` | Extensão `citext`; `elements`, `bending_subtypes`, `nations`, `series`, `abilities`, `characters`, `character_relationships`, `character_abilities`, `character_bending_subtypes`, `character_series`, `users`, `refresh_tokens` |
 | `AddFavoritesDiscoveriesAndExperience` | `character_discoveries` (UserCharacterDiscovery), `nation_discoveries` (UserNationDiscovery), `favorite_characters` (UserFavoriteCharacter), `experience_transactions` com unique (`user_id`, `type`, `source_id`) e `CHECK amount > 0`. `type` gravado como texto. |
+| `AddDailyChallenges` | `challenge_templates` (`code` único, CHECKs de meta e XP), `daily_challenges` com unique (`challenge_template_id`, `date`), `user_daily_challenges` com PK (`user_id`, `daily_challenge_id`) |
 
 ## 6. Testes de banco
 

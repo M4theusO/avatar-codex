@@ -137,7 +137,7 @@ Zuko · Toph · Korra         [card]
 ```
 Também mostra recomendações (personagens ainda não descobertos) e favoritos.
 
-**Implementado (Fase 10):** hero com saudação e XpBar; 4 indicadores clicáveis (personagens, nações, conquistas, quizzes); em ≥ 1024px, "Quiz em destaque" e "Conquistas" (recentes + próxima) lado a lado; depois "Continue explorando", "Descobertas recentes" e "Favoritos". Seções vazias usam uma mensagem curta com borda tracejada. Na navbar, o link "Início" vira "Painel" para quem está logado. Desafios do dia entram na Fase 11.
+**Implementado (Fase 10):** hero com saudação e XpBar; 4 indicadores clicáveis (personagens, nações, conquistas, quizzes); em ≥ 1024px, "Quiz em destaque" e "Conquistas" (recentes + próxima) lado a lado; depois "Continue explorando", "Descobertas recentes" e "Favoritos". Seções vazias usam uma mensagem curta com borda tracejada. Na navbar, o link "Início" vira "Painel" para quem está logado. ✅ Fase 11: seção "Desafios de hoje" logo depois dos indicadores.
 
 ### Listagem de personagens
 Grid de `CharacterCard` (imagem, nome, badge de elemento, nação, indicador "descoberto", botão de favorito). Busca com debounce, filtros (nação, elemento, tipo, status, série), ordenação e paginação numérica sincronizada com a URL. Em mobile/tablet, os filtros ficam num painel recolhível aberto pelo botão "Filtros" e os cards viram itens de lista; a partir de 1024px, os filtros ficam numa sidebar fixa.
@@ -183,6 +183,8 @@ Grid com conquistas desbloqueadas (coloridas, com data) e bloqueadas (esmaecidas
 
 ### Desafios
 Cards dos desafios do dia com progresso, recompensa e horário do próximo reset (UTC convertido para o horário local).
+
+✅ Fase 11: `/challenges` com "Desafios de hoje" ("x de 3 concluídos" + "Novos desafios às HH:mm") e "Concluídos" (histórico paginado). Card com ícone do tipo, título, XP, descrição e barra de progresso ("2 / 3", ou "60% de 80%" no desafio de porcentagem); concluído tem borda e ícone verdes e "Concluído" no lugar da barra. Atalho por um ícone de alvo na área do usuário da navbar e por "Ver desafios" no painel. A conclusão é anunciada por um toast "Desafio concluído — título! +XP" vindo do `reward` de qualquer evento.
 
 ## 8. Componentes base (`components/common`)
 

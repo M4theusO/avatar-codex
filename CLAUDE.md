@@ -13,20 +13,21 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 ## Status atual
 
-**Fase 11 — Desafios diários** (próxima, ainda não iniciada). Fases 0 a 10 concluídas (`docs/development-phases.md`).
+**Fase 12 — Timeline** (próxima, ainda não iniciada). Fases 0 a 11 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-27):** Fase 10 concluída, commitada e publicada no GitHub (`main` = `origin/main`). Nenhum trabalho pendente.
+**Onde paramos (2026-10-27):** Fase 11 concluída e commitada localmente; **push pendente** (aguardando o usuário pedir).
 - **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas, 4 quizzes × 10 perguntas), API com busca/filtros/paginação, tratamento global de erros.
 - **Frontend base:** layout, navbar (completa a partir de 1280px), rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, Timeline (placeholder), 404.
 - **Autenticação:** cadastro, login, logout, JWT (15 min, em memória) + refresh rotacionado em cookie httpOnly, sessão recuperada ao recarregar, rotas protegidas, usuário demo (README).
 - **Favoritos e descoberta:** favoritar otimista, descoberta de personagem/nação com +10 XP idempotente (testado com concorrência), `/favorites`, perfil com exploração.
 - **XP e níveis:** `ProgressionService` (`GrantAsync` para um evento simples, `GrantAllAsync` para várias recompensas) + `ExperienceRewards` + `LevelCalculator` (fórmula só no backend), XpBar, modal de novo nível, histórico de XP.
-- **Conquistas:** `AchievementRules` (desbloqueio e progresso num só lugar), avaliação após cada evento sem cascata (RN-08), desbloqueio único pelo banco (RN-05), "Primeiro passo" no cadastro, `/achievements`, toasts. Só "Mestre dos elementos" espera os desafios (Fase 11).
+- **Conquistas:** `AchievementRules` (desbloqueio e progresso num só lugar), avaliação após cada evento sem cascata (RN-08), desbloqueio único pelo banco (RN-05), "Primeiro passo" no cadastro, `/achievements`, toasts. "Mestre dos elementos" conta os desafios concluídos.
 - **Quiz:** `QuizService` (correção no backend, validação das respostas), `GET /api/quizzes/{id}` sem `isCorrect`/explicação, XP só na 1ª conclusão (+20) e no 1º gabarito (+50), toda tentativa no histórico, `/quizzes`, `/quizzes/:id` (uma pergunta por vez + resultado com correção), `/quizzes/history`, quizzes e taxa de acerto no perfil.
 - **Dashboard:** `GET /api/users/me/dashboard` (agregado; escolhas em `DashboardRules`: quiz em destaque, próxima conquista, recomendações com rotação diária), `/dashboard` como destino após login/cadastro, "Painel" na navbar para quem está logado.
-- **Testes:** backend 220 (133 unitários + 87 integração), frontend 109. Lint, format e build passando.
+- **Desafios diários:** `ChallengeRules` (sorteio determinístico pela data, progresso, conclusão) + `DailyChallengeService` (geração preguiçosa de 3 por dia em UTC, progresso calculado pelas atividades do dia); conclusão automática no `ProgressionService` antes das conquistas, PK garante XP único; `/challenges`, seção no painel, toast "Desafio concluído".
+- **Testes:** backend 244 (153 unitários + 91 integração), frontend 115. Lint, format e build passando.
 
-**Próximo passo — Fase 11 (Desafios diários):** `ChallengeTemplate`, geração diária, progresso, conclusão automática e recompensa pelo `ProgressionService`, histórico; testes com `TimeProvider` simulando dias. Depois, incluir os desafios do dia no dashboard e liberar "Mestre dos elementos".
+**Próximo passo — Fase 12 (Timeline):** `Era` e `TimelineEvent` (seed), personagens relacionados, navegação visual agrupada por era, filtros (era, personagem); hoje `/timeline` é um placeholder.
 - **Não iniciar uma nova fase sem confirmação explícita do usuário.**
 
 **Fluxo de trabalho combinado:** ao fim de cada fase → testes + lint + build + teste num Chrome real (CDP) → docs → commits pequenos → **push só quando o usuário pedir**. O usuário costuma pedir "rode o projeto para eu testar" (subir API + Vite em background) e depois "pare de rodar".
