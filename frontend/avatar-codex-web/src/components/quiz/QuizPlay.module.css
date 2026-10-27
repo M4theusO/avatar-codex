@@ -1,0 +1,317 @@
+/* Estilos da página de jogo, da pergunta e do resultado (mesma tela, mesma família visual) */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+
+.description {
+  color: var(--color-text-muted);
+}
+
+/* Pergunta */
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.counter {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.question {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.question:focus {
+  outline: none;
+}
+
+.options {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 3.25rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-raised);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.option:hover {
+  border-color: color-mix(in srgb, var(--color-air) 50%, var(--color-border));
+}
+
+.option:has(:focus-visible) {
+  outline: 2px solid var(--color-air);
+  outline-offset: 2px;
+}
+
+.selected {
+  border-color: var(--color-air);
+  background-color: color-mix(in srgb, var(--color-air) 12%, var(--color-surface-raised));
+}
+
+/* O rádio nativo continua no DOM (teclado e leitor de tela); a letra é o indicador visual. */
+.radio {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.letter {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.selected .letter {
+  border-color: var(--color-air);
+  background-color: var(--color-air);
+  color: var(--color-bg);
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.hint {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  text-align: right;
+}
+
+.submitError {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--color-danger) 50%, var(--color-border));
+  border-radius: var(--radius-md);
+  color: var(--color-danger);
+  font-size: var(--text-sm);
+}
+
+/* Resultado */
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border: 1px solid color-mix(in srgb, var(--color-air) 40%, var(--color-border));
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-air) 10%, transparent), transparent 60%),
+    var(--color-surface);
+}
+
+.headline {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+}
+
+.headline:focus {
+  outline: none;
+}
+
+.score {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+  color: var(--color-text-muted);
+}
+
+.score strong {
+  color: var(--color-text);
+  font-size: var(--text-3xl);
+  line-height: 1;
+}
+
+.xp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-air);
+  font-weight: 600;
+}
+
+.noXp {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.achievements {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.achievement {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-air) 45%, var(--color-border));
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.achievement svg {
+  color: var(--color-air);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.reviewTitle {
+  margin-bottom: var(--space-4);
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reviewItem {
+  --review-color: var(--color-success);
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--review-color);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+}
+
+.wrong {
+  --review-color: var(--color-danger);
+}
+
+.reviewIcon {
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+  color: var(--review-color);
+}
+
+.reviewBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.reviewQuestion {
+  font-weight: 600;
+}
+
+.reviewAnswer {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.reviewAnswer strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.explanation {
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-style: italic;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: var(--text-3xl);
+  }
+
+  .step {
+    padding: var(--space-8);
+  }
+}

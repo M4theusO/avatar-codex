@@ -11,7 +11,7 @@ export default function ExplorationStats() {
   if (isPending) {
     return (
       <div className={styles.stats} aria-busy="true">
-        {Array.from({ length: 4 }, (_, index) => (
+        {Array.from({ length: 6 }, (_, index) => (
           <Skeleton key={index} height="6.5rem" />
         ))}
       </div>
@@ -66,6 +66,32 @@ export default function ExplorationStats() {
         />
         <Link to="/achievements" className={styles.statLink}>
           Ver conquistas
+        </Link>
+      </li>
+      <li className={styles.stat}>
+        <span className={styles.statLabel}>Quizzes concluídos</span>
+        <span className={styles.statValue}>
+          {data.completedQuizzes} <small>/ {data.totalQuizzes}</small>
+        </span>
+        <ProgressBar
+          value={data.completedQuizzes}
+          max={data.totalQuizzes}
+          label="Quizzes concluídos"
+        />
+        <Link to="/quizzes" className={styles.statLink}>
+          Ver quizzes
+        </Link>
+      </li>
+      <li className={styles.stat}>
+        <span className={styles.statLabel}>Taxa de acerto</span>
+        <span className={styles.statValue}>
+          {data.accuracyPercent === null ? '—' : `${data.accuracyPercent}%`}
+        </span>
+        <span className={styles.statLabel}>
+          {data.quizAttempts === 1 ? '1 tentativa' : `${data.quizAttempts} tentativas`}
+        </span>
+        <Link to="/quizzes/history" className={styles.statLink}>
+          Ver histórico
         </Link>
       </li>
     </ul>

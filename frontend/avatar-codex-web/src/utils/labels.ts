@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import type { CharacterStatus, CharacterType, RelationshipType } from '../types/content'
+import type { QuizDifficulty } from '../types/quiz'
 
 // Rótulos de UI para os enums da API (traduções, não regra de negócio).
 
@@ -24,6 +25,12 @@ export const relationshipLabels: Record<RelationshipType, string> = {
   Ally: 'Aliado',
   Rival: 'Rival',
   Enemy: 'Inimigo',
+}
+
+export const difficultyLabels: Record<QuizDifficulty, string> = {
+  Easy: 'Fácil',
+  Medium: 'Médio',
+  Hard: 'Difícil',
 }
 
 export function getInitials(name: string): string {

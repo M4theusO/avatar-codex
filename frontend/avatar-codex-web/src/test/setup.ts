@@ -2,6 +2,7 @@ import '@testing-library/jest-dom/vitest'
 import { cleanup, configure } from '@testing-library/react'
 import { afterEach, beforeEach, vi } from 'vitest'
 import { restoreSession } from '../services/authService'
+import * as quizService from '../services/quizService'
 import * as userService from '../services/userService'
 
 // As páginas são lazy: com a suíte inteira em paralelo, o primeiro import pode passar de 1s.
@@ -20,9 +21,10 @@ HTMLDialogElement.prototype.close ??= function (this: HTMLDialogElement) {
 window.scrollTo = vi.fn() as typeof window.scrollTo
 
 // Nenhum teste fala com a API de verdade: por padrão o visitante não tem sessão e o
-// usuário não tem favoritos nem descobertas. Use `mockSession` (test/fixtures.ts) para logar.
+// usuário não tem favoritos, descobertas nem tentativas de quiz. Use `mockSession` (test/fixtures.ts) para logar.
 vi.mock('../services/authService')
 vi.mock('../services/userService')
+vi.mock('../services/quizService')
 
 const emptyPage = { items: [], page: 1, pageSize: 12, totalItems: 0, totalPages: 0 }
 
@@ -43,7 +45,13 @@ beforeEach(() => {
     favorites: 0,
     unlockedAchievements: 0,
     totalAchievements: 6,
+    completedQuizzes: 0,
+    totalQuizzes: 4,
+    quizAttempts: 0,
+    accuracyPercent: null,
   })
+  vi.mocked(quizService.getQuizzes).mockResolvedValue([])
+  vi.mocked(quizService.getQuizHistory).mockResolvedValue(emptyPage)
   vi.mocked(userService.getAchievements).mockResolvedValue([])
 })
 

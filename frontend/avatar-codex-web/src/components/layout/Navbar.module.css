@@ -26,6 +26,7 @@
   font-size: var(--text-lg);
   font-weight: 700;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 /* Marca: os quatro elementos como um anel, sem copiar símbolos oficiais */
@@ -83,6 +84,7 @@
   font-size: var(--text-sm);
   font-weight: 500;
   text-decoration: none;
+  white-space: nowrap;
   transition:
     background-color var(--transition-fast),
     color var(--transition-fast);
@@ -110,10 +112,14 @@
   }
 }
 
-/* Desktop (docs/ui-ux.md §5): navbar completa com a área de sessão à direita */
-@media (min-width: 1024px) {
+/*
+ * Desktop (docs/ui-ux.md §5): navbar completa com a área de sessão à direita. A partir de 1280px:
+ * com cinco seções + a área do usuário, abaixo disso a barra não cabe e o menu continua recolhido.
+ */
+@media (min-width: 1280px) {
   .bar {
     flex-wrap: nowrap;
+    gap: var(--space-6);
   }
 
   .menuButton {
