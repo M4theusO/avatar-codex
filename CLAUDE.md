@@ -15,7 +15,7 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 **Fase 9 — Quiz** (próxima, ainda não iniciada). Fases 0 a 8 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-26, noite):** Fase 8 concluída e commitada localmente (ainda **sem push**).
+**Onde paramos (2026-10-26, noite):** Fase 8 concluída, commitada e publicada no GitHub (`main` = `origin/main`). Nenhum trabalho pendente.
 - **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas), API com busca/filtros/paginação, tratamento global de erros.
 - **Frontend base:** layout, navbar, rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, Timeline (placeholder), 404.
 - **Autenticação:** cadastro, login, logout, JWT (15 min, em memória) + refresh rotacionado em cookie httpOnly, sessão recuperada ao recarregar, rotas protegidas, usuário demo (README).
