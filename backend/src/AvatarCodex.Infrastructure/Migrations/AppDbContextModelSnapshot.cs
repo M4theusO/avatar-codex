@@ -160,6 +160,66 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.ToTable("bending_subtypes", (string)null);
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.ChallengeTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ChallengeType")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("challenge_type");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("code");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("description");
+
+                    b.Property<int>("ExperienceReward")
+                        .HasColumnType("integer")
+                        .HasColumnName("experience_reward");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<int>("TargetValue")
+                        .HasColumnType("integer")
+                        .HasColumnName("target_value");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id")
+                        .HasName("pk_challenge_templates");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("ix_challenge_templates_code");
+
+                    b.ToTable("challenge_templates", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_challenge_templates_experience_reward_positive", "experience_reward > 0");
+
+                            t.HasCheckConstraint("ck_challenge_templates_target_value_positive", "target_value > 0");
+                        });
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.Character", b =>
                 {
                     b.Property<int>("Id")
@@ -272,6 +332,36 @@ namespace AvatarCodex.Infrastructure.Migrations
                         {
                             t.HasCheckConstraint("ck_character_relationships_not_self", "character_id <> related_character_id");
                         });
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.DailyChallenge", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChallengeTemplateId")
+                        .HasColumnType("integer")
+                        .HasColumnName("challenge_template_id");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date")
+                        .HasColumnName("date");
+
+                    b.HasKey("Id")
+                        .HasName("pk_daily_challenges");
+
+                    b.HasIndex("Date")
+                        .HasDatabaseName("ix_daily_challenges_date");
+
+                    b.HasIndex("ChallengeTemplateId", "Date")
+                        .IsUnique()
+                        .HasDatabaseName("ix_daily_challenges_challenge_template_id_date");
+
+                    b.ToTable("daily_challenges", (string)null);
                 });
 
             modelBuilder.Entity("AvatarCodex.Domain.Entities.Element", b =>
@@ -727,6 +817,33 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.ToTable("character_discoveries", (string)null);
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserDailyChallenge", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("DailyChallengeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("daily_challenge_id");
+
+                    b.Property<DateTimeOffset>("CompletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completed_at");
+
+                    b.HasKey("UserId", "DailyChallengeId")
+                        .HasName("pk_user_daily_challenges");
+
+                    b.HasIndex("DailyChallengeId")
+                        .HasDatabaseName("ix_user_daily_challenges_daily_challenge_id");
+
+                    b.HasIndex("UserId", "CompletedAt")
+                        .IsDescending(false, true)
+                        .HasDatabaseName("ix_user_daily_challenges_user_id_completed_at");
+
+                    b.ToTable("user_daily_challenges", (string)null);
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.UserFavoriteCharacter", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -1048,6 +1165,18 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.Navigation("RelatedCharacter");
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.DailyChallenge", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.ChallengeTemplate", "Template")
+                        .WithMany()
+                        .HasForeignKey("ChallengeTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_daily_challenges_challenge_templates_challenge_template_id");
+
+                    b.Navigation("Template");
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.ExperienceTransaction", b =>
                 {
                     b.HasOne("AvatarCodex.Domain.Entities.User", null)
@@ -1217,6 +1346,25 @@ namespace AvatarCodex.Infrastructure.Migrations
                         .HasConstraintName("fk_character_discoveries_users_user_id");
 
                     b.Navigation("Character");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserDailyChallenge", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.DailyChallenge", "DailyChallenge")
+                        .WithMany()
+                        .HasForeignKey("DailyChallengeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_daily_challenges_daily_challenges_daily_challenge_id");
+
+                    b.HasOne("AvatarCodex.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_daily_challenges_users_user_id");
+
+                    b.Navigation("DailyChallenge");
                 });
 
             modelBuilder.Entity("AvatarCodex.Domain.Entities.UserFavoriteCharacter", b =>

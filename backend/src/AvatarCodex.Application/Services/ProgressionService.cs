@@ -12,12 +12,13 @@ namespace AvatarCodex.Application.Services;
 public record ExperienceGrant(ExperienceType Type, int SourceId, string Description, object? ActivityRecord = null);
 
 /// <summary>
-/// Ponto único de ganho de progresso (docs/architecture.md §3.3): XP idempotente, subida de nível e
-/// conquistas. Desafios (Fase 11) entram aqui depois.
+/// Ponto único de ganho de progresso (docs/architecture.md §3.3): XP idempotente, subida de nível,
+/// desafios diários e conquistas.
 /// </summary>
 public class ProgressionService(
     IProgressionRepository repository,
     IAchievementRepository achievements,
+    DailyChallengeService dailyChallenges,
     TimeProvider timeProvider)
 {
     /// <summary>
@@ -51,8 +52,8 @@ public class ProgressionService(
     }
 
     /// <summary>
-    /// Avalia as conquistas fora de um evento de XP (ex.: "Primeiro passo" no cadastro).
-    /// Retorna null quando nada foi desbloqueado.
+    /// Avalia desafios e conquistas fora de um evento de XP (ex.: "Primeiro passo" no cadastro).
+    /// Retorna null quando nada foi concluído nem desbloqueado.
     /// </summary>
     public Task<RewardResult?> EvaluateAchievementsAsync(Guid userId, CancellationToken cancellationToken = default) =>
         FinishAsync(userId, 0, null, cancellationToken);
@@ -78,15 +79,19 @@ public class ProgressionService(
         return (xpGained, totalXp);
     }
 
-    /// <summary>Desbloqueia as conquistas e monta o reward; null quando não houve XP nem conquista.</summary>
+    /// <summary>
+    /// Conclui os desafios, depois desbloqueia as conquistas (que contam os desafios recém-concluídos) e monta
+    /// o reward; null quando não houve XP, desafio nem conquista.
+    /// </summary>
     private async Task<RewardResult?> FinishAsync(Guid userId, int xpGained, int? totalXp, CancellationToken cancellationToken)
     {
+        var (completed, totalAfterChallenges) = await CompleteChallengesAsync(userId, cancellationToken);
         var (unlocked, totalAfterAchievements) = await UnlockAchievementsAsync(userId, cancellationToken);
-        var finalXp = totalAfterAchievements ?? totalXp;
+        var finalXp = totalAfterAchievements ?? totalAfterChallenges ?? totalXp;
         if (finalXp is null)
             return null;
 
-        var totalGained = xpGained + unlocked.Sum(a => a.ExperienceReward);
+        var totalGained = xpGained + completed.Sum(c => c.ExperienceReward) + unlocked.Sum(a => a.ExperienceReward);
         var progress = LevelCalculator.GetProgress(finalXp.Value);
         return new RewardResult(
             totalGained,
@@ -97,7 +102,41 @@ public class ProgressionService(
             progress.NextLevelXp,
             progress.ProgressPercent,
             unlocked,
-            []);
+            completed);
+    }
+
+    /// <summary>
+    /// Conclui os desafios de hoje já cumpridos (RN-10). Cada conclusão grava UserDailyChallenge + XP numa
+    /// transação; se outra requisição concluiu antes, a unicidade do banco faz ela ser ignorada (RN-05).
+    /// </summary>
+    private async Task<(List<ChallengeRewardDto> Completed, int? TotalXp)> CompleteChallengesAsync(
+        Guid userId, CancellationToken cancellationToken)
+    {
+        var met = await dailyChallenges.GetMetButNotCompletedAsync(userId, cancellationToken);
+        var completed = new List<ChallengeRewardDto>();
+        int? totalXp = null;
+
+        foreach (var challenge in met)
+        {
+            var record = new UserDailyChallenge
+            {
+                UserId = userId,
+                DailyChallengeId = challenge.Id,
+                CompletedAt = timeProvider.GetUtcNow()
+            };
+            var transaction = NewTransaction(
+                userId, ExperienceType.ChallengeCompleted, challenge.Id, challenge.Template.ExperienceReward,
+                $"Desafio: {challenge.Template.Title}");
+
+            var total = await repository.SaveWithExperienceAsync(record, transaction, cancellationToken);
+            if (total is null)
+                continue;
+
+            completed.Add(new ChallengeRewardDto(challenge.Id, challenge.Template.Title, challenge.Template.ExperienceReward));
+            totalXp = total;
+        }
+
+        return (completed, totalXp);
     }
 
     /// <summary>

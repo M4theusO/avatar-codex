@@ -19,11 +19,12 @@ public class UsersController(
     DiscoveryService discoveries,
     AchievementService achievements,
     QuizService quizzes,
-    DashboardService dashboard) : ControllerBase
+    DashboardService dashboard,
+    DailyChallengeService challenges) : ControllerBase
 {
     /// <summary>
-    /// Página inicial do usuário numa chamada: progresso, estatísticas, conquistas, descobertas,
-    /// recomendações, quiz em destaque e favoritos.
+    /// Página inicial do usuário numa chamada: progresso, estatísticas, desafios do dia, conquistas,
+    /// descobertas, recomendações, quiz em destaque e favoritos.
     /// </summary>
     [HttpGet("dashboard")]
     [ProducesResponseType<DashboardDto>(StatusCodes.Status200OK)]
@@ -65,6 +66,14 @@ public class UsersController(
     [ProducesResponseType<IReadOnlyList<UserAchievementDto>>(StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<UserAchievementDto>>> GetAchievements(CancellationToken cancellationToken) =>
         Ok(await achievements.GetForUserAsync(User.GetUserId(), cancellationToken));
+
+    /// <summary>Desafios diários concluídos, mais recentes primeiro.</summary>
+    [HttpGet("challenges")]
+    [ProducesResponseType<PagedResult<CompletedChallengeDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PagedResult<CompletedChallengeDto>>> GetChallenges(
+        [FromQuery] PageQueryParameters query, CancellationToken cancellationToken) =>
+        Ok(await challenges.GetHistoryAsync(User.GetUserId(), query, cancellationToken));
 
     /// <summary>Descobertas de personagens e nações, mais recentes primeiro.</summary>
     [HttpGet("discoveries")]

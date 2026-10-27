@@ -22,7 +22,7 @@ public class AchievementTests
     public AchievementTests()
     {
         _achievements = new FakeAchievementRepository(_progressionRepository);
-        _progression = new ProgressionService(_progressionRepository, _achievements, TimeProvider.System);
+        _progression = TestProgression.Create(_progressionRepository, _achievements, TimeProvider.System);
     }
 
     private static Achievement New(int id, string name, AchievementRequirementType type, int value, int xp) => new()

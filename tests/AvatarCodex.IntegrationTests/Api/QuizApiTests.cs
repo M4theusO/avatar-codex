@@ -128,8 +128,12 @@ public class QuizApiTests(ContentApiFixture api)
         var stats = await client.GetFromJsonAsync<UserStatisticsDto>("/api/users/me/statistics", ContentApiFixture.JsonOptions);
         Assert.Equal((1, 4, 3, 93), (stats!.CompletedQuizzes, stats.TotalQuizzes, stats.QuizAttempts, stats.AccuracyPercent));
 
+        // 10 (Primeiro passo) + 20 + 50, mais os desafios de quiz do dia que essas tentativas cumpriram.
+        var challengeXp = new[] { first, perfect, again }
+            .Where(r => r.Reward is not null)
+            .Sum(r => r.Reward!.ChallengesCompleted.Sum(c => c.ExperienceReward));
         var me = await client.GetFromJsonAsync<UserDto>("/api/auth/me", ContentApiFixture.JsonOptions);
-        Assert.Equal(10 + 20 + 50, me!.ExperiencePoints);
+        Assert.Equal(10 + 20 + 50 + challengeXp, me!.ExperiencePoints);
         _ = auth;
     }
 
@@ -149,7 +153,10 @@ public class QuizApiTests(ContentApiFixture api)
         var userId = auth.User.Id;
         Assert.Equal(5, await db.QuizAttempts.CountAsync(a => a.UserId == userId));
         Assert.Equal(70, await db.QuizAttempts.Where(a => a.UserId == userId).SumAsync(a => a.ExperienceEarned));
-        Assert.Equal(10 + 70, await db.Users.Where(u => u.Id == userId).Select(u => u.ExperiencePoints).SingleAsync());
+        var challengeXp = await db.ExperienceTransactions
+            .Where(t => t.UserId == userId && t.Type == ExperienceType.ChallengeCompleted)
+            .SumAsync(t => t.Amount);
+        Assert.Equal(10 + 70 + challengeXp, await db.Users.Where(u => u.Id == userId).Select(u => u.ExperiencePoints).SingleAsync());
     }
 
     [SkippableFact]

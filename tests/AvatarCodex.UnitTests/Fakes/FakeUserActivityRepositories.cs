@@ -1,3 +1,5 @@
+using AvatarCodex.Application.Services;
+using AvatarCodex.Application.Validators;
 using AvatarCodex.Application.DTOs;
 using AvatarCodex.Application.Interfaces;
 using AvatarCodex.Domain.Entities;
@@ -106,5 +108,87 @@ public sealed class FakeAchievementRepository(FakeProgressionRepository progress
             TotalNations,
             QuizzesCompleted: QuizzesCompleted,
             PerfectQuizzes: PerfectQuizzes,
-            CorrectAnswers: CorrectAnswers));
+            CorrectAnswers: CorrectAnswers,
+            ChallengesCompleted: progression.Records.OfType<UserDailyChallenge>().Count(u => u.UserId == userId)));
+}
+
+/// <summary>
+/// Modelos e desafios do dia em memória. Conclusões são lidas dos registros do FakeProgressionRepository;
+/// a atividade do dia é configurada pelo teste.
+/// </summary>
+public sealed class FakeChallengeRepository(FakeProgressionRepository progression) : IChallengeRepository
+{
+    public List<ChallengeTemplate> Templates { get; } = [];
+    public List<DailyChallenge> Daily { get; } = [];
+    public DailyActivity Activity { get; set; } = new(0, 0, 0, 0);
+    public int AddCalls { get; private set; }
+
+    public Task<IReadOnlyList<ChallengeTemplate>> GetActiveTemplatesAsync(CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<ChallengeTemplate>>([.. Templates.Where(t => t.IsActive).OrderBy(t => t.Id)]);
+
+    public Task<IReadOnlyList<DailyChallenge>> GetForDateAsync(DateOnly date, CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<DailyChallenge>>([.. Daily.Where(d => d.Date == date).OrderBy(d => d.Id)]);
+
+    public Task AddForDateAsync(DateOnly date, IReadOnlyList<int> templateIds, CancellationToken cancellationToken)
+    {
+        AddCalls++;
+        foreach (var id in templateIds.Where(id => !Daily.Any(d => d.Date == date && d.ChallengeTemplateId == id)))
+            Daily.Add(new DailyChallenge
+            {
+                Id = Daily.Count + 1,
+                ChallengeTemplateId = id,
+                Template = Templates.Single(t => t.Id == id),
+                Date = date
+            });
+        return Task.CompletedTask;
+    }
+
+    public Task<IReadOnlyDictionary<int, DateTimeOffset>> GetCompletedAsync(
+        Guid userId, IReadOnlyCollection<int> dailyChallengeIds, CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyDictionary<int, DateTimeOffset>>(progression.Records
+            .OfType<UserDailyChallenge>()
+            .Where(u => u.UserId == userId && dailyChallengeIds.Contains(u.DailyChallengeId))
+            .ToDictionary(u => u.DailyChallengeId, u => u.CompletedAt));
+
+    public Task<DailyActivity> GetActivityAsync(Guid userId, DateTimeOffset from, DateTimeOffset to, CancellationToken cancellationToken) =>
+        Task.FromResult(Activity);
+
+    public Task<(IReadOnlyList<UserDailyChallenge> Items, int TotalItems)> GetHistoryAsync(
+        Guid userId, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var mine = progression.Records.OfType<UserDailyChallenge>()
+            .Where(u => u.UserId == userId)
+            .OrderByDescending(u => u.CompletedAt)
+            .Select(u =>
+            {
+                u.DailyChallenge = Daily.Single(d => d.Id == u.DailyChallengeId);
+                return u;
+            })
+            .ToList();
+        return Task.FromResult<(IReadOnlyList<UserDailyChallenge>, int)>(
+            ([.. mine.Skip((page - 1) * pageSize).Take(pageSize)], mine.Count));
+    }
+}
+
+public static class TestProgression
+{
+    /// <summary>ProgressionService com fakes. Sem modelos de desafio, nenhum desafio é gerado nem concluído.</summary>
+    public static ProgressionService Create(
+        FakeProgressionRepository repository,
+        FakeAchievementRepository achievements,
+        TimeProvider timeProvider,
+        FakeChallengeRepository? challenges = null) =>
+        new(
+            repository,
+            achievements,
+            new DailyChallengeService(challenges ?? new FakeChallengeRepository(repository), timeProvider, new PageQueryParametersValidator()),
+            timeProvider);
+}
+
+/// <summary>Relógio controlado pelo teste (ex.: simular a virada do dia).</summary>
+public sealed class FixedTimeProvider(DateTimeOffset now) : TimeProvider
+{
+    private DateTimeOffset _now = now;
+    public override DateTimeOffset GetUtcNow() => _now;
+    public void Advance(TimeSpan by) => _now += by;
 }

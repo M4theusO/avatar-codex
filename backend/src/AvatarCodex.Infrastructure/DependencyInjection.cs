@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<IUserCollectionRepository, UserCollectionRepository>();
         services.AddScoped<IAchievementRepository, AchievementRepository>();
         services.AddScoped<IQuizRepository, QuizRepository>();
+        services.AddScoped<IChallengeRepository, ChallengeRepository>();
 
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         services.AddSingleton<ITokenService, JwtTokenService>();

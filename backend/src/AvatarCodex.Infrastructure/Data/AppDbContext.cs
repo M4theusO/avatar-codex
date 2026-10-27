@@ -26,6 +26,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TimeProvider t
     public DbSet<QuestionOption> QuestionOptions => Set<QuestionOption>();
     public DbSet<UserQuizAttempt> QuizAttempts => Set<UserQuizAttempt>();
     public DbSet<UserQuizAnswer> QuizAnswers => Set<UserQuizAnswer>();
+    public DbSet<ChallengeTemplate> ChallengeTemplates => Set<ChallengeTemplate>();
+    public DbSet<DailyChallenge> DailyChallenges => Set<DailyChallenge>();
+    public DbSet<UserDailyChallenge> UserDailyChallenges => Set<UserDailyChallenge>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

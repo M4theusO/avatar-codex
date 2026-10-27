@@ -11,6 +11,7 @@ public class DashboardService(
     IUserCollectionRepository collection,
     AchievementService achievements,
     QuizService quizzes,
+    DailyChallengeService challenges,
     TimeProvider timeProvider)
 {
     public const int RecentAchievementsCount = 3;
@@ -25,6 +26,7 @@ public class DashboardService(
             ?? throw new UnauthorizedException(AuthService.InvalidSessionMessage);
 
         var statistics = await collection.GetStatisticsAsync(userId, cancellationToken);
+        var dailyChallenges = await challenges.GetTodayAsync(userId, cancellationToken);
 
         var userAchievements = await achievements.GetForUserAsync(userId, cancellationToken);
         var recentAchievements = userAchievements
@@ -48,6 +50,7 @@ public class DashboardService(
         return new DashboardDto(
             user.ToDto(),
             statistics,
+            dailyChallenges,
             recentAchievements,
             DashboardRules.NextAchievement(userAchievements),
             [.. discoveries.Select(d => d.ToDto())],

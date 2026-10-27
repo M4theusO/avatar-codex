@@ -1,0 +1,66 @@
+[
+  {
+    "code": "DISCOVER_3_CHARACTERS",
+    "title": "Descubra 3 personagens",
+    "description": "Abra a página de 3 personagens que você ainda não conhece.",
+    "challengeType": "DiscoverCharacters",
+    "targetValue": 3,
+    "experienceReward": 30
+  },
+  {
+    "code": "DISCOVER_5_CHARACTERS",
+    "title": "Descubra 5 personagens",
+    "description": "Abra a página de 5 personagens que você ainda não conhece.",
+    "challengeType": "DiscoverCharacters",
+    "targetValue": 5,
+    "experienceReward": 40
+  },
+  {
+    "code": "EXPLORE_NATION",
+    "title": "Explore uma nação",
+    "description": "Descubra uma nação que você ainda não visitou.",
+    "challengeType": "DiscoverNations",
+    "targetValue": 1,
+    "experienceReward": 30
+  },
+  {
+    "code": "EXPLORE_2_NATIONS",
+    "title": "Explore 2 nações",
+    "description": "Descubra 2 nações que você ainda não visitou.",
+    "challengeType": "DiscoverNations",
+    "targetValue": 2,
+    "experienceReward": 40
+  },
+  {
+    "code": "COMPLETE_QUIZ",
+    "title": "Complete um quiz",
+    "description": "Responda todas as perguntas de um quiz. Refazer um quiz também vale.",
+    "challengeType": "CompleteQuizzes",
+    "targetValue": 1,
+    "experienceReward": 30
+  },
+  {
+    "code": "COMPLETE_2_QUIZZES",
+    "title": "Complete 2 quizzes diferentes",
+    "description": "Responda todas as perguntas de 2 quizzes diferentes.",
+    "challengeType": "CompleteQuizzes",
+    "targetValue": 2,
+    "experienceReward": 40
+  },
+  {
+    "code": "QUIZ_80_PERCENT",
+    "title": "Acerte 80% de um quiz",
+    "description": "Termine um quiz com pelo menos 80% de acertos.",
+    "challengeType": "QuizScoreAtLeast",
+    "targetValue": 80,
+    "experienceReward": 30
+  },
+  {
+    "code": "QUIZ_PERFECT",
+    "title": "Gabarite um quiz",
+    "description": "Acerte todas as perguntas de um quiz.",
+    "challengeType": "QuizScoreAtLeast",
+    "targetValue": 100,
+    "experienceReward": 50
+  }
+]

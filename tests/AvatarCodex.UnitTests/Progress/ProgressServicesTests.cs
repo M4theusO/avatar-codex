@@ -22,7 +22,7 @@ public class ProgressServicesTests
 
     public ProgressServicesTests()
     {
-        _progression = new ProgressionService(_progressionRepository, new FakeAchievementRepository(_progressionRepository), TimeProvider.System);
+        _progression = TestProgression.Create(_progressionRepository, new FakeAchievementRepository(_progressionRepository), TimeProvider.System);
         _discoveries = new DiscoveryService(_content, _content, _collection, _progression, TimeProvider.System, new PageQueryParametersValidator());
         _favorites = new FavoriteService(_content, _collection, TimeProvider.System, new PageQueryParametersValidator());
     }

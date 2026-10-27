@@ -104,7 +104,12 @@ public class QuizService(
             grants.Add(new ExperienceGrant(ExperienceType.QuizPerfect, quiz.Id, $"Gabaritou o quiz {quiz.Title}"));
 
         var reward = await progression.GrantAllAsync(userId, grants, cancellationToken);
-        var quizXp = reward is null ? 0 : reward.XpGained - reward.AchievementsUnlocked.Sum(a => a.ExperienceReward);
+        // O reward soma tudo o que o evento rendeu; o histórico do quiz guarda só o XP do próprio quiz.
+        var quizXp = reward is null
+            ? 0
+            : reward.XpGained
+              - reward.AchievementsUnlocked.Sum(a => a.ExperienceReward)
+              - reward.ChallengesCompleted.Sum(c => c.ExperienceReward);
         if (quizXp > 0)
             await quizzes.SetExperienceEarnedAsync(attempt.Id, quizXp, cancellationToken);
 

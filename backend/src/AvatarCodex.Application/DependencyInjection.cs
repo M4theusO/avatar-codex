@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddScoped<AchievementService>();
         services.AddScoped<QuizService>();
         services.AddScoped<DashboardService>();
+        services.AddScoped<DailyChallengeService>();
 
         return services;
     }
