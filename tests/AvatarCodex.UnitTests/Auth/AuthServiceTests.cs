@@ -25,7 +25,7 @@ public class AuthServiceTests
         _achievements = new FakeAchievementRepository(_progression);
         _service = new AuthService(
             _users, new FakePasswordHasher(), new FakeTokenService(),
-            new ProgressionService(_progression, _achievements, _time), _time,
+            TestProgression.Create(_progression, _achievements, _time), _time,
             new RegisterRequestValidator(), new LoginRequestValidator());
     }
 
@@ -246,10 +246,4 @@ public class AuthServiceTests
         public string HashRefreshToken(string refreshToken) => $"hash:{refreshToken}";
     }
 
-    private sealed class FixedTimeProvider(DateTimeOffset now) : TimeProvider
-    {
-        private DateTimeOffset _now = now;
-        public override DateTimeOffset GetUtcNow() => _now;
-        public void Advance(TimeSpan by) => _now += by;
-    }
 }

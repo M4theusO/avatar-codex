@@ -21,6 +21,5 @@ public interface IAchievementRepository
     /// <summary>Conquistas já desbloqueadas pelo usuário: id → data do desbloqueio.</summary>
     Task<IReadOnlyDictionary<int, DateTimeOffset>> GetUnlockedAsync(Guid userId, CancellationToken cancellationToken);
 
-    /// <summary>Desafios ainda não existem: ficam em 0 até a Fase 11.</summary>
     Task<ProgressMetrics> GetMetricsAsync(Guid userId, CancellationToken cancellationToken);
 }

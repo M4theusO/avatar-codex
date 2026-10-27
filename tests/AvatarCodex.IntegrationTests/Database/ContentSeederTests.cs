@@ -89,7 +89,8 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
             Abilities = data.Abilities,
             Characters = [.. data.Characters.Select(c => c.Name == "Aang" ? changed : c)],
             Achievements = [.. data.Achievements.Select(a => a.Code == "CURIOUS" ? a with { ExperienceReward = 75 } : a)],
-            Quizzes = [.. data.Quizzes.Select(q => q.Title == "O Time Avatar" ? SwapCorrectOption(q) : q)]
+            Quizzes = [.. data.Quizzes.Select(q => q.Title == "O Time Avatar" ? SwapCorrectOption(q) : q)],
+            Challenges = [.. data.Challenges.Select(c => c.Code == "QUIZ_PERFECT" ? c with { IsActive = false } : c)]
         };
 
         await using (var second = database.CreateContext())
@@ -101,6 +102,8 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
         Assert.True(aang.UpdatedAt > aang.CreatedAt);
         Assert.Equal(75, (await check.Achievements.SingleAsync(a => a.Code == "CURIOUS")).ExperienceReward);
         Assert.Equal(data.Achievements.Count, await check.Achievements.CountAsync());
+        Assert.False((await check.ChallengeTemplates.SingleAsync(c => c.Code == "QUIZ_PERFECT")).IsActive);
+        Assert.Equal(data.Challenges.Count, await check.ChallengeTemplates.CountAsync());
 
         // A resposta correta da 1ª pergunta mudou da 2ª para a 1ª opção sem violar "uma correta por pergunta".
         var options = await check.QuestionOptions

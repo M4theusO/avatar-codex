@@ -1,12 +1,10 @@
 namespace AvatarCodex.Application.DTOs;
 
-/// <summary>
-/// Tudo o que a página inicial do usuário mostra, numa única chamada (RF-DASH-01).
-/// Os desafios do dia entram na Fase 11.
-/// </summary>
+/// <summary>Tudo o que a página inicial do usuário mostra, numa única chamada (RF-DASH-01).</summary>
 public record DashboardDto(
     UserDto User,
     UserStatisticsDto Statistics,
+    DailyChallengesDto DailyChallenges,
     /// <summary>Desbloqueadas, mais recentes primeiro.</summary>
     IReadOnlyList<UserAchievementDto> RecentAchievements,
     /// <summary>A bloqueada mais perto da meta; null quando todas foram desbloqueadas.</summary>

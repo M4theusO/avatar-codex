@@ -116,6 +116,21 @@ public class ContentSeeder(AppDbContext db)
             achievement.ExperienceReward = seed.ExperienceReward;
         }
 
+        var challenges = await db.ChallengeTemplates.ToDictionaryAsync(c => c.Code, cancellationToken);
+        foreach (var seed in data.Challenges)
+        {
+            var challenge = GetOrAdd(challenges, seed.Code, () => new ChallengeTemplate
+            {
+                Code = seed.Code, Title = seed.Title, Description = seed.Description
+            });
+            challenge.Title = seed.Title;
+            challenge.Description = seed.Description;
+            challenge.ChallengeType = seed.ChallengeType;
+            challenge.TargetValue = seed.TargetValue;
+            challenge.ExperienceReward = seed.ExperienceReward;
+            challenge.IsActive = seed.IsActive;
+        }
+
         await db.SaveChangesAsync(cancellationToken);
         await SeedQuizzesAsync(data.Quizzes, cancellationToken);
     }

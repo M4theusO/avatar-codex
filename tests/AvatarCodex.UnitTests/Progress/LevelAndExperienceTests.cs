@@ -53,7 +53,7 @@ public class LevelAndExperienceTests
         var repository = new FakeProgressionRepository();
         var userId = Guid.NewGuid();
         repository.TotalXp[userId] = 165;
-        var progression = new ProgressionService(repository, new FakeAchievementRepository(repository), TimeProvider.System);
+        var progression = TestProgression.Create(repository, new FakeAchievementRepository(repository), TimeProvider.System);
 
         var reward = await progression.GrantAsync(userId, ExperienceType.CharacterDiscovered, 1, "Descobriu Aang", new object());
 

@@ -98,6 +98,25 @@ public class ContentSeedDataTests
         Assert.Contains(errors, e => e.Contains("pergunta 3 precisa de pelo menos 2 opções"));
     }
 
+    [Fact]
+    public void Validate_ReportsInvalidChallenges()
+    {
+        var data = MinimalData();
+        data.Challenges.AddRange(
+        [
+            new ChallengeSeed("QUIZ", "Quiz", "Descrição", ChallengeType.QuizScoreAtLeast, 120, 30, IsActive: false),
+            new ChallengeSeed("QUIZ", "Quiz", "Descrição", ChallengeType.CompleteQuizzes, 0, 0, IsActive: false)
+        ]);
+
+        var errors = data.Validate();
+
+        Assert.Contains(errors, e => e.Contains("desafio (código) duplicado: 'QUIZ'"));
+        Assert.Contains(errors, e => e.Contains("no máximo 100"));
+        Assert.Contains(errors, e => e.Contains("precisa de targetValue > 0"));
+        Assert.Contains(errors, e => e.Contains("deve dar XP"));
+        Assert.Contains(errors, e => e.Contains("pelo menos um desafio ativo"));
+    }
+
     private static AchievementSeed Achievement(string code, AchievementRequirementType type, int value, int xp) =>
         new(code, code, "Descrição", "award", type, value, xp);
 
@@ -110,7 +129,8 @@ public class ContentSeedDataTests
         Abilities = [],
         Characters = [.. characters],
         Achievements = [],
-        Quizzes = []
+        Quizzes = [],
+        Challenges = []
     };
 
     private static CharacterSeed Character(

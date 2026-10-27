@@ -23,6 +23,15 @@ public record AchievementSeed(
     int RequirementValue,
     int ExperienceReward);
 
+public record ChallengeSeed(
+    string Code,
+    string Title,
+    string Description,
+    ChallengeType ChallengeType,
+    int TargetValue,
+    int ExperienceReward,
+    bool IsActive = true);
+
 public record QuizOptionSeed(string Text, bool IsCorrect);
 
 public record QuestionSeed(string Text, string? Explanation, List<QuizOptionSeed> Options);
@@ -66,6 +75,7 @@ public class ContentSeedData
     public required List<CharacterSeed> Characters { get; init; }
     public required List<AchievementSeed> Achievements { get; init; }
     public required List<QuizSeed> Quizzes { get; init; }
+    public required List<ChallengeSeed> Challenges { get; init; }
 
     public static ContentSeedData Load() => new()
     {
@@ -76,7 +86,8 @@ public class ContentSeedData
         Abilities = Read<AbilitySeed>("abilities.json"),
         Characters = Read<CharacterSeed>("characters.json"),
         Achievements = Read<AchievementSeed>("achievements.json"),
-        Quizzes = Read<QuizSeed>("quizzes.json")
+        Quizzes = Read<QuizSeed>("quizzes.json"),
+        Challenges = Read<ChallengeSeed>("challenges.json")
     };
 
     /// <summary>Retorna os problemas encontrados (nomes duplicados ou referências inexistentes).</summary>
@@ -143,6 +154,20 @@ public class ContentSeedData
             if (!usesValue && achievement.RequirementValue != 0)
                 errors.Add($"{owner} não usa requirementValue (deve ser 0).");
         }
+
+        UniqueNames(Challenges.Select(c => c.Code), "desafio (código)", errors);
+        foreach (var challenge in Challenges)
+        {
+            var owner = $"Desafio '{challenge.Code}'";
+            if (challenge.ExperienceReward <= 0)
+                errors.Add($"{owner} deve dar XP (experienceReward > 0).");
+            if (challenge.TargetValue <= 0)
+                errors.Add($"{owner} precisa de targetValue > 0.");
+            if (challenge.ChallengeType == ChallengeType.QuizScoreAtLeast && challenge.TargetValue > 100)
+                errors.Add($"{owner} é uma porcentagem: targetValue deve ser no máximo 100.");
+        }
+        if (!Challenges.Any(c => c.IsActive))
+            errors.Add("É preciso pelo menos um desafio ativo para sortear os desafios do dia.");
 
         UniqueNames(Quizzes.Select(q => q.Title), "quiz", errors);
         foreach (var quiz in Quizzes)

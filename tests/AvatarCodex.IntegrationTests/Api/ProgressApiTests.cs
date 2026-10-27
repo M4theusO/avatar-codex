@@ -93,12 +93,14 @@ public class ProgressApiTests(ContentApiFixture api)
         await Task.WhenAll(page.Items.Select(c => client.PostAsync($"/api/characters/{c.Id}/discovery", null)));
 
         // Todas as requisições avaliam o "Curioso" (10 personagens); só uma pode desbloqueá-lo (RN-05).
-        // 10 (Primeiro passo) + 10 × 10 (descobertas) + 50 (Curioso).
+        // 10 (Primeiro passo) + 10 × 10 (descobertas) + 50 (Curioso), mais o desafio de descobertas do dia, se houver.
         await using var db = api.Database.CreateContext();
         var userId = auth.User.Id;
-        Assert.Equal(160, await db.Users.Where(u => u.Id == userId).Select(u => u.ExperiencePoints).SingleAsync());
+        var transactions = await db.ExperienceTransactions.Where(t => t.UserId == userId).ToListAsync();
+        var challengeXp = transactions.Where(t => t.Type == ExperienceType.ChallengeCompleted).Sum(t => t.Amount);
+        Assert.Equal(160, transactions.Sum(t => t.Amount) - challengeXp);
         Assert.Equal(1, await db.UserAchievements.CountAsync(u => u.UserId == userId && u.Achievement.Code == "CURIOUS"));
-        Assert.Equal(160, await db.ExperienceTransactions.Where(t => t.UserId == userId).SumAsync(t => t.Amount));
+        Assert.Equal(transactions.Sum(t => t.Amount), await db.Users.Where(u => u.Id == userId).Select(u => u.ExperiencePoints).SingleAsync());
     }
 
     [SkippableFact]

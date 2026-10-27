@@ -24,7 +24,7 @@ public class QuizServiceTests
         _achievements = new FakeAchievementRepository(_progression);
         _service = new QuizService(
             _quizzes,
-            new ProgressionService(_progression, _achievements, TimeProvider.System),
+            TestProgression.Create(_progression, _achievements, TimeProvider.System),
             TimeProvider.System,
             new QuizQueryParametersValidator(),
             new PageQueryParametersValidator());
@@ -67,6 +67,34 @@ public class QuizServiceTests
         var attempt = Assert.Single(_quizzes.Attempts);
         Assert.Equal((1, 2), (attempt.Score, attempt.TotalQuestions));
         Assert.Equal([true, false], attempt.Answers.Select(a => a.IsCorrect));
+    }
+
+    [Fact]
+    public async Task Submit_CompletingAChallenge_KeepsOnlyTheQuizXpInTheAttempt()
+    {
+        var challenges = new FakeChallengeRepository(_progression)
+        {
+            Activity = new DailyActivity(0, 0, 1, 50)
+        };
+        challenges.Templates.Add(new ChallengeTemplate
+        {
+            Id = 1, Code = "COMPLETE_QUIZ", Title = "Complete um quiz", Description = "-",
+            ChallengeType = ChallengeType.CompleteQuizzes, TargetValue = 1, ExperienceReward = 30
+        });
+        var service = new QuizService(
+            _quizzes,
+            TestProgression.Create(_progression, _achievements, TimeProvider.System, challenges),
+            TimeProvider.System,
+            new QuizQueryParametersValidator(),
+            new PageQueryParametersValidator());
+
+        var result = await service.SubmitAsync(UserId, 1, HalfRight);
+
+        // O reward traz quiz + desafio; a tentativa guarda só os 20 XP do quiz.
+        Assert.Equal(50, result.Reward!.XpGained);
+        Assert.Equal("Complete um quiz", Assert.Single(result.Reward.ChallengesCompleted).Title);
+        Assert.Equal(20, result.ExperienceEarned);
+        Assert.Equal(20, _quizzes.Attempts.Single().ExperienceEarned);
     }
 
     [Fact]
