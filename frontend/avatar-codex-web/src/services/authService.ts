@@ -1,9 +1,9 @@
-import type { AuthResponse, LoginData, RegisterData } from '../types/auth'
+import type { AuthResponse, LoginData, RegisterData, SessionResult } from '../types/auth'
 import { api, refreshSession, setAccessToken } from './api'
 
-function startSession(data: AuthResponse) {
+function startSession(data: AuthResponse): SessionResult {
   setAccessToken(data.accessToken)
-  return data.user
+  return { user: data.user, reward: data.reward ?? null }
 }
 
 export async function login(data: LoginData) {

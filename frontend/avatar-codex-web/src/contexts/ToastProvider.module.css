@@ -36,11 +36,16 @@
   --toast-color: var(--color-danger);
 }
 
-.reward {
+.reward,
+.achievement {
   --toast-color: var(--color-air);
   background:
     linear-gradient(90deg, color-mix(in srgb, var(--color-air) 14%, transparent), transparent 70%),
     var(--color-surface-raised);
+}
+
+.achievement .message {
+  font-weight: 600;
 }
 
 .icon {

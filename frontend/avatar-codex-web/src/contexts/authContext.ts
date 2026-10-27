@@ -1,13 +1,13 @@
 import { createContext } from 'react'
-import type { LoginData, RegisterData, User } from '../types/auth'
+import type { LoginData, RegisterData, SessionResult, User } from '../types/auth'
 
 export type AuthStatus = 'loading' | 'authenticated' | 'anonymous'
 
 export interface AuthContextValue {
   status: AuthStatus
   user: User | null
-  login: (data: LoginData) => Promise<User>
-  register: (data: RegisterData) => Promise<User>
+  login: (data: LoginData) => Promise<SessionResult>
+  register: (data: RegisterData) => Promise<SessionResult>
   logout: () => Promise<void>
   /** Atualiza o usuário em memória com dados vindos da API (ex.: XP e nível de um `reward`). */
   updateUser: (changes: Partial<User>) => void

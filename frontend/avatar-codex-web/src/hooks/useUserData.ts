@@ -1,5 +1,11 @@
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getDiscoveries, getExperience, getFavorites, getStatistics } from '../services/userService'
+import {
+  getAchievements,
+  getDiscoveries,
+  getExperience,
+  getFavorites,
+  getStatistics,
+} from '../services/userService'
 import { useAuth } from './useAuth'
 
 // Dados do usuário logado: a chave inclui o id, então outro login nunca vê o cache anterior.
@@ -41,6 +47,11 @@ export function useExperienceHistory(page: number) {
 export function useStatistics() {
   const { userId, enabled } = useUserKey()
   return useQuery({ queryKey: ['me', userId, 'statistics'], queryFn: getStatistics, enabled })
+}
+
+export function useAchievements() {
+  const { userId, enabled } = useUserKey()
+  return useQuery({ queryKey: ['me', userId, 'achievements'], queryFn: getAchievements, enabled })
 }
 
 /** Depois de favoritar/descobrir: marcas dos personagens e dados do perfil ficam desatualizados. */

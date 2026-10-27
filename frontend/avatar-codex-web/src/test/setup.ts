@@ -41,7 +41,10 @@ beforeEach(() => {
     discoveredNations: 0,
     totalNations: 5,
     favorites: 0,
+    unlockedAchievements: 0,
+    totalAchievements: 6,
   })
+  vi.mocked(userService.getAchievements).mockResolvedValue([])
 })
 
 afterEach(() => {

@@ -42,6 +42,10 @@ export const routes: RouteObject[] = [
         children: [
           { path: 'profile', lazy: page(() => import('./pages/Profile/ProfilePage')) },
           { path: 'favorites', lazy: page(() => import('./pages/Favorites/FavoritesPage')) },
+          {
+            path: 'achievements',
+            lazy: page(() => import('./pages/Achievements/AchievementsPage')),
+          },
         ],
       },
       { path: '*', lazy: page(() => import('./pages/NotFound/NotFoundPage')) },

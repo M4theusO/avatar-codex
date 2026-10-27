@@ -3,6 +3,7 @@ import type {
   Discovery,
   DiscoveryResult,
   ExperienceTransaction,
+  UserAchievement,
   UserStatistics,
 } from '../types/progress'
 import { api } from './api'
@@ -48,5 +49,10 @@ export async function getExperience(page: number): Promise<PagedResult<Experienc
 
 export async function getStatistics(): Promise<UserStatistics> {
   const { data } = await api.get<UserStatistics>('/api/users/me/statistics')
+  return data
+}
+
+export async function getAchievements(): Promise<UserAchievement[]> {
+  const { data } = await api.get<UserAchievement[]>('/api/users/me/achievements')
   return data
 }
