@@ -31,6 +31,9 @@ public sealed class FakeUserCollectionRepository : IUserCollectionRepository
         Guid userId, int page, int pageSize, CancellationToken cancellationToken) =>
         Task.FromResult<(IReadOnlyList<Character>, int)>(([], Favorites.Count(f => f.UserId == userId)));
 
+    public Task<IReadOnlyList<Character>> GetUndiscoveredCharactersAsync(Guid userId, CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<Character>>([]);
+
     public Task<(IReadOnlyList<DiscoveryEntry> Items, int TotalItems)> GetDiscoveriesAsync(
         Guid userId, int page, int pageSize, CancellationToken cancellationToken) =>
         Task.FromResult<(IReadOnlyList<DiscoveryEntry>, int)>(([], 0));

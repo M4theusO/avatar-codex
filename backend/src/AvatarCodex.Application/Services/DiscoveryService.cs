@@ -69,7 +69,7 @@ public class DiscoveryService(
         var (items, totalItems) = await collection.GetDiscoveriesAsync(userId, query.Page, query.PageSize, cancellationToken);
 
         return new PagedResult<DiscoveryDto>(
-            [.. items.Select(d => new DiscoveryDto(d.Kind, d.Id, d.Name, d.Image.ToDto(), d.Element.ToSummaryDto(), d.DiscoveredAt))],
+            [.. items.Select(d => d.ToDto())],
             query.Page,
             query.PageSize,
             totalItems);

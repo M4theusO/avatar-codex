@@ -90,7 +90,7 @@ public class AuthService(
     {
         var user = await users.GetByIdAsync(userId, cancellationToken)
             ?? throw new UnauthorizedException(InvalidSessionMessage);
-        return ToDto(user);
+        return user.ToDto();
     }
 
     private async Task<RefreshToken?> FindActiveTokenAsync(string? refreshToken, CancellationToken cancellationToken)
@@ -123,27 +123,10 @@ public class AuthService(
 
         var accessToken = tokens.CreateAccessToken(user);
         return new AuthResult(
-            new AuthResponse(accessToken.Token, accessToken.ExpiresInSeconds, ToDto(user)),
+            new AuthResponse(accessToken.Token, accessToken.ExpiresInSeconds, user.ToDto()),
             refreshToken,
             expiresAt);
     }
 
     private static string NormalizeEmail(string? email) => email?.Trim().ToLowerInvariant() ?? "";
-
-    private static UserDto ToDto(User user)
-    {
-        var progress = LevelCalculator.GetProgress(user.ExperiencePoints);
-        return new UserDto(
-            user.Id,
-            user.Username,
-            user.Email,
-            user.AvatarUrl,
-            user.Element.ToSummaryDto(),
-            progress.Level,
-            user.ExperiencePoints,
-            progress.CurrentLevelXp,
-            progress.NextLevelXp,
-            progress.ProgressPercent,
-            user.CreatedAt);
-    }
 }
