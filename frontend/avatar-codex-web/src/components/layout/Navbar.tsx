@@ -1,4 +1,4 @@
-import { Hourglass, House, Landmark, Menu, Users, X } from 'lucide-react'
+import { BookOpenCheck, Hourglass, House, Landmark, Menu, Users, X } from 'lucide-react'
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router'
 import styles from './Navbar.module.css'
@@ -8,6 +8,7 @@ const links = [
   { to: '/', label: 'Início', icon: House, end: true },
   { to: '/characters', label: 'Personagens', icon: Users, end: false },
   { to: '/nations', label: 'Nações', icon: Landmark, end: false },
+  { to: '/quizzes', label: 'Quizzes', icon: BookOpenCheck, end: false },
   { to: '/timeline', label: 'Linha do tempo', icon: Hourglass, end: false },
 ]
 

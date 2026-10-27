@@ -47,6 +47,10 @@ describe('ProfilePage (exploração)', () => {
       favorites: 2,
       unlockedAchievements: 1,
       totalAchievements: 6,
+      completedQuizzes: 1,
+      totalQuizzes: 4,
+      quizAttempts: 3,
+      accuracyPercent: 87,
     })
     vi.mocked(getDiscoveries).mockResolvedValue({
       items: [
@@ -89,6 +93,12 @@ describe('ProfilePage (exploração)', () => {
       'href',
       '/achievements',
     )
+    expect(screen.getByRole('progressbar', { name: 'Quizzes concluídos' })).toHaveAttribute(
+      'aria-valuenow',
+      '1',
+    )
+    expect(screen.getByText('87%')).toBeInTheDocument()
+    expect(screen.getByText('3 tentativas')).toBeInTheDocument()
     expect(await screen.findByRole('link', { name: /Nação do Fogo/ })).toHaveAttribute(
       'href',
       '/nations/4',

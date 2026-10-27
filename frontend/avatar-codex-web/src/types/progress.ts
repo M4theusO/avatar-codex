@@ -62,6 +62,11 @@ export interface UserStatistics {
   favorites: number
   unlockedAchievements: number
   totalAchievements: number
+  completedQuizzes: number
+  totalQuizzes: number
+  quizAttempts: number
+  /** Acertos / respostas em todas as tentativas (0–100); null sem tentativas. */
+  accuracyPercent: number | null
 }
 
 /** Conquista do ponto de vista do usuário: `progress`/`target` vêm prontos do backend. */

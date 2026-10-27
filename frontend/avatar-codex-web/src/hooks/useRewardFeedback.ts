@@ -15,7 +15,8 @@ export function useRewardFeedback() {
   const { showLevelUp } = useLevelUp()
   const announceAchievements = useAchievementToasts()
 
-  return (reward: Reward, message: string) => {
+  /** Sem `message`, só os toasts das conquistas (ex.: quiz refeito que desbloqueou uma conquista). */
+  return (reward: Reward, message?: string) => {
     updateUser({
       experiencePoints: reward.totalXp,
       level: reward.level,
@@ -23,7 +24,7 @@ export function useRewardFeedback() {
       nextLevelXp: reward.nextLevelXp,
       levelProgress: reward.levelProgress,
     })
-    showToast(message, 'reward')
+    if (message) showToast(message, 'reward')
     announceAchievements(reward.achievementsUnlocked)
     if (reward.leveledUp) showLevelUp(reward.level)
   }

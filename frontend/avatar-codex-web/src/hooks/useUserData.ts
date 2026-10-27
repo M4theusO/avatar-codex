@@ -54,12 +54,16 @@ export function useAchievements() {
   return useQuery({ queryKey: ['me', userId, 'achievements'], queryFn: getAchievements, enabled })
 }
 
-/** Depois de favoritar/descobrir: marcas dos personagens e dados do perfil ficam desatualizados. */
+/**
+ * Depois de favoritar, descobrir ou jogar: marcas dos personagens, melhor resultado dos quizzes e
+ * dados do perfil ficam desatualizados.
+ */
 export function useInvalidateUserContent() {
   const queryClient = useQueryClient()
   return () => {
     void queryClient.invalidateQueries({ queryKey: ['characters'] })
     void queryClient.invalidateQueries({ queryKey: ['nations'] })
+    void queryClient.invalidateQueries({ queryKey: ['quizzes'] })
     void queryClient.invalidateQueries({ queryKey: ['me'] })
   }
 }

@@ -30,6 +30,7 @@ export const routes: RouteObject[] = [
       { path: 'nations', lazy: page(() => import('./pages/Nations/NationsPage')) },
       { path: 'nations/:id', lazy: page(() => import('./pages/NationDetails/NationDetailsPage')) },
       { path: 'timeline', lazy: page(() => import('./pages/Timeline/TimelinePage')) },
+      { path: 'quizzes', lazy: page(() => import('./pages/Quizzes/QuizzesPage')) },
       {
         element: <GuestOnly />,
         children: [
@@ -42,6 +43,11 @@ export const routes: RouteObject[] = [
         children: [
           { path: 'profile', lazy: page(() => import('./pages/Profile/ProfilePage')) },
           { path: 'favorites', lazy: page(() => import('./pages/Favorites/FavoritesPage')) },
+          {
+            path: 'quizzes/history',
+            lazy: page(() => import('./pages/QuizHistory/QuizHistoryPage')),
+          },
+          { path: 'quizzes/:id', lazy: page(() => import('./pages/QuizPlay/QuizPlayPage')) },
           {
             path: 'achievements',
             lazy: page(() => import('./pages/Achievements/AchievementsPage')),
