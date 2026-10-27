@@ -64,11 +64,11 @@ describe('getPageItems', () => {
 describe('safeRedirect', () => {
   it.each([
     ['/characters?type=avatar', '/characters?type=avatar'],
-    [null, '/profile'],
-    ['', '/profile'],
-    ['https://evil.example.com', '/profile'],
-    ['//evil.example.com', '/profile'],
-    ['/\\evil.example.com', '/profile'],
+    [null, '/dashboard'],
+    ['', '/dashboard'],
+    ['https://evil.example.com', '/dashboard'],
+    ['//evil.example.com', '/dashboard'],
+    ['/\\evil.example.com', '/dashboard'],
   ])('%s → %s', (value, expected) => {
     expect(safeRedirect(value)).toBe(expected)
   })

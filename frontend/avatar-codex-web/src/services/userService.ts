@@ -1,5 +1,6 @@
 import type { CharacterListItem, PagedResult } from '../types/content'
 import type {
+  Dashboard,
   Discovery,
   DiscoveryResult,
   ExperienceTransaction,
@@ -54,5 +55,10 @@ export async function getStatistics(): Promise<UserStatistics> {
 
 export async function getAchievements(): Promise<UserAchievement[]> {
   const { data } = await api.get<UserAchievement[]>('/api/users/me/achievements')
+  return data
+}
+
+export async function getDashboard(): Promise<Dashboard> {
+  const { data } = await api.get<Dashboard>('/api/users/me/dashboard')
   return data
 }

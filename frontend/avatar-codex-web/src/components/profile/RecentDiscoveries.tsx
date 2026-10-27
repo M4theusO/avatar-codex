@@ -1,6 +1,7 @@
 import { Compass } from 'lucide-react'
 import { Link } from 'react-router'
 import { useRecentDiscoveries } from '../../hooks/useUserData'
+import type { Discovery } from '../../types/progress'
 import { elementStyle } from '../../utils/labels'
 import { ButtonLink } from '../common/Button'
 import CharacterAvatar from '../common/CharacterAvatar'
@@ -31,9 +32,14 @@ export default function RecentDiscoveries() {
     )
   }
 
+  return <DiscoveryList discoveries={data.items} />
+}
+
+/** Descobertas já carregadas (perfil e dashboard). */
+export function DiscoveryList({ discoveries }: { discoveries: Discovery[] }) {
   return (
     <ul className={styles.discoveries}>
-      {data.items.map((discovery) => {
+      {discoveries.map((discovery) => {
         const isCharacter = discovery.kind === 'Character'
         return (
           <li key={`${discovery.kind}-${discovery.id}`}>

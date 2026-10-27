@@ -2,6 +2,8 @@ import { AxiosError, AxiosHeaders } from 'axios'
 import { vi } from 'vitest'
 import { restoreSession } from '../services/authService'
 import type { User } from '../types/auth'
+import type { Dashboard, UserAchievement } from '../types/progress'
+import type { QuizListItem } from '../types/quiz'
 import type {
   CharacterDetails,
   CharacterListItem,
@@ -80,6 +82,62 @@ export function user(overrides: Partial<User> = {}): User {
     nextLevelXp: 100,
     levelProgress: 0,
     createdAt: '2026-10-26T12:00:00Z',
+    ...overrides,
+  }
+}
+
+export function achievement(overrides: Partial<UserAchievement> = {}): UserAchievement {
+  return {
+    id: 1,
+    name: 'Primeiro passo',
+    description: 'Crie sua conta',
+    icon: 'footprints',
+    experienceReward: 10,
+    isUnlocked: true,
+    unlockedAt: '2026-10-26T12:00:00Z',
+    progress: 1,
+    target: 1,
+    ...overrides,
+  }
+}
+
+export function quiz(overrides: Partial<QuizListItem> = {}): QuizListItem {
+  return {
+    id: 1,
+    title: 'O Time Avatar',
+    description: 'Quanto você sabe sobre Aang e seus amigos?',
+    category: 'Personagens',
+    difficulty: 'Easy',
+    image: null,
+    questionCount: 10,
+    bestResult: null,
+    ...overrides,
+  }
+}
+
+/** Dashboard de um usuário que acabou de chegar (sem descobertas, favoritos nem quizzes). */
+export function dashboard(overrides: Partial<Dashboard> = {}): Dashboard {
+  return {
+    user: user(),
+    statistics: {
+      discoveredCharacters: 0,
+      totalCharacters: 37,
+      discoveredNations: 0,
+      totalNations: 5,
+      favorites: 0,
+      unlockedAchievements: 0,
+      totalAchievements: 6,
+      completedQuizzes: 0,
+      totalQuizzes: 4,
+      quizAttempts: 0,
+      accuracyPercent: null,
+    },
+    recentAchievements: [],
+    nextAchievement: null,
+    recentDiscoveries: [],
+    recommendations: [],
+    featuredQuiz: null,
+    favorites: [],
     ...overrides,
   }
 }

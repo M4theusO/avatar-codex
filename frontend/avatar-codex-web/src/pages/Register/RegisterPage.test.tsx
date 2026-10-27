@@ -15,7 +15,7 @@ async function fillForm() {
 }
 
 describe('RegisterPage', () => {
-  it('cria a conta e abre o perfil', async () => {
+  it('cria a conta e abre o painel', async () => {
     vi.mocked(register).mockResolvedValue({ user: user(), reward: null })
     const { router } = renderRoute('/register')
 
@@ -27,7 +27,7 @@ describe('RegisterPage', () => {
       password: 'curta',
       confirmPassword: 'curta',
     })
-    await waitFor(() => expect(router.state.location.pathname).toBe('/profile'))
+    await waitFor(() => expect(router.state.location.pathname).toBe('/dashboard'))
     expect(await screen.findByText('Conta criada! Boas-vindas, toph.')).toBeInTheDocument()
   })
 
