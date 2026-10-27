@@ -9,12 +9,13 @@ namespace AvatarCodex.Infrastructure.Repositories;
 public class ProgressionRepository(AppDbContext db) : IProgressionRepository
 {
     public async Task<int?> SaveWithExperienceAsync(
-        object activityRecord, ExperienceTransaction transaction, CancellationToken cancellationToken)
+        object? activityRecord, ExperienceTransaction transaction, CancellationToken cancellationToken)
     {
         await using var dbTransaction = await db.Database.BeginTransactionAsync(cancellationToken);
         try
         {
-            db.Add(activityRecord);
+            if (activityRecord is not null)
+                db.Add(activityRecord);
             db.ExperienceTransactions.Add(transaction);
             await db.SaveChangesAsync(cancellationToken);
 

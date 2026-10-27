@@ -17,6 +17,7 @@ public class ContentSeedDataTests
         Assert.NotEmpty(data.Abilities);
         Assert.NotEmpty(data.Characters);
         Assert.Contains(data.Achievements, a => a.Code == "FIRST_STEP");
+        Assert.All(data.Quizzes, q => Assert.Equal(10, q.Questions.Count));
     }
 
     [Fact]
@@ -79,6 +80,24 @@ public class ContentSeedDataTests
         Assert.Contains(errors, e => e.Contains("deve dar XP"));
     }
 
+    [Fact]
+    public void Validate_ReportsQuestionsWithoutExactlyOneCorrectOption()
+    {
+        var data = MinimalData();
+        data.Quizzes.Add(new QuizSeed("Quiz", "Descrição", "Personagens", QuizDifficulty.Easy,
+        [
+            new QuestionSeed("Duas corretas?", null, [new("A", true), new("B", true)]),
+            new QuestionSeed("Nenhuma correta?", null, [new("A", false), new("B", false)]),
+            new QuestionSeed("Uma opção só?", null, [new("A", true)])
+        ]));
+
+        var errors = data.Validate();
+
+        Assert.Contains(errors, e => e.Contains("pergunta 1 deve ter exatamente uma opção correta"));
+        Assert.Contains(errors, e => e.Contains("pergunta 2 deve ter exatamente uma opção correta"));
+        Assert.Contains(errors, e => e.Contains("pergunta 3 precisa de pelo menos 2 opções"));
+    }
+
     private static AchievementSeed Achievement(string code, AchievementRequirementType type, int value, int xp) =>
         new(code, code, "Descrição", "award", type, value, xp);
 
@@ -90,7 +109,8 @@ public class ContentSeedDataTests
         Series = [],
         Abilities = [],
         Characters = [.. characters],
-        Achievements = []
+        Achievements = [],
+        Quizzes = []
     };
 
     private static CharacterSeed Character(

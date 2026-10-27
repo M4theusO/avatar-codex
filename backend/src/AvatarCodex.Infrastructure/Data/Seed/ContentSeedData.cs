@@ -23,6 +23,12 @@ public record AchievementSeed(
     int RequirementValue,
     int ExperienceReward);
 
+public record QuizOptionSeed(string Text, bool IsCorrect);
+
+public record QuestionSeed(string Text, string? Explanation, List<QuizOptionSeed> Options);
+
+public record QuizSeed(string Title, string Description, string Category, QuizDifficulty Difficulty, List<QuestionSeed> Questions);
+
 public record RelationshipSeed(string Related, RelationshipType Type, string? Description);
 
 public record CharacterSeed(
@@ -59,6 +65,7 @@ public class ContentSeedData
     public required List<AbilitySeed> Abilities { get; init; }
     public required List<CharacterSeed> Characters { get; init; }
     public required List<AchievementSeed> Achievements { get; init; }
+    public required List<QuizSeed> Quizzes { get; init; }
 
     public static ContentSeedData Load() => new()
     {
@@ -68,7 +75,8 @@ public class ContentSeedData
         Series = Read<SeriesSeed>("series.json"),
         Abilities = Read<AbilitySeed>("abilities.json"),
         Characters = Read<CharacterSeed>("characters.json"),
-        Achievements = Read<AchievementSeed>("achievements.json")
+        Achievements = Read<AchievementSeed>("achievements.json"),
+        Quizzes = Read<QuizSeed>("quizzes.json")
     };
 
     /// <summary>Retorna os problemas encontrados (nomes duplicados ou referências inexistentes).</summary>
@@ -134,6 +142,22 @@ public class ContentSeedData
                 errors.Add($"{owner} precisa de requirementValue > 0.");
             if (!usesValue && achievement.RequirementValue != 0)
                 errors.Add($"{owner} não usa requirementValue (deve ser 0).");
+        }
+
+        UniqueNames(Quizzes.Select(q => q.Title), "quiz", errors);
+        foreach (var quiz in Quizzes)
+        {
+            if (quiz.Questions.Count == 0)
+                errors.Add($"Quiz '{quiz.Title}' não tem perguntas.");
+
+            foreach (var (question, index) in quiz.Questions.Select((q, i) => (q, i + 1)))
+            {
+                var owner = $"Quiz '{quiz.Title}', pergunta {index}";
+                if (question.Options.Count < 2)
+                    errors.Add($"{owner} precisa de pelo menos 2 opções.");
+                if (question.Options.Count(o => o.IsCorrect) != 1)
+                    errors.Add($"{owner} deve ter exatamente uma opção correta.");
+            }
         }
 
         return errors;

@@ -17,9 +17,10 @@ public class UsersController(
     UserService users,
     FavoriteService favorites,
     DiscoveryService discoveries,
-    AchievementService achievements) : ControllerBase
+    AchievementService achievements,
+    QuizService quizzes) : ControllerBase
 {
-    /// <summary>Descobertas, total de personagens/nações, favoritos e conquistas.</summary>
+    /// <summary>Descobertas, favoritos, conquistas, quizzes e taxa de acerto.</summary>
     [HttpGet("statistics")]
     [ProducesResponseType<UserStatisticsDto>(StatusCodes.Status200OK)]
     public async Task<ActionResult<UserStatisticsDto>> GetStatistics(CancellationToken cancellationToken) =>
@@ -40,6 +41,14 @@ public class UsersController(
     public async Task<ActionResult<PagedResult<ExperienceTransactionDto>>> GetExperience(
         [FromQuery] PageQueryParameters query, CancellationToken cancellationToken) =>
         Ok(await users.GetExperienceHistoryAsync(User.GetUserId(), query, cancellationToken));
+
+    /// <summary>Tentativas de quiz (todas, inclusive as sem XP), mais recentes primeiro.</summary>
+    [HttpGet("quiz-history")]
+    [ProducesResponseType<PagedResult<QuizAttemptDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PagedResult<QuizAttemptDto>>> GetQuizHistory(
+        [FromQuery] PageQueryParameters query, CancellationToken cancellationToken) =>
+        Ok(await quizzes.GetHistoryAsync(User.GetUserId(), query, cancellationToken));
 
     /// <summary>Catálogo completo: desbloqueadas com data, bloqueadas com progresso.</summary>
     [HttpGet("achievements")]

@@ -1,5 +1,6 @@
 using AvatarCodex.Application.DTOs;
 using AvatarCodex.Application.Interfaces;
+using AvatarCodex.Application.Services;
 using AvatarCodex.Domain.Entities;
 using AvatarCodex.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -109,13 +110,23 @@ public class UserCollectionRepository(AppDbContext db) : IUserCollectionReposito
         return (items, totalItems);
     }
 
-    public async Task<UserStatisticsDto> GetStatisticsAsync(Guid userId, CancellationToken cancellationToken) =>
-        new(
+    public async Task<UserStatisticsDto> GetStatisticsAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var attempts = db.QuizAttempts.Where(a => a.UserId == userId);
+        var answered = await attempts.SumAsync(a => a.TotalQuestions, cancellationToken);
+        var correct = await attempts.SumAsync(a => a.Score, cancellationToken);
+
+        return new(
             DiscoveredCharacters: await db.CharacterDiscoveries.CountAsync(d => d.UserId == userId, cancellationToken),
             TotalCharacters: await db.Characters.CountAsync(cancellationToken),
             DiscoveredNations: await db.NationDiscoveries.CountAsync(d => d.UserId == userId, cancellationToken),
             TotalNations: await db.Nations.CountAsync(cancellationToken),
             Favorites: await db.FavoriteCharacters.CountAsync(f => f.UserId == userId, cancellationToken),
             UnlockedAchievements: await db.UserAchievements.CountAsync(a => a.UserId == userId, cancellationToken),
-            TotalAchievements: await db.Achievements.CountAsync(cancellationToken));
+            TotalAchievements: await db.Achievements.CountAsync(cancellationToken),
+            CompletedQuizzes: await attempts.Select(a => a.QuizId).Distinct().CountAsync(cancellationToken),
+            TotalQuizzes: await db.Quizzes.CountAsync(cancellationToken),
+            QuizAttempts: await attempts.CountAsync(cancellationToken),
+            AccuracyPercent: answered == 0 ? null : QuizScoring.Percentage(correct, answered));
+    }
 }

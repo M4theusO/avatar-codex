@@ -404,6 +404,133 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.ToTable("nations", (string)null);
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.Question", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Explanation")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("explanation");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("image_url");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer")
+                        .HasColumnName("order");
+
+                    b.Property<int>("QuizId")
+                        .HasColumnType("integer")
+                        .HasColumnName("quiz_id");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("text");
+
+                    b.HasKey("Id")
+                        .HasName("pk_questions");
+
+                    b.HasIndex("QuizId", "Order")
+                        .IsUnique()
+                        .HasDatabaseName("ix_questions_quiz_id_order");
+
+                    b.ToTable("questions", (string)null);
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.QuestionOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_correct");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer")
+                        .HasColumnName("order");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("question_id");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("text");
+
+                    b.HasKey("Id")
+                        .HasName("pk_question_options");
+
+                    b.HasIndex("QuestionId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_question_options_question_id_single_correct")
+                        .HasFilter("is_correct");
+
+                    b.HasIndex("QuestionId", "Order")
+                        .IsUnique()
+                        .HasDatabaseName("ix_question_options_question_id_order");
+
+                    b.ToTable("question_options", (string)null);
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.Quiz", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("category");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Difficulty")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("difficulty");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id")
+                        .HasName("pk_quizzes");
+
+                    b.HasIndex("Title")
+                        .IsUnique()
+                        .HasDatabaseName("ix_quizzes_title");
+
+                    b.ToTable("quizzes", (string)null);
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
@@ -654,6 +781,87 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.ToTable("nation_discoveries", (string)null);
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserQuizAnswer", b =>
+                {
+                    b.Property<int>("UserQuizAttemptId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_quiz_attempt_id");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("question_id");
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_correct");
+
+                    b.Property<int>("SelectedOptionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("selected_option_id");
+
+                    b.HasKey("UserQuizAttemptId", "QuestionId")
+                        .HasName("pk_quiz_answers");
+
+                    b.HasIndex("QuestionId")
+                        .HasDatabaseName("ix_quiz_answers_question_id");
+
+                    b.HasIndex("SelectedOptionId")
+                        .HasDatabaseName("ix_quiz_answers_selected_option_id");
+
+                    b.ToTable("quiz_answers", (string)null);
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserQuizAttempt", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CompletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completed_at");
+
+                    b.Property<int>("ExperienceEarned")
+                        .HasColumnType("integer")
+                        .HasColumnName("experience_earned");
+
+                    b.Property<int>("QuizId")
+                        .HasColumnType("integer")
+                        .HasColumnName("quiz_id");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer")
+                        .HasColumnName("score");
+
+                    b.Property<int>("TotalQuestions")
+                        .HasColumnType("integer")
+                        .HasColumnName("total_questions");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_quiz_attempts");
+
+                    b.HasIndex("QuizId")
+                        .HasDatabaseName("ix_quiz_attempts_quiz_id");
+
+                    b.HasIndex("UserId", "CompletedAt")
+                        .IsDescending(false, true)
+                        .HasDatabaseName("ix_quiz_attempts_user_id_completed_at");
+
+                    b.ToTable("quiz_attempts", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_user_quiz_attempts_experience_non_negative", "experience_earned >= 0");
+
+                            t.HasCheckConstraint("ck_user_quiz_attempts_score_range", "score >= 0 AND score <= total_questions");
+                        });
+                });
+
             modelBuilder.Entity("character_abilities", b =>
                 {
                     b.Property<int>("AbilityId")
@@ -894,6 +1102,62 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.Navigation("SymbolImage");
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.Question", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.Quiz", null)
+                        .WithMany("Questions")
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_questions_quizzes_quiz_id");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.QuestionOption", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.Question", null)
+                        .WithMany("Options")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_question_options_questions_question_id");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.Quiz", b =>
+                {
+                    b.OwnsOne("AvatarCodex.Domain.ValueObjects.ImageInfo", "Image", b1 =>
+                        {
+                            b1.Property<int>("QuizId")
+                                .HasColumnType("integer")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Credit")
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)")
+                                .HasColumnName("image_credit");
+
+                            b1.Property<string>("SourceUrl")
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("image_source_url");
+
+                            b1.Property<string>("Url")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("image_url");
+
+                            b1.HasKey("QuizId");
+
+                            b1.ToTable("quizzes");
+
+                            b1.WithOwner()
+                                .HasForeignKey("QuizId")
+                                .HasConstraintName("fk_quizzes_quizzes_id");
+                        });
+
+                    b.Navigation("Image");
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("AvatarCodex.Domain.Entities.User", "User")
@@ -993,6 +1257,49 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.Navigation("Nation");
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserQuizAnswer", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.Question", null)
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_quiz_answers_questions_question_id");
+
+                    b.HasOne("AvatarCodex.Domain.Entities.QuestionOption", null)
+                        .WithMany()
+                        .HasForeignKey("SelectedOptionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_quiz_answers_question_options_selected_option_id");
+
+                    b.HasOne("AvatarCodex.Domain.Entities.UserQuizAttempt", null)
+                        .WithMany("Answers")
+                        .HasForeignKey("UserQuizAttemptId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_quiz_answers_quiz_attempts_user_quiz_attempt_id");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserQuizAttempt", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.Quiz", "Quiz")
+                        .WithMany()
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_quiz_attempts_quizzes_quiz_id");
+
+                    b.HasOne("AvatarCodex.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_quiz_attempts_users_user_id");
+
+                    b.Navigation("Quiz");
+                });
+
             modelBuilder.Entity("character_abilities", b =>
                 {
                     b.HasOne("AvatarCodex.Domain.Entities.Ability", null)
@@ -1059,9 +1366,24 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.Navigation("Characters");
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.Question", b =>
+                {
+                    b.Navigation("Options");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.Quiz", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.User", b =>
                 {
                     b.Navigation("RefreshTokens");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserQuizAttempt", b =>
+                {
+                    b.Navigation("Answers");
                 });
 #pragma warning restore 612, 618
         }

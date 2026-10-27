@@ -50,7 +50,12 @@ public record UserStatisticsDto(
     int TotalNations,
     int Favorites,
     int UnlockedAchievements,
-    int TotalAchievements);
+    int TotalAchievements,
+    int CompletedQuizzes,
+    int TotalQuizzes,
+    int QuizAttempts,
+    /// <summary>Respostas corretas / respondidas em todas as tentativas (0–100); null sem tentativas.</summary>
+    int? AccuracyPercent);
 
 /// <summary>Paginação simples das listas do usuário (?page=1&amp;pageSize=12).</summary>
 public class PageQueryParameters

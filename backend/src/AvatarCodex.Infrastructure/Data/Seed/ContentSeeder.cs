@@ -117,6 +117,69 @@ public class ContentSeeder(AppDbContext db)
         }
 
         await db.SaveChangesAsync(cancellationToken);
+        await SeedQuizzesAsync(data.Quizzes, cancellationToken);
+    }
+
+    /// <summary>
+    /// Perguntas e opções são sincronizadas pela posição (Order). Nunca são removidas: respostas de
+    /// tentativas antigas apontam para elas. A opção correta é marcada numa segunda gravação, para a
+    /// troca de resposta não violar o índice de "uma correta por pergunta" no meio da primeira.
+    /// </summary>
+    private async Task SeedQuizzesAsync(List<QuizSeed> seeds, CancellationToken cancellationToken)
+    {
+        var quizzes = await db.Quizzes
+            .Include(q => q.Questions)
+            .ThenInclude(q => q.Options)
+            .AsSplitQuery()
+            .ToDictionaryAsync(q => q.Title, cancellationToken);
+
+        var correctOptions = new List<QuestionOption>();
+        foreach (var seed in seeds)
+        {
+            var quiz = GetOrAdd(quizzes, seed.Title, () => new Quiz
+            {
+                Title = seed.Title, Description = seed.Description, Category = seed.Category
+            });
+            quiz.Description = seed.Description;
+            quiz.Category = seed.Category;
+            quiz.Difficulty = seed.Difficulty;
+
+            foreach (var (questionSeed, order) in seed.Questions.Select((q, i) => (q, i + 1)))
+            {
+                var question = quiz.Questions.FirstOrDefault(q => q.Order == order);
+                if (question is null)
+                {
+                    question = new Question { Text = questionSeed.Text, Order = order };
+                    quiz.Questions.Add(question);
+                }
+                question.Text = questionSeed.Text;
+                question.Explanation = questionSeed.Explanation;
+
+                foreach (var (optionSeed, optionOrder) in questionSeed.Options.Select((o, i) => (o, i + 1)))
+                {
+                    var option = question.Options.FirstOrDefault(o => o.Order == optionOrder);
+                    if (option is null)
+                    {
+                        option = new QuestionOption { Text = optionSeed.Text, Order = optionOrder };
+                        question.Options.Add(option);
+                    }
+                    option.Text = optionSeed.Text;
+                    if (!optionSeed.IsCorrect)
+                        option.IsCorrect = false;
+                    else if (!option.IsCorrect)
+                        correctOptions.Add(option);
+                }
+
+                // Opções que saíram do seed ficam no banco (tentativas antigas apontam para elas), mas nunca corretas.
+                foreach (var stale in question.Options.Where(o => o.Order > questionSeed.Options.Count))
+                    stale.IsCorrect = false;
+            }
+        }
+        await db.SaveChangesAsync(cancellationToken);
+
+        foreach (var option in correctOptions)
+            option.IsCorrect = true;
+        await db.SaveChangesAsync(cancellationToken);
     }
 
     private TEntity GetOrAdd<TEntity>(Dictionary<string, TEntity> existing, string key, Func<TEntity> create)

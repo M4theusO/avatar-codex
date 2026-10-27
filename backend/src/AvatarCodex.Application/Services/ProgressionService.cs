@@ -6,6 +6,12 @@ using AvatarCodex.Domain.Enums;
 namespace AvatarCodex.Application.Services;
 
 /// <summary>
+/// Uma recompensa de XP de um evento. ActivityRecord (ex.: a descoberta) é gravado junto com o XP,
+/// na mesma transação; null quando a atividade já foi gravada antes (ex.: a tentativa de quiz).
+/// </summary>
+public record ExperienceGrant(ExperienceType Type, int SourceId, string Description, object? ActivityRecord = null);
+
+/// <summary>
 /// Ponto único de ganho de progresso (docs/architecture.md §3.3): XP idempotente, subida de nível e
 /// conquistas. Desafios (Fase 11) entram aqui depois.
 /// </summary>
@@ -16,7 +22,7 @@ public class ProgressionService(
 {
     /// <summary>
     /// Registra a atividade, concede o XP do tipo e avalia as conquistas. Retorna null quando a recompensa
-    /// já tinha sido concedida (chamada repetida ou simultânea): sem XP e sem erro.
+    /// já tinha sido concedida (chamada repetida ou simultânea): sem XP, sem erro e sem nova avaliação.
     /// </summary>
     public async Task<RewardResult?> GrantAsync(
         Guid userId,
@@ -26,32 +32,72 @@ public class ProgressionService(
         object activityRecord,
         CancellationToken cancellationToken = default)
     {
-        var amount = ExperienceRewards.For(type);
-        var totalXp = await repository.SaveWithExperienceAsync(
-            activityRecord, NewTransaction(userId, type, sourceId, amount, description), cancellationToken);
-        if (totalXp is null)
-            return null;
+        var granted = await GrantExperienceAsync(userId, [new ExperienceGrant(type, sourceId, description, activityRecord)], cancellationToken);
+        return granted.TotalXp is null
+            ? null
+            : await FinishAsync(userId, granted.XpGained, granted.TotalXp, cancellationToken);
+    }
 
-        var (unlocked, totalAfterAchievements) = await UnlockAchievementsAsync(userId, cancellationToken);
-        return BuildResult(
-            previousXp: totalXp.Value - amount,
-            totalXp: totalAfterAchievements ?? totalXp.Value,
-            xpGained: amount + unlocked.Sum(a => a.ExperienceReward),
-            unlocked);
+    /// <summary>
+    /// Evento com várias recompensas possíveis (ex.: quiz concluído + perfeito). As já concedidas são
+    /// ignoradas, e as conquistas são avaliadas mesmo sem XP novo: o evento pode ter mudado as métricas
+    /// (ex.: respostas corretas de um quiz refeito). Retorna null quando nada foi ganho.
+    /// </summary>
+    public async Task<RewardResult?> GrantAllAsync(
+        Guid userId, IReadOnlyList<ExperienceGrant> grants, CancellationToken cancellationToken = default)
+    {
+        var granted = await GrantExperienceAsync(userId, grants, cancellationToken);
+        return await FinishAsync(userId, granted.XpGained, granted.TotalXp, cancellationToken);
     }
 
     /// <summary>
     /// Avalia as conquistas fora de um evento de XP (ex.: "Primeiro passo" no cadastro).
     /// Retorna null quando nada foi desbloqueado.
     /// </summary>
-    public async Task<RewardResult?> EvaluateAchievementsAsync(Guid userId, CancellationToken cancellationToken = default)
+    public Task<RewardResult?> EvaluateAchievementsAsync(Guid userId, CancellationToken cancellationToken = default) =>
+        FinishAsync(userId, 0, null, cancellationToken);
+
+    private async Task<(int XpGained, int? TotalXp)> GrantExperienceAsync(
+        Guid userId, IReadOnlyList<ExperienceGrant> grants, CancellationToken cancellationToken)
     {
-        var (unlocked, totalXp) = await UnlockAchievementsAsync(userId, cancellationToken);
-        if (totalXp is null)
+        var xpGained = 0;
+        int? totalXp = null;
+
+        foreach (var grant in grants)
+        {
+            var amount = ExperienceRewards.For(grant.Type);
+            var total = await repository.SaveWithExperienceAsync(
+                grant.ActivityRecord, NewTransaction(userId, grant.Type, grant.SourceId, amount, grant.Description), cancellationToken);
+            if (total is null)
+                continue;
+
+            xpGained += amount;
+            totalXp = total;
+        }
+
+        return (xpGained, totalXp);
+    }
+
+    /// <summary>Desbloqueia as conquistas e monta o reward; null quando não houve XP nem conquista.</summary>
+    private async Task<RewardResult?> FinishAsync(Guid userId, int xpGained, int? totalXp, CancellationToken cancellationToken)
+    {
+        var (unlocked, totalAfterAchievements) = await UnlockAchievementsAsync(userId, cancellationToken);
+        var finalXp = totalAfterAchievements ?? totalXp;
+        if (finalXp is null)
             return null;
 
-        var xpGained = unlocked.Sum(a => a.ExperienceReward);
-        return BuildResult(totalXp.Value - xpGained, totalXp.Value, xpGained, unlocked);
+        var totalGained = xpGained + unlocked.Sum(a => a.ExperienceReward);
+        var progress = LevelCalculator.GetProgress(finalXp.Value);
+        return new RewardResult(
+            totalGained,
+            finalXp.Value,
+            progress.Level,
+            progress.Level > LevelCalculator.GetLevel(finalXp.Value - totalGained),
+            progress.CurrentLevelXp,
+            progress.NextLevelXp,
+            progress.ProgressPercent,
+            unlocked,
+            []);
     }
 
     /// <summary>
@@ -105,20 +151,4 @@ public class ProgressionService(
         Description = description,
         CreatedAt = timeProvider.GetUtcNow()
     };
-
-    private static RewardResult BuildResult(
-        int previousXp, int totalXp, int xpGained, IReadOnlyList<AchievementRewardDto> unlocked)
-    {
-        var progress = LevelCalculator.GetProgress(totalXp);
-        return new RewardResult(
-            xpGained,
-            totalXp,
-            progress.Level,
-            progress.Level > LevelCalculator.GetLevel(previousXp),
-            progress.CurrentLevelXp,
-            progress.NextLevelXp,
-            progress.ProgressPercent,
-            unlocked,
-            []);
-    }
 }

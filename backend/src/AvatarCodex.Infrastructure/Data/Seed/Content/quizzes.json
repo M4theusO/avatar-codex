@@ -1,0 +1,434 @@
+[
+  {
+    "title": "O Time Avatar",
+    "description": "Quanto você conhece Aang e os amigos que o acompanharam na jornada para derrotar o Senhor do Fogo?",
+    "category": "Personagens",
+    "difficulty": "Easy",
+    "questions": [
+      {
+        "text": "Qual é o nome do bisão voador de Aang?",
+        "explanation": "Appa é o bisão voador de Aang desde antes da guerra; Momo é o lêmure que se junta ao grupo no Templo do Ar do Sul.",
+        "options": [
+          { "text": "Momo", "isCorrect": false },
+          { "text": "Appa", "isCorrect": true },
+          { "text": "Naga", "isCorrect": false },
+          { "text": "Pabu", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "De onde vêm Katara e Sokka?",
+        "explanation": "Os irmãos vivem na Tribo da Água do Sul, onde encontram Aang congelado num iceberg.",
+        "options": [
+          { "text": "Tribo da Água do Sul", "isCorrect": true },
+          { "text": "Tribo da Água do Norte", "isCorrect": false },
+          { "text": "Ilha Kyoshi", "isCorrect": false },
+          { "text": "Ba Sing Se", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Por quanto tempo Aang ficou congelado no iceberg?",
+        "explanation": "Aang ficou cem anos preso no gelo, em estado de suspensão, enquanto a guerra se espalhava pelo mundo.",
+        "options": [
+          { "text": "10 anos", "isCorrect": false },
+          { "text": "50 anos", "isCorrect": false },
+          { "text": "1.000 anos", "isCorrect": false },
+          { "text": "100 anos", "isCorrect": true }
+        ]
+      },
+      {
+        "text": "Como Toph Beifong, que é cega, consegue \"ver\" o que está ao seu redor?",
+        "explanation": "Toph sente as vibrações do chão com os pés, o que lhe dá uma percepção precisa de tudo o que toca a terra.",
+        "options": [
+          { "text": "Ouvindo o vento", "isCorrect": false },
+          { "text": "Sentindo as vibrações da terra", "isCorrect": true },
+          { "text": "Usando dobra de água", "isCorrect": false },
+          { "text": "Guiada por Appa", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Quem é o tio de Zuko, que o acompanha durante o exílio?",
+        "explanation": "Iroh, irmão mais velho de Ozai, acompanha o sobrinho no exílio e é seu grande mentor.",
+        "options": [
+          { "text": "Ozai", "isCorrect": false },
+          { "text": "Zhao", "isCorrect": false },
+          { "text": "Iroh", "isCorrect": true },
+          { "text": "Azulon", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Qual é o nome da irmã de Zuko?",
+        "explanation": "Azula é a irmã mais nova de Zuko, prodígio da dobra de fogo e capaz de gerar relâmpagos.",
+        "options": [
+          { "text": "Azula", "isCorrect": true },
+          { "text": "Mai", "isCorrect": false },
+          { "text": "Ty Lee", "isCorrect": false },
+          { "text": "Ursa", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Qual arma Sokka forjou com o metal de um meteorito?",
+        "explanation": "Com o mestre Piandao, Sokka forjou uma espada negra com o metal de um meteorito.",
+        "options": [
+          { "text": "Um bumerangue", "isCorrect": false },
+          { "text": "Uma lança", "isCorrect": false },
+          { "text": "Uma clava", "isCorrect": false },
+          { "text": "Uma espada", "isCorrect": true }
+        ]
+      },
+      {
+        "text": "Qual elemento Aang aprende logo depois de dominar o ar?",
+        "explanation": "O Avatar aprende os elementos na ordem do ciclo: ar, água, terra e fogo. Katara foi sua primeira professora.",
+        "options": [
+          { "text": "Terra", "isCorrect": false },
+          { "text": "Água", "isCorrect": true },
+          { "text": "Fogo", "isCorrect": false },
+          { "text": "Energia", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Quem se torna a professora de dobra de terra de Aang?",
+        "explanation": "Depois de procurar um mestre que soubesse ouvir a terra, Aang encontra Toph, a melhor dobradora de terra da época.",
+        "options": [
+          { "text": "Toph Beifong", "isCorrect": true },
+          { "text": "Rei Bumi", "isCorrect": false },
+          { "text": "Avatar Kyoshi", "isCorrect": false },
+          { "text": "Haru", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Qual é o nome do lêmure que viaja com o grupo?",
+        "explanation": "Momo é um lêmure-alado que Aang encontra no Templo do Ar do Sul.",
+        "options": [
+          { "text": "Appa", "isCorrect": false },
+          { "text": "Bosco", "isCorrect": false },
+          { "text": "Momo", "isCorrect": true },
+          { "text": "Hawky", "isCorrect": false }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Os Quatro Elementos",
+    "description": "Técnicas, mestres e origens das dobras de água, terra, fogo e ar.",
+    "category": "Dobra",
+    "difficulty": "Medium",
+    "questions": [
+      {
+        "text": "Com quem os primeiros dobradores de fogo aprenderam a dobrar?",
+        "explanation": "Os dragões foram os primeiros dobradores de fogo, como Aang e Zuko descobrem com Ran e Shaw.",
+        "options": [
+          { "text": "Os bisões voadores", "isCorrect": false },
+          { "text": "Os texugos-toupeira", "isCorrect": false },
+          { "text": "Os dragões", "isCorrect": true },
+          { "text": "A Lua", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Com quem os primeiros dobradores de terra aprenderam?",
+        "explanation": "Os texugos-toupeira, cegos como Toph, foram os primeiros dobradores de terra.",
+        "options": [
+          { "text": "Os texugos-toupeira", "isCorrect": true },
+          { "text": "Os dragões", "isCorrect": false },
+          { "text": "Os bisões voadores", "isCorrect": false },
+          { "text": "Os espíritos da floresta", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Qual técnica Iroh criou ao estudar os dobradores de água?",
+        "explanation": "Inspirado no fluxo da dobra de água, Iroh criou a técnica de redirecionar relâmpagos, que depois ensinou a Zuko.",
+        "options": [
+          { "text": "Dobra de lava", "isCorrect": false },
+          { "text": "Respiração de fogo", "isCorrect": false },
+          { "text": "Dobra de sangue", "isCorrect": false },
+          { "text": "Redirecionar relâmpagos", "isCorrect": true }
+        ]
+      },
+      {
+        "text": "Quem inventou a dobra de metal?",
+        "explanation": "Toph percebeu as impurezas de terra dentro do metal e foi a primeira a dobrá-lo.",
+        "options": [
+          { "text": "Lin Beifong", "isCorrect": false },
+          { "text": "Toph Beifong", "isCorrect": true },
+          { "text": "Suyin Beifong", "isCorrect": false },
+          { "text": "Rei Bumi", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Quem ensinou a Katara a dobra de sangue?",
+        "explanation": "Hama, uma dobradora de água do Sul presa pela Nação do Fogo, criou a técnica e a ensinou a Katara.",
+        "options": [
+          { "text": "Mestre Pakku", "isCorrect": false },
+          { "text": "Yugoda", "isCorrect": false },
+          { "text": "Hama", "isCorrect": true },
+          { "text": "Huu", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Qual mestre ensinou dobra de água a Aang e Katara no Polo Norte?",
+        "explanation": "Mestre Pakku, que de início se recusou a ensinar uma mulher, acabou reconhecendo o talento de Katara.",
+        "options": [
+          { "text": "Mestre Pakku", "isCorrect": true },
+          { "text": "Hama", "isCorrect": false },
+          { "text": "Tonraq", "isCorrect": false },
+          { "text": "Chefe Arnook", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Qual dobra é proibida por permitir controlar o corpo de outra pessoa?",
+        "explanation": "A dobra de sangue controla a água dentro do corpo de alguém e é considerada proibida.",
+        "options": [
+          { "text": "Dobra de metal", "isCorrect": false },
+          { "text": "Dobra de lava", "isCorrect": false },
+          { "text": "Dobra de plantas", "isCorrect": false },
+          { "text": "Dobra de sangue", "isCorrect": true }
+        ]
+      },
+      {
+        "text": "O que o Estado Avatar permite ao Avatar?",
+        "explanation": "No Estado Avatar, o Avatar acessa o poder e o conhecimento de todas as suas vidas passadas.",
+        "options": [
+          { "text": "Acessar o poder e o conhecimento das vidas passadas", "isCorrect": true },
+          { "text": "Dobrar sem precisar de chi", "isCorrect": false },
+          { "text": "Voltar no tempo", "isCorrect": false },
+          { "text": "Dobrar os quatro elementos ao mesmo tempo sem treino", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Qual era a habilidade do assassino conhecido como Homem-Combustão?",
+        "explanation": "Com a tatuagem do terceiro olho, ele criava explosões apenas concentrando o olhar.",
+        "options": [
+          { "text": "Dobra de lava", "isCorrect": false },
+          { "text": "Criar explosões com a mente", "isCorrect": true },
+          { "text": "Bloquear o chi com golpes", "isCorrect": false },
+          { "text": "Dobra de metal", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Quem foi o mentor de Aang no Templo do Ar do Sul?",
+        "explanation": "O Monge Gyatso criou Aang e o ensinou a dobrar o ar.",
+        "options": [
+          { "text": "Tenzin", "isCorrect": false },
+          { "text": "Guru Pathik", "isCorrect": false },
+          { "text": "Monge Gyatso", "isCorrect": true },
+          { "text": "Avatar Yangchen", "isCorrect": false }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "A Guerra dos Cem Anos",
+    "description": "Batalhas, governantes e segredos do conflito que marcou a geração de Aang.",
+    "category": "História",
+    "difficulty": "Hard",
+    "questions": [
+      {
+        "text": "Qual Senhor do Fogo iniciou a Guerra dos Cem Anos?",
+        "explanation": "O Senhor do Fogo Sozin começou a guerra e atacou os Nômades do Ar.",
+        "options": [
+          { "text": "Azulon", "isCorrect": false },
+          { "text": "Ozai", "isCorrect": false },
+          { "text": "Sozin", "isCorrect": true },
+          { "text": "Zuko", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "De que fenômeno Sozin se aproveitou para atacar os Nômades do Ar?",
+        "explanation": "A passagem de um cometa, depois chamado de Cometa de Sozin, multiplicou o poder dos dobradores de fogo.",
+        "options": [
+          { "text": "A passagem de um cometa", "isCorrect": true },
+          { "text": "Um eclipse solar", "isCorrect": false },
+          { "text": "A lua cheia", "isCorrect": false },
+          { "text": "O solstício de inverno", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Quem foi o Avatar imediatamente anterior a Aang?",
+        "explanation": "Roku, da Nação do Fogo, foi o Avatar antes de Aang e amigo de juventude de Sozin.",
+        "options": [
+          { "text": "Kyoshi", "isCorrect": false },
+          { "text": "Kuruk", "isCorrect": false },
+          { "text": "Yangchen", "isCorrect": false },
+          { "text": "Roku", "isCorrect": true }
+        ]
+      },
+      {
+        "text": "O que acontece com os dobradores de fogo durante um eclipse solar?",
+        "explanation": "Durante o eclipse, os dobradores de fogo perdem a dobra por alguns minutos.",
+        "options": [
+          { "text": "Ficam mais fortes", "isCorrect": false },
+          { "text": "Perdem a dobra temporariamente", "isCorrect": true },
+          { "text": "Passam a gerar relâmpagos", "isCorrect": false },
+          { "text": "Nada muda", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Como ficou conhecida a invasão à capital da Nação do Fogo durante o eclipse?",
+        "explanation": "A invasão do Dia do Sol Negro aproveitou o eclipse, mas Azula já esperava o ataque.",
+        "options": [
+          { "text": "Cerco do Norte", "isCorrect": false },
+          { "text": "Queda de Ba Sing Se", "isCorrect": false },
+          { "text": "Dia do Sol Negro", "isCorrect": true },
+          { "text": "Batalha do Polo Sul", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Qual organização controlava Ba Sing Se e proibia falar da guerra dentro das muralhas?",
+        "explanation": "A Dai Li, polícia secreta da cidade, mantinha a guerra em segredo e obedecia a Long Feng.",
+        "options": [
+          { "text": "Dai Li", "isCorrect": true },
+          { "text": "Ordem da Lótus Branca", "isCorrect": false },
+          { "text": "Guerreiras Kyoshi", "isCorrect": false },
+          { "text": "Rebeldes da Liberdade", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Iroh pertence a qual sociedade secreta formada por mestres de todas as nações?",
+        "explanation": "A Ordem da Lótus Branca reúne mestres como Iroh, Pakku, Bumi e Piandao, acima das fronteiras entre nações.",
+        "options": [
+          { "text": "Dai Li", "isCorrect": false },
+          { "text": "Lótus Vermelha", "isCorrect": false },
+          { "text": "Ordem da Lótus Branca", "isCorrect": true },
+          { "text": "Guerreiros do Sol", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Como Aang derrotou o Senhor do Fogo Ozai sem matá-lo?",
+        "explanation": "Aang usou a dobra de energia, aprendida com a tartaruga-leão, para tirar a dobra de Ozai.",
+        "options": [
+          { "text": "Prendendo-o no Mundo Espiritual", "isCorrect": false },
+          { "text": "Usando dobra de sangue", "isCorrect": false },
+          { "text": "Congelando-o num iceberg", "isCorrect": false },
+          { "text": "Tirando a dobra dele com a dobra de energia", "isCorrect": true }
+        ]
+      },
+      {
+        "text": "Contando os anos no iceberg, qual é a idade de Aang durante a série?",
+        "explanation": "Aang tinha 12 anos quando foi congelado e passou 100 anos no gelo: 112 anos ao todo.",
+        "options": [
+          { "text": "12", "isCorrect": false },
+          { "text": "112", "isCorrect": true },
+          { "text": "100", "isCorrect": false },
+          { "text": "120", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Qual cidade do Reino da Terra, protegida por enormes muralhas, caiu durante a guerra?",
+        "explanation": "Ba Sing Se resistiu por séculos, mas caiu com o golpe de Azula e da Dai Li.",
+        "options": [
+          { "text": "Ba Sing Se", "isCorrect": true },
+          { "text": "Omashu", "isCorrect": false },
+          { "text": "Gaoling", "isCorrect": false },
+          { "text": "Cidade República", "isCorrect": false }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "A Lenda de Korra",
+    "description": "Cidade República, novos vilões e a origem do Avatar: teste o que você sabe da era de Korra.",
+    "category": "A Lenda de Korra",
+    "difficulty": "Medium",
+    "questions": [
+      {
+        "text": "Qual é o nome do cão-urso-polar de Korra?",
+        "explanation": "Naga acompanha Korra desde a infância na Tribo da Água do Sul.",
+        "options": [
+          { "text": "Pabu", "isCorrect": false },
+          { "text": "Naga", "isCorrect": true },
+          { "text": "Appa", "isCorrect": false },
+          { "text": "Juji", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Quem ensina dobra de ar a Korra?",
+        "explanation": "Tenzin, filho de Aang e Katara, é o único mestre de dobra de ar no início da série.",
+        "options": [
+          { "text": "Jinora", "isCorrect": false },
+          { "text": "Aang", "isCorrect": false },
+          { "text": "Tenzin", "isCorrect": true },
+          { "text": "Meelo", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Qual esporte Mako e Bolin disputam na Cidade República?",
+        "explanation": "O pro-bending reúne trios com um dobrador de água, um de terra e um de fogo numa arena.",
+        "options": [
+          { "text": "Pai Sho", "isCorrect": false },
+          { "text": "Air ball", "isCorrect": false },
+          { "text": "Agni Kai", "isCorrect": false },
+          { "text": "Pro-bending", "isCorrect": true }
+        ]
+      },
+      {
+        "text": "Quem é o líder mascarado dos Equalistas?",
+        "explanation": "Amon dizia tirar a dobra das pessoas para criar igualdade, mas escondia ser um dobrador de sangue.",
+        "options": [
+          { "text": "Amon", "isCorrect": true },
+          { "text": "Zaheer", "isCorrect": false },
+          { "text": "Unalaq", "isCorrect": false },
+          { "text": "Hiroshi Sato", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Qual integrante da Lótus Vermelha ganhou dobra de ar depois da Convergência Harmônica?",
+        "explanation": "Zaheer, líder da Lótus Vermelha, passou a dobrar o ar e mais tarde aprendeu até a voar.",
+        "options": [
+          { "text": "P'Li", "isCorrect": false },
+          { "text": "Ming-Hua", "isCorrect": false },
+          { "text": "Zaheer", "isCorrect": true },
+          { "text": "Ghazan", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Qual é o espírito da luz que se uniu ao Avatar?",
+        "explanation": "Raava, espírito da luz e da paz, se fundiu a Wan e deu origem ao ciclo do Avatar.",
+        "options": [
+          { "text": "Vaatu", "isCorrect": false },
+          { "text": "Raava", "isCorrect": true },
+          { "text": "Tui", "isCorrect": false },
+          { "text": "La", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Quem foi o primeiro Avatar?",
+        "explanation": "Wan foi o primeiro Avatar, dez mil anos antes de Korra.",
+        "options": [
+          { "text": "Kyoshi", "isCorrect": false },
+          { "text": "Yangchen", "isCorrect": false },
+          { "text": "Roku", "isCorrect": false },
+          { "text": "Wan", "isCorrect": true }
+        ]
+      },
+      {
+        "text": "Quem comanda a polícia de dobradores de metal da Cidade República no início da série?",
+        "explanation": "Lin Beifong, filha de Toph, chefia a polícia de dobradores de metal criada pela mãe.",
+        "options": [
+          { "text": "Lin Beifong", "isCorrect": true },
+          { "text": "Suyin Beifong", "isCorrect": false },
+          { "text": "Opal", "isCorrect": false },
+          { "text": "Kya", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "Que nome Kuvira deu ao Estado que formou com o antigo Reino da Terra?",
+        "explanation": "Kuvira reunificou o território à força e o transformou no Império da Terra.",
+        "options": [
+          { "text": "República Unida", "isCorrect": false },
+          { "text": "Reino da Terra Livre", "isCorrect": false },
+          { "text": "Império da Terra", "isCorrect": true },
+          { "text": "Zaofu", "isCorrect": false }
+        ]
+      },
+      {
+        "text": "De qual tribo Korra vem?",
+        "explanation": "Korra nasceu na Tribo da Água do Sul, filha de Tonraq e Senna.",
+        "options": [
+          { "text": "Tribo da Água do Norte", "isCorrect": false },
+          { "text": "Tribo da Água do Sul", "isCorrect": true },
+          { "text": "Tribo do Pântano", "isCorrect": false },
+          { "text": "Nômades do Ar", "isCorrect": false }
+        ]
+      }
+    ]
+  }
+]

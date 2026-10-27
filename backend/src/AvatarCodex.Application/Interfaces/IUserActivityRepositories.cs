@@ -7,11 +7,11 @@ namespace AvatarCodex.Application.Interfaces;
 public interface IProgressionRepository
 {
     /// <summary>
-    /// Grava o registro da atividade (ex.: a descoberta) e a ExperienceTransaction numa única transação
+    /// Grava o registro da atividade (ex.: a descoberta; opcional) e a ExperienceTransaction numa única transação
     /// e soma o XP ao total do usuário. Retorna o novo total, ou null se a atividade/recompensa já
     /// existia: a violação de unicidade significa "já concedido" (RN-05, RN-12).
     /// </summary>
-    Task<int?> SaveWithExperienceAsync(object activityRecord, ExperienceTransaction transaction, CancellationToken cancellationToken);
+    Task<int?> SaveWithExperienceAsync(object? activityRecord, ExperienceTransaction transaction, CancellationToken cancellationToken);
 }
 
 /// <summary>Quais personagens de uma lista o usuário favoritou e descobriu.</summary>
