@@ -18,8 +18,18 @@ public class UsersController(
     FavoriteService favorites,
     DiscoveryService discoveries,
     AchievementService achievements,
-    QuizService quizzes) : ControllerBase
+    QuizService quizzes,
+    DashboardService dashboard) : ControllerBase
 {
+    /// <summary>
+    /// Página inicial do usuário numa chamada: progresso, estatísticas, conquistas, descobertas,
+    /// recomendações, quiz em destaque e favoritos.
+    /// </summary>
+    [HttpGet("dashboard")]
+    [ProducesResponseType<DashboardDto>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<DashboardDto>> GetDashboard(CancellationToken cancellationToken) =>
+        Ok(await dashboard.GetAsync(User.GetUserId(), cancellationToken));
+
     /// <summary>Descobertas, favoritos, conquistas, quizzes e taxa de acerto.</summary>
     [HttpGet("statistics")]
     [ProducesResponseType<UserStatisticsDto>(StatusCodes.Status200OK)]

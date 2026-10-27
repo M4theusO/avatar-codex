@@ -66,6 +66,15 @@ public class UserCollectionRepository(AppDbContext db) : IUserCollectionReposito
         return ([.. items.Select(f => f.Character)], totalItems);
     }
 
+    public async Task<IReadOnlyList<Character>> GetUndiscoveredCharactersAsync(Guid userId, CancellationToken cancellationToken) =>
+        await db.Characters
+            .AsNoTracking()
+            .Include(c => c.Nation)
+            .Include(c => c.Element)
+            .Where(c => !db.CharacterDiscoveries.Any(d => d.UserId == userId && d.CharacterId == c.Id))
+            .OrderBy(c => c.Id)
+            .ToListAsync(cancellationToken);
+
     public async Task<(IReadOnlyList<DiscoveryEntry> Items, int TotalItems)> GetDiscoveriesAsync(
         Guid userId, int page, int pageSize, CancellationToken cancellationToken)
     {

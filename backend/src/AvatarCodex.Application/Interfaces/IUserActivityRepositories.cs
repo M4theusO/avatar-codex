@@ -54,6 +54,9 @@ public interface IUserCollectionRepository
     Task<(IReadOnlyList<Character> Items, int TotalItems)> GetFavoritesAsync(
         Guid userId, int page, int pageSize, CancellationToken cancellationToken);
 
+    /// <summary>Personagens que o usuário ainda não descobriu, por id, com Nation e Element carregados.</summary>
+    Task<IReadOnlyList<Character>> GetUndiscoveredCharactersAsync(Guid userId, CancellationToken cancellationToken);
+
     /// <summary>Descobertas de personagens e nações, mais recentes primeiro.</summary>
     Task<(IReadOnlyList<DiscoveryEntry> Items, int TotalItems)> GetDiscoveriesAsync(
         Guid userId, int page, int pageSize, CancellationToken cancellationToken);

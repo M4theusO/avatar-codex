@@ -20,6 +20,7 @@ public static class DependencyInjection
         services.AddScoped<UserService>();
         services.AddScoped<AchievementService>();
         services.AddScoped<QuizService>();
+        services.AddScoped<DashboardService>();
 
         return services;
     }
