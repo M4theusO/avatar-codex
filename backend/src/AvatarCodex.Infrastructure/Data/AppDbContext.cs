@@ -21,6 +21,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TimeProvider t
     public DbSet<ExperienceTransaction> ExperienceTransactions => Set<ExperienceTransaction>();
     public DbSet<Achievement> Achievements => Set<Achievement>();
     public DbSet<UserAchievement> UserAchievements => Set<UserAchievement>();
+    public DbSet<Quiz> Quizzes => Set<Quiz>();
+    public DbSet<Question> Questions => Set<Question>();
+    public DbSet<QuestionOption> QuestionOptions => Set<QuestionOption>();
+    public DbSet<UserQuizAttempt> QuizAttempts => Set<UserQuizAttempt>();
+    public DbSet<UserQuizAnswer> QuizAnswers => Set<UserQuizAnswer>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

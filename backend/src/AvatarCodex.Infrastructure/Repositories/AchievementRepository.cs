@@ -30,5 +30,12 @@ public class AchievementRepository(AppDbContext db) : IAchievementRepository
             ExperiencePoints: await db.Users.Where(u => u.Id == userId).Select(u => u.ExperiencePoints).SingleAsync(cancellationToken),
             CharactersDiscovered: await db.CharacterDiscoveries.CountAsync(d => d.UserId == userId, cancellationToken),
             NationsDiscovered: await db.NationDiscoveries.CountAsync(d => d.UserId == userId, cancellationToken),
-            TotalNations: await db.Nations.CountAsync(cancellationToken));
+            TotalNations: await db.Nations.CountAsync(cancellationToken),
+            QuizzesCompleted: await db.QuizAttempts.Where(a => a.UserId == userId).Select(a => a.QuizId).Distinct().CountAsync(cancellationToken),
+            PerfectQuizzes: await db.QuizAttempts
+                .Where(a => a.UserId == userId && a.Score == a.TotalQuestions)
+                .Select(a => a.QuizId).Distinct().CountAsync(cancellationToken),
+            // Todas as tentativas contam, inclusive quizzes refeitos (ver docs/development-phases.md, Fase 9).
+            CorrectAnswers: await db.QuizAnswers.CountAsync(
+                a => a.IsCorrect && db.QuizAttempts.Any(t => t.Id == a.UserQuizAttemptId && t.UserId == userId), cancellationToken));
 }

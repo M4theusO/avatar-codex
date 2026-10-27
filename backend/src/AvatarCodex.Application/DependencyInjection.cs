@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<FavoriteService>();
         services.AddScoped<UserService>();
         services.AddScoped<AchievementService>();
+        services.AddScoped<QuizService>();
 
         return services;
     }

@@ -36,7 +36,7 @@ public sealed class FakeUserCollectionRepository : IUserCollectionRepository
         Task.FromResult<(IReadOnlyList<DiscoveryEntry>, int)>(([], 0));
 
     public Task<UserStatisticsDto> GetStatisticsAsync(Guid userId, CancellationToken cancellationToken) =>
-        Task.FromResult(new UserStatisticsDto(0, 0, 0, 0, Favorites.Count(f => f.UserId == userId), 0, 0));
+        Task.FromResult(new UserStatisticsDto(0, 0, 0, 0, Favorites.Count(f => f.UserId == userId), 0, 0, 0, 0, 0, null));
 
     public List<ExperienceTransaction> Experience { get; } = [];
 
@@ -59,14 +59,15 @@ public sealed class FakeProgressionRepository : IProgressionRepository
     public List<ExperienceTransaction> Transactions { get; } = [];
     public Dictionary<Guid, int> TotalXp { get; } = [];
 
-    public Task<int?> SaveWithExperienceAsync(object activityRecord, ExperienceTransaction transaction, CancellationToken cancellationToken)
+    public Task<int?> SaveWithExperienceAsync(object? activityRecord, ExperienceTransaction transaction, CancellationToken cancellationToken)
     {
         var alreadyGranted = Transactions.Any(t =>
             t.UserId == transaction.UserId && t.Type == transaction.Type && t.SourceId == transaction.SourceId);
         if (alreadyGranted)
             return Task.FromResult<int?>(null);
 
-        Records.Add(activityRecord);
+        if (activityRecord is not null)
+            Records.Add(activityRecord);
         Transactions.Add(transaction);
         TotalXp[transaction.UserId] = TotalXp.GetValueOrDefault(transaction.UserId) + transaction.Amount;
         return Task.FromResult<int?>(TotalXp[transaction.UserId]);
@@ -82,6 +83,8 @@ public sealed class FakeAchievementRepository(FakeProgressionRepository progress
     public List<Achievement> Catalog { get; } = [];
     public int TotalNations { get; set; } = 5;
     public int CorrectAnswers { get; set; }
+    public int QuizzesCompleted { get; set; }
+    public int PerfectQuizzes { get; set; }
 
     public Task<IReadOnlyList<Achievement>> GetCatalogAsync(CancellationToken cancellationToken) =>
         Task.FromResult<IReadOnlyList<Achievement>>(Catalog);
@@ -98,5 +101,7 @@ public sealed class FakeAchievementRepository(FakeProgressionRepository progress
             progression.Records.OfType<UserCharacterDiscovery>().Count(d => d.UserId == userId),
             progression.Records.OfType<UserNationDiscovery>().Count(d => d.UserId == userId),
             TotalNations,
+            QuizzesCompleted: QuizzesCompleted,
+            PerfectQuizzes: PerfectQuizzes,
             CorrectAnswers: CorrectAnswers));
 }

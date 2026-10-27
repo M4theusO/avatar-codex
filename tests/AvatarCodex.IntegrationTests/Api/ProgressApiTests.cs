@@ -143,6 +143,7 @@ public class ProgressApiTests(ContentApiFixture api)
     [InlineData("GET", "/api/users/me/statistics")]
     [InlineData("GET", "/api/users/me/experience")]
     [InlineData("GET", "/api/users/me/achievements")]
+    [InlineData("GET", "/api/users/me/quiz-history")]
     public async Task UserEndpoints_WithoutToken_ReturnUnauthorized(string method, string url)
     {
         api.Database.SkipIfUnavailable();
