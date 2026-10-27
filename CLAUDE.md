@@ -13,9 +13,9 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 ## Status atual
 
-**Fase 10 — Dashboard** (próxima, ainda não iniciada). Fases 0 a 9 concluídas (`docs/development-phases.md`).
+**Fase 11 — Desafios diários** (próxima, ainda não iniciada). Fases 0 a 10 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-27):** Fase 9 concluída, commitada e publicada no GitHub (`main` = `origin/main`). Nenhum trabalho pendente.
+**Onde paramos (2026-10-27):** Fase 10 concluída e commitada localmente; **push pendente** (aguardando o usuário pedir).
 - **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas, 4 quizzes × 10 perguntas), API com busca/filtros/paginação, tratamento global de erros.
 - **Frontend base:** layout, navbar (completa a partir de 1280px), rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, Timeline (placeholder), 404.
 - **Autenticação:** cadastro, login, logout, JWT (15 min, em memória) + refresh rotacionado em cookie httpOnly, sessão recuperada ao recarregar, rotas protegidas, usuário demo (README).
@@ -23,9 +23,10 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 - **XP e níveis:** `ProgressionService` (`GrantAsync` para um evento simples, `GrantAllAsync` para várias recompensas) + `ExperienceRewards` + `LevelCalculator` (fórmula só no backend), XpBar, modal de novo nível, histórico de XP.
 - **Conquistas:** `AchievementRules` (desbloqueio e progresso num só lugar), avaliação após cada evento sem cascata (RN-08), desbloqueio único pelo banco (RN-05), "Primeiro passo" no cadastro, `/achievements`, toasts. Só "Mestre dos elementos" espera os desafios (Fase 11).
 - **Quiz:** `QuizService` (correção no backend, validação das respostas), `GET /api/quizzes/{id}` sem `isCorrect`/explicação, XP só na 1ª conclusão (+20) e no 1º gabarito (+50), toda tentativa no histórico, `/quizzes`, `/quizzes/:id` (uma pergunta por vez + resultado com correção), `/quizzes/history`, quizzes e taxa de acerto no perfil.
-- **Testes:** backend 208 (124 unitários + 84 integração), frontend 103. Lint, format e build passando.
+- **Dashboard:** `GET /api/users/me/dashboard` (agregado; escolhas em `DashboardRules`: quiz em destaque, próxima conquista, recomendações com rotação diária), `/dashboard` como destino após login/cadastro, "Painel" na navbar para quem está logado.
+- **Testes:** backend 220 (133 unitários + 87 integração), frontend 109. Lint, format e build passando.
 
-**Próximo passo — Fase 10 (Dashboard):** endpoint agregado `GET /api/users/me/dashboard` (XP, nível, progresso, últimas conquistas, descobertas recentes, quiz recomendado, favoritos; desafios entram na Fase 11) e página `/dashboard` como destino padrão após o login.
+**Próximo passo — Fase 11 (Desafios diários):** `ChallengeTemplate`, geração diária, progresso, conclusão automática e recompensa pelo `ProgressionService`, histórico; testes com `TimeProvider` simulando dias. Depois, incluir os desafios do dia no dashboard e liberar "Mestre dos elementos".
 - **Não iniciar uma nova fase sem confirmação explícita do usuário.**
 
 **Fluxo de trabalho combinado:** ao fim de cada fase → testes + lint + build + teste num Chrome real (CDP) → docs → commits pequenos → **push só quando o usuário pedir**. O usuário costuma pedir "rode o projeto para eu testar" (subir API + Vite em background) e depois "pare de rodar".

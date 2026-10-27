@@ -34,7 +34,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 7 | XP e níveis | P1 | ExperienceTransaction, ProgressionService, LevelCalculator, XpBar, notificações de nível, `RewardResult` | Regras centralizadas no backend, com testes unitários ✅ (2026-10-26) |
 | 8 | Conquistas | P1 | Achievement, UserAchievement, regras, desbloqueio, página de conquistas, notificações | Conquistas desbloqueiam automaticamente e uma única vez ✅ (2026-10-26) |
 | 9 | Quiz | P1 | Quizzes, perguntas, opções, submissão, validação, resultado, XP, histórico; UI atraente | `isCorrect` nunca exposto antes da submissão; testes cobrindo isso ✅ (2026-10-26) |
-| 10 | Dashboard | P1/P2 | Endpoint agregado + página: XP, nível, progresso, conquistas, desafios, descobertas, quiz recomendado, favoritos | Destino padrão após login |
+| 10 | Dashboard | P1/P2 | Endpoint agregado + página: XP, nível, progresso, conquistas, desafios, descobertas, quiz recomendado, favoritos | Destino padrão após login ✅ (2026-10-27) |
 | 11 | Desafios diários | P2 | ChallengeTemplate, geração diária, progresso, conclusão automática, recompensa, histórico | Testes com `TimeProvider` simulando dias |
 | 12 | Timeline | P2 | Era, TimelineEvent, personagens relacionados, navegação visual, filtros | — |
 | 13 | Comparação | P2 | Atributos, seleção de dois personagens, visualização (barras/radar), aviso de não-canonicidade | — |
@@ -178,7 +178,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - `logout` passou a ser 🔓 com cookie (em vez de 🔒): funciona mesmo com o access token expirado e é idempotente.
 - O cadastro já devolve a sessão (corpo do login + cookie), para o usuário não precisar logar logo depois de criar a conta.
 - O frontend **não repete as regras de validação**: os erros por campo vêm da resposta 400 da API (regra "não duplicar lógica"). Os textos de ajuda dos campos só descrevem o formato esperado.
-- Destino padrão depois do login é `/profile`, até o Dashboard existir (Fase 10).
+- Destino padrão depois do login é `/profile`, até o Dashboard existir (Fase 10 — hoje é `/dashboard`).
 - O "Primeiro passo" (conquista de cadastro) fica para a Fase 8.
 
 ## Fase 6 — Favoritos e descoberta (concluída)
@@ -251,3 +251,23 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - A tentativa é gravada antes do XP (para as conquistas contarem as respostas dela), e o `ExperienceEarned` é atualizado depois; se algo falhar entre as duas gravações, a tentativa fica com 0 XP no histórico, mas o XP do usuário está correto.
 - Sem paginação em `GET /api/quizzes`: o catálogo tem poucos itens. As categorias do filtro vêm do próprio catálogo.
 - A navbar completa passou de 1024px para **1280px**: com "Quizzes" (cinco seções + área do usuário), entre 1024 e 1279px a barra transbordava. Abaixo de 1280px, menu recolhido.
+
+## Fase 10 — Dashboard (concluída)
+
+- [x] `GET /api/users/me/dashboard` (🔒): usuário com progresso do nível, estatísticas, até 3 últimas conquistas, a próxima conquista, até 5 descobertas recentes, 4 recomendações, quiz em destaque e até 4 favoritos, numa chamada
+- [x] `DashboardService` reaproveita os serviços de cada área (`AchievementService`, `QuizService`, repositório do usuário); as escolhas ficam em `DashboardRules` (puras, com testes unitários):
+  - **Quiz em destaque:** o primeiro não concluído (ordem do catálogo); se todos foram concluídos, o de melhor resultado ainda não gabaritado; todos gabaritados → `null`
+  - **Próxima conquista:** a bloqueada com a maior fração da meta cumprida (empate: ordem do catálogo)
+  - **Recomendações:** personagens ainda não descobertos, sorteados de forma estável por usuário e por dia (não mudam ao recarregar, mudam no dia seguinte; dia em UTC via `TimeProvider`)
+- [x] Mapeamentos `User → UserDto` e `DiscoveryEntry → DiscoveryDto` extraídos para `UserMappings` (usados por auth, descobertas e dashboard)
+- [x] Frontend: `/dashboard` com saudação + XpBar (do usuário da sessão, aparece sem esperar a API), 4 indicadores clicáveis, quiz em destaque, conquistas (recentes + próxima), "Continue explorando", descobertas recentes e favoritos; cada seção com estado vazio próprio, skeleton no carregamento e erro com "Tentar novamente"
+- [x] `/dashboard` é o destino padrão após login e cadastro; na navbar, "Início" vira "Painel" para quem está logado (a Home continua no logo)
+- [x] O XP/nível do dashboard atualiza o usuário em memória (caso tenha mudado em outra aba/dispositivo); favoritar, descobrir ou jogar invalida o dashboard junto com as demais consultas `['me', ...]`
+- [x] Testes: backend 220 (133 unitários + 87 de integração), frontend 109
+- [x] Validado num Chrome real (CDP): cadastro → `/dashboard` com 4 recomendações e "O Time Avatar" em destaque → abrir um recomendado (+10 XP) → painel com a descoberta, sem o personagem nas recomendações, "1 / 37" e 20 XP → login leva ao painel; 390px sem rolagem horizontal; console sem erros
+
+**Ajustes em relação ao planejado:**
+- Desafios do dia ficam para a Fase 11 (o agregado ganhará o campo junto com a funcionalidade).
+- `nextAchievement` não estava no plano: mostra uma meta concreta mesmo para quem só tem o "Primeiro passo".
+- As recomendações carregam os não descobertos e sorteiam em memória: são no máximo 37 personagens. Rever se o conteúdo crescer muito.
+- Nos estados vazios do dashboard, mensagens curtas no lugar do `EmptyState` grande, para o painel não ficar dominado por caixas vazias.

@@ -151,12 +151,27 @@ Regras de descoberta (RN-12):
 | GET | `/api/users/me` | 🔒 | Perfil completo (nível, XP atual, XP do próximo nível, % de progresso) |
 | PATCH | `/api/users/me` | 🔒 | Atualiza `avatarUrl`, `elementId` |
 | GET | `/api/users/me/statistics` | 🔒 | Descobertos x/total, favoritos, quizzes, taxa de acerto, conquistas x/total. ✅ Fase 6 (parcial): `{ discoveredCharacters, totalCharacters, discoveredNations, totalNations, favorites }` + `unlockedAchievements`, `totalAchievements` ✅ Fase 8 + `completedQuizzes`, `totalQuizzes`, `quizAttempts`, `accuracyPercent` (acertos / respostas de todas as tentativas, `null` sem tentativas) ✅ Fase 9 |
-| GET | `/api/users/me/dashboard` | 🔒 | Agregado do dashboard (evita várias chamadas) |
+| GET | `/api/users/me/dashboard` | 🔒 | Agregado do dashboard numa chamada (`DashboardDto`, ver abaixo) ✅ Fase 10 |
 | GET | `/api/users/me/favorites` | 🔒 | Favoritos (`PagedResult<CharacterListItemDto>`, `?page`/`?pageSize`), mais recentes primeiro ✅ Fase 6 |
 | GET | `/api/users/me/discoveries` | 🔒 | Descobertas de personagens e nações (`PagedResult<DiscoveryDto>`: `kind` = `Character`/`Nation`, `id`, `name`, `image`, `element`, `discoveredAt`), mais recentes primeiro ✅ Fase 6 |
 | GET | `/api/users/me/experience` | 🔒 | Histórico de transações de XP (`PagedResult<ExperienceTransactionDto>`: `id`, `amount`, `type`, `description`, `createdAt`), mais recente primeiro ✅ Fase 7 |
 | GET | `/api/users/me/quiz-history` | 🔒 | Todas as tentativas, mais recentes primeiro (`PagedResult<QuizAttemptDto>`: `id`, `quizId`, `quizTitle`, `score`, `totalQuestions`, `percentage`, `experienceEarned`, `completedAt`). O melhor resultado por quiz vem em `GET /api/quizzes` ✅ Fase 9 |
 | GET | `/api/users/me/achievements` | 🔒 | Catálogo completo do ponto de vista do usuário (`UserAchievementDto[]`: `id`, `name`, `description`, `icon`, `experienceReward`, `isUnlocked`, `unlockedAt`, `progress`, `target`). Bloqueadas trazem o progresso (limitado à meta); desbloqueadas, a data ✅ Fase 8 |
+
+Resposta de `GET /api/users/me/dashboard` (as escolhas são do backend; o frontend só exibe):
+
+| Campo | Conteúdo |
+|---|---|
+| `user` | `UserDto` (nível, XP e progresso já calculados) |
+| `statistics` | Mesmo formato de `GET /api/users/me/statistics` |
+| `recentAchievements` | Até 3 `UserAchievementDto` desbloqueadas, mais recentes primeiro |
+| `nextAchievement` | A bloqueada com maior fração da meta cumprida, ou `null` |
+| `recentDiscoveries` | Até 5 `DiscoveryDto`, mais recentes primeiro |
+| `recommendations` | 4 `CharacterListItemDto` ainda não descobertos; rotação diária estável por usuário |
+| `featuredQuiz` | `QuizListItemDto` (com `bestResult`): primeiro não concluído, senão o mais perto do gabarito; `null` se todos foram gabaritados |
+| `favorites` | Até 4 `CharacterListItemDto`, mais recentes primeiro |
+
+Desafios do dia entram na Fase 11.
 
 ### Quiz
 | Método | Rota | | Descrição | Respostas |
