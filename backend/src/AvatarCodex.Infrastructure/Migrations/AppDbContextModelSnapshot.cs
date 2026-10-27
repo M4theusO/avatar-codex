@@ -61,6 +61,68 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.ToTable("abilities", (string)null);
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.Achievement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("code");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("description");
+
+                    b.Property<int>("ExperienceReward")
+                        .HasColumnType("integer")
+                        .HasColumnName("experience_reward");
+
+                    b.Property<string>("Icon")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("icon");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("RequirementType")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("requirement_type");
+
+                    b.Property<int>("RequirementValue")
+                        .HasColumnType("integer")
+                        .HasColumnName("requirement_value");
+
+                    b.HasKey("Id")
+                        .HasName("pk_achievements");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("ix_achievements_code");
+
+                    b.ToTable("achievements", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_achievements_experience_reward_positive", "experience_reward > 0");
+
+                            t.HasCheckConstraint("ck_achievements_requirement_value_non_negative", "requirement_value >= 0");
+                        });
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.BendingSubtype", b =>
                 {
                     b.Property<int>("Id")
@@ -484,6 +546,33 @@ namespace AvatarCodex.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserAchievement", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("AchievementId")
+                        .HasColumnType("integer")
+                        .HasColumnName("achievement_id");
+
+                    b.Property<DateTimeOffset>("UnlockedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("unlocked_at");
+
+                    b.HasKey("UserId", "AchievementId")
+                        .HasName("pk_user_achievements");
+
+                    b.HasIndex("AchievementId")
+                        .HasDatabaseName("ix_user_achievements_achievement_id");
+
+                    b.HasIndex("UserId", "UnlockedAt")
+                        .IsDescending(false, true)
+                        .HasDatabaseName("ix_user_achievements_user_id_unlocked_at");
+
+                    b.ToTable("user_achievements", (string)null);
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.UserCharacterDiscovery", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -826,6 +915,25 @@ namespace AvatarCodex.Infrastructure.Migrations
                         .HasConstraintName("fk_users_elements_element_id");
 
                     b.Navigation("Element");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserAchievement", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.Achievement", "Achievement")
+                        .WithMany()
+                        .HasForeignKey("AchievementId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_achievements_achievements_achievement_id");
+
+                    b.HasOne("AvatarCodex.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_achievements_users_user_id");
+
+                    b.Navigation("Achievement");
                 });
 
             modelBuilder.Entity("AvatarCodex.Domain.Entities.UserCharacterDiscovery", b =>

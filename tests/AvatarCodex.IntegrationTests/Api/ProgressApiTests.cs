@@ -50,14 +50,15 @@ public class ProgressApiTests(ContentApiFixture api)
         var first = await ReadAsync<DiscoveryResultDto>(await client.PostAsync($"/api/characters/{zuko}/discovery", null));
         var second = await ReadAsync<DiscoveryResultDto>(await client.PostAsync($"/api/characters/{zuko}/discovery", null));
 
+        // O cadastro já rendeu 10 XP ("Primeiro passo").
+        Assert.Equal(10, auth.User.ExperiencePoints);
         Assert.True(first.IsNew);
         Assert.Equal(10, first.Reward!.XpGained);
-        Assert.Equal(10, first.Reward.TotalXp);
+        Assert.Equal(20, first.Reward.TotalXp);
         Assert.Equal(new DiscoveryResultDto(false, null), second);
 
         var me = await client.GetFromJsonAsync<UserDto>("/api/auth/me", ContentApiFixture.JsonOptions);
-        Assert.Equal(10, me!.ExperiencePoints);
-        _ = auth;
+        Assert.Equal(20, me!.ExperiencePoints);
     }
 
     [SkippableFact]
@@ -78,12 +79,12 @@ public class ProgressApiTests(ContentApiFixture api)
         await using var db = api.Database.CreateContext();
         var userId = auth.User.Id;
         Assert.Equal(1, await db.CharacterDiscoveries.CountAsync(d => d.UserId == userId));
-        Assert.Equal(1, await db.ExperienceTransactions.CountAsync(t => t.UserId == userId));
-        Assert.Equal(10, await db.Users.Where(u => u.Id == userId).Select(u => u.ExperiencePoints).SingleAsync());
+        Assert.Equal(1, await db.ExperienceTransactions.CountAsync(t => t.UserId == userId && t.Type == ExperienceType.CharacterDiscovered));
+        Assert.Equal(20, await db.Users.Where(u => u.Id == userId).Select(u => u.ExperiencePoints).SingleAsync());
     }
 
     [SkippableFact]
-    public async Task DifferentDiscoveriesAtTheSameTime_DoNotLoseXp()
+    public async Task DifferentDiscoveriesAtTheSameTime_DoNotLoseXpAndUnlockCuriousOnce()
     {
         api.Database.SkipIfUnavailable();
         var (client, auth) = await NewUserClientAsync();
@@ -91,8 +92,13 @@ public class ProgressApiTests(ContentApiFixture api)
 
         await Task.WhenAll(page.Items.Select(c => client.PostAsync($"/api/characters/{c.Id}/discovery", null)));
 
+        // Todas as requisições avaliam o "Curioso" (10 personagens); só uma pode desbloqueá-lo (RN-05).
+        // 10 (Primeiro passo) + 10 × 10 (descobertas) + 50 (Curioso).
         await using var db = api.Database.CreateContext();
-        Assert.Equal(100, await db.Users.Where(u => u.Id == auth.User.Id).Select(u => u.ExperiencePoints).SingleAsync());
+        var userId = auth.User.Id;
+        Assert.Equal(160, await db.Users.Where(u => u.Id == userId).Select(u => u.ExperiencePoints).SingleAsync());
+        Assert.Equal(1, await db.UserAchievements.CountAsync(u => u.UserId == userId && u.Achievement.Code == "CURIOUS"));
+        Assert.Equal(160, await db.ExperienceTransactions.Where(t => t.UserId == userId).SumAsync(t => t.Amount));
     }
 
     [SkippableFact]
@@ -110,7 +116,8 @@ public class ProgressApiTests(ContentApiFixture api)
         Assert.False(second.IsNew);
 
         await using var db = api.Database.CreateContext();
-        var transaction = await db.ExperienceTransactions.SingleAsync(t => t.UserId == auth.User.Id);
+        var transaction = await db.ExperienceTransactions.SingleAsync(t =>
+            t.UserId == auth.User.Id && t.Type != ExperienceType.AchievementUnlocked);
         Assert.Equal(ExperienceType.NationDiscovered, transaction.Type);
         Assert.Equal(fireNation, transaction.SourceId);
     }
@@ -135,6 +142,7 @@ public class ProgressApiTests(ContentApiFixture api)
     [InlineData("GET", "/api/users/me/discoveries")]
     [InlineData("GET", "/api/users/me/statistics")]
     [InlineData("GET", "/api/users/me/experience")]
+    [InlineData("GET", "/api/users/me/achievements")]
     public async Task UserEndpoints_WithoutToken_ReturnUnauthorized(string method, string url)
     {
         api.Database.SkipIfUnavailable();
@@ -206,24 +214,28 @@ public class ProgressApiTests(ContentApiFixture api)
     {
         api.Database.SkipIfUnavailable();
         var (client, auth) = await NewUserClientAsync();
-        Assert.Equal((1, 0, 100, 0), (auth.User.Level, auth.User.CurrentLevelXp, auth.User.NextLevelXp, auth.User.LevelProgress));
+        Assert.Equal((1, 0, 100, 10), (auth.User.Level, auth.User.CurrentLevelXp, auth.User.NextLevelXp, auth.User.LevelProgress));
 
         var zuko = await CharacterIdAsync("Zuko");
         var fireNation = await NationIdAsync("Nação do Fogo");
         var discovery = await ReadAsync<DiscoveryResultDto>(await client.PostAsync($"/api/characters/{zuko}/discovery", null));
         await client.PostAsync($"/api/nations/{fireNation}/discovery", null);
 
-        Assert.Equal((10, 0, 100, 10), (discovery.Reward!.TotalXp, discovery.Reward.CurrentLevelXp, discovery.Reward.NextLevelXp, discovery.Reward.LevelProgress));
+        Assert.Equal((20, 0, 100, 20), (discovery.Reward!.TotalXp, discovery.Reward.CurrentLevelXp, discovery.Reward.NextLevelXp, discovery.Reward.LevelProgress));
 
         var history = await client.GetFromJsonAsync<PagedResult<ExperienceTransactionDto>>(
             "/api/users/me/experience", ContentApiFixture.JsonOptions);
-        Assert.Equal(2, history!.TotalItems);
+        Assert.Equal(3, history!.TotalItems);
         Assert.Equal(
-            [(ExperienceType.NationDiscovered, "Descobriu Nação do Fogo"), (ExperienceType.CharacterDiscovered, "Descobriu Zuko")],
+            [
+                (ExperienceType.NationDiscovered, "Descobriu Nação do Fogo"),
+                (ExperienceType.CharacterDiscovered, "Descobriu Zuko"),
+                (ExperienceType.AchievementUnlocked, "Conquista: Primeiro passo")
+            ],
             history.Items.Select(t => (t.Type, t.Description)));
 
         var me = await client.GetFromJsonAsync<UserDto>("/api/auth/me", ContentApiFixture.JsonOptions);
-        Assert.Equal((20, 20), (me!.ExperiencePoints, me.LevelProgress));
+        Assert.Equal((30, 30), (me!.ExperiencePoints, me.LevelProgress));
     }
 
     [SkippableFact]
@@ -248,5 +260,7 @@ public class ProgressApiTests(ContentApiFixture api)
         Assert.Equal(1, stats.Favorites);
         Assert.Equal(5, stats.TotalNations);
         Assert.True(stats.TotalCharacters >= 37);
+        Assert.Equal(1, stats.UnlockedAchievements);
+        Assert.Equal(6, stats.TotalAchievements);
     }
 }

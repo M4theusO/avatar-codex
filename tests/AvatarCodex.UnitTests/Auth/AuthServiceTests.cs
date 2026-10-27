@@ -3,7 +3,9 @@ using AvatarCodex.Application.Interfaces;
 using AvatarCodex.Application.Services;
 using AvatarCodex.Application.Validators;
 using AvatarCodex.Domain.Entities;
+using AvatarCodex.Domain.Enums;
 using AvatarCodex.Domain.Exceptions;
+using AvatarCodex.UnitTests.Fakes;
 using FluentValidation;
 
 namespace AvatarCodex.UnitTests.Auth;
@@ -14,12 +16,16 @@ public class AuthServiceTests
 
     private readonly FakeUserRepository _users = new();
     private readonly FixedTimeProvider _time = new(new DateTimeOffset(2026, 10, 26, 12, 0, 0, TimeSpan.Zero));
+    private readonly FakeProgressionRepository _progression = new();
+    private readonly FakeAchievementRepository _achievements;
     private readonly AuthService _service;
 
     public AuthServiceTests()
     {
+        _achievements = new FakeAchievementRepository(_progression);
         _service = new AuthService(
-            _users, new FakePasswordHasher(), new FakeTokenService(), _time,
+            _users, new FakePasswordHasher(), new FakeTokenService(),
+            new ProgressionService(_progression, _achievements, _time), _time,
             new RegisterRequestValidator(), new LoginRequestValidator());
     }
 
@@ -37,6 +43,35 @@ public class AuthServiceTests
         var token = Assert.Single(_users.Tokens);
         Assert.Equal($"hash:{result.RefreshToken}", token.TokenHash);
         Assert.Equal(_time.GetUtcNow().AddDays(7), result.RefreshTokenExpiresAt);
+    }
+
+    [Fact]
+    public async Task Register_UnlocksFirstStepAndReturnsTheReward()
+    {
+        _achievements.Catalog.Add(new Achievement
+        {
+            Id = 1, Code = "FIRST_STEP", Name = "Primeiro passo", Description = "Crie sua conta.", Icon = "footprints",
+            RequirementType = AchievementRequirementType.AccountCreated, ExperienceReward = 10
+        });
+
+        var result = await _service.RegisterAsync(ValidRegistration);
+
+        var reward = result.Response.Reward;
+        Assert.NotNull(reward);
+        Assert.Equal((10, 10), (reward.XpGained, reward.TotalXp));
+        Assert.Equal("Primeiro passo", Assert.Single(reward.AchievementsUnlocked).Name);
+        Assert.Equal(10, result.Response.User.ExperiencePoints);
+        Assert.Equal(_time.GetUtcNow(), Assert.Single(_progression.Records.OfType<UserAchievement>()).UnlockedAt);
+    }
+
+    [Fact]
+    public async Task Login_DoesNotReturnReward()
+    {
+        await _service.RegisterAsync(ValidRegistration);
+
+        var result = await _service.LoginAsync(new LoginRequest(ValidRegistration.Email, ValidRegistration.Password));
+
+        Assert.Null(result.Response.Reward);
     }
 
     [Fact]

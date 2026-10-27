@@ -11,6 +11,7 @@ public class AuthService(
     IUserRepository users,
     IPasswordHasher passwordHasher,
     ITokenService tokens,
+    ProgressionService progression,
     TimeProvider timeProvider,
     IValidator<RegisterRequest> registerValidator,
     IValidator<LoginRequest> loginValidator)
@@ -42,8 +43,15 @@ public class AuthService(
             PasswordHash = passwordHasher.Hash(request.Password)
         };
         users.Add(user);
+        await users.SaveChangesAsync(cancellationToken);
 
-        return await StartSessionAsync(user, cancellationToken);
+        // RF-ACH-01: "Primeiro passo" é desbloqueado no cadastro, pelo mesmo serviço de progressão.
+        var reward = await progression.EvaluateAchievementsAsync(user.Id, cancellationToken);
+        if (reward is not null)
+            user.ExperiencePoints = reward.TotalXp; // o banco já tem esse total; só alinha a entidade em memória
+
+        var result = await StartSessionAsync(user, cancellationToken);
+        return result with { Response = result.Response with { Reward = reward } };
     }
 
     public async Task<AuthResult> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)

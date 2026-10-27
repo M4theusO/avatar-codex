@@ -1,0 +1,56 @@
+[
+  {
+    "code": "FIRST_STEP",
+    "name": "Primeiro passo",
+    "description": "Crie sua conta e comece sua jornada pelo mundo de Avatar.",
+    "icon": "footprints",
+    "requirementType": "AccountCreated",
+    "requirementValue": 0,
+    "experienceReward": 10
+  },
+  {
+    "code": "CURIOUS",
+    "name": "Curioso",
+    "description": "Descubra 10 personagens.",
+    "icon": "eye",
+    "requirementType": "CharactersDiscovered",
+    "requirementValue": 10,
+    "experienceReward": 50
+  },
+  {
+    "code": "EXPLORER",
+    "name": "Explorador",
+    "description": "Descubra 30 personagens.",
+    "icon": "compass",
+    "requirementType": "CharactersDiscovered",
+    "requirementValue": 30,
+    "experienceReward": 100
+  },
+  {
+    "code": "HISTORIAN",
+    "name": "Historiador",
+    "description": "Descubra todas as nações.",
+    "icon": "scroll",
+    "requirementType": "AllNationsDiscovered",
+    "requirementValue": 0,
+    "experienceReward": 50
+  },
+  {
+    "code": "AVATAR_SCHOLAR",
+    "name": "Conhecedor de Avatar",
+    "description": "Acerte 100 perguntas nos quizzes.",
+    "icon": "brain",
+    "requirementType": "CorrectAnswers",
+    "requirementValue": 100,
+    "experienceReward": 150
+  },
+  {
+    "code": "ELEMENT_MASTER",
+    "name": "Mestre dos elementos",
+    "description": "Conclua 10 desafios diários.",
+    "icon": "sparkles",
+    "requirementType": "ChallengesCompleted",
+    "requirementValue": 10,
+    "experienceReward": 100
+  }
+]

@@ -115,5 +115,7 @@ public class UserCollectionRepository(AppDbContext db) : IUserCollectionReposito
             TotalCharacters: await db.Characters.CountAsync(cancellationToken),
             DiscoveredNations: await db.NationDiscoveries.CountAsync(d => d.UserId == userId, cancellationToken),
             TotalNations: await db.Nations.CountAsync(cancellationToken),
-            Favorites: await db.FavoriteCharacters.CountAsync(f => f.UserId == userId, cancellationToken));
+            Favorites: await db.FavoriteCharacters.CountAsync(f => f.UserId == userId, cancellationToken),
+            UnlockedAchievements: await db.UserAchievements.CountAsync(a => a.UserId == userId, cancellationToken),
+            TotalAchievements: await db.Achievements.CountAsync(cancellationToken));
 }

@@ -75,7 +75,8 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
             Nations = data.Nations,
             Series = data.Series,
             Abilities = data.Abilities,
-            Characters = [.. data.Characters.Select(c => c.Name == "Aang" ? changed : c)]
+            Characters = [.. data.Characters.Select(c => c.Name == "Aang" ? changed : c)],
+            Achievements = [.. data.Achievements.Select(a => a.Code == "CURIOUS" ? a with { ExperienceReward = 75 } : a)]
         };
 
         await using (var second = database.CreateContext())
@@ -85,5 +86,7 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
         var aang = await check.Characters.SingleAsync(c => c.Name == "Aang");
         Assert.Equal("Descrição atualizada", aang.Description);
         Assert.True(aang.UpdatedAt > aang.CreatedAt);
+        Assert.Equal(75, (await check.Achievements.SingleAsync(a => a.Code == "CURIOUS")).ExperienceReward);
+        Assert.Equal(data.Achievements.Count, await check.Achievements.CountAsync());
     }
 }
