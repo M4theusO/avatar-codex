@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { getDiscoveries, getFavorites, getStatistics } from '../../services/userService'
 import { character, mockSession } from '../../test/fixtures'
@@ -14,6 +15,17 @@ describe('FavoritesPage', () => {
       'href',
       '/characters',
     )
+  })
+
+  it('erro ao carregar: mensagem amigável e tentar de novo', async () => {
+    mockSession()
+    vi.mocked(getFavorites).mockRejectedValueOnce(new Error('falhou'))
+    const user = userEvent.setup()
+    renderRoute('/favorites')
+
+    await user.click(await screen.findByRole('button', { name: 'Tentar novamente' }))
+
+    expect(await screen.findByText('Você ainda não possui favoritos')).toBeInTheDocument()
   })
 
   it('lista os favoritos do usuário', async () => {
