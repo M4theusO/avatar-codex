@@ -3,11 +3,13 @@ import {
   getCharacter,
   getCharacters,
   getElements,
+  getEras,
   getNation,
   getNations,
   getSeries,
+  getTimeline,
 } from '../services/contentService'
-import type { CharacterQuery } from '../types/content'
+import type { CharacterQuery, TimelineFilters } from '../types/content'
 import { useAuth } from './useAuth'
 
 /**
@@ -58,4 +60,16 @@ export function useElements() {
 
 export function useSeries() {
   return useQuery({ queryKey: ['series'], queryFn: getSeries })
+}
+
+export function useTimeline(filters: TimelineFilters) {
+  return useQuery({
+    queryKey: ['timeline', filters],
+    queryFn: () => getTimeline(filters),
+    placeholderData: keepPreviousData,
+  })
+}
+
+export function useEras() {
+  return useQuery({ queryKey: ['eras'], queryFn: getEras })
 }

@@ -4,6 +4,7 @@ import { getInitials } from './labels'
 import { getPageItems } from './pagination'
 import { getApiError } from './apiError'
 import { safeRedirect } from './redirect'
+import { parseTimelineFilters, timelineCharacters, timelineFiltersToParams } from './timeline'
 import { apiError } from '../test/fixtures'
 
 describe('parseCharacterQuery', () => {
@@ -103,5 +104,47 @@ describe('getInitials', () => {
     ['  Avatar   Kyoshi ', 'AK'],
   ])('%s → %s', (name, initials) => {
     expect(getInitials(name)).toBe(initials)
+  })
+})
+
+describe('linha do tempo', () => {
+  it('lê só ids positivos da URL e faz o caminho de volta', () => {
+    const filters = parseTimelineFilters(new URLSearchParams('eraId=3&characterId=abc'))
+    expect(filters).toEqual({ eraId: 3 })
+    expect(parseTimelineFilters(new URLSearchParams('eraId=0&characterId=-2'))).toEqual({})
+    expect(timelineFiltersToParams({ eraId: 3, characterId: 13 })).toEqual({
+      eraId: '3',
+      characterId: '13',
+    })
+  })
+
+  it('lista os personagens da linha do tempo sem repetir, por nome', () => {
+    const character = (id: number, name: string) => ({ id, name, image: null, element: null })
+    const event = (id: number, characters: ReturnType<typeof character>[]) => ({
+      id,
+      title: `Evento ${id}`,
+      description: '-',
+      dateLabel: '-',
+      image: null,
+      characters,
+    })
+
+    const result = timelineCharacters([
+      {
+        id: 1,
+        name: 'Era',
+        description: '-',
+        events: [event(1, [character(13, 'Zuko'), character(1, 'Aang')])],
+      },
+      {
+        id: 2,
+        name: 'Era 2',
+        description: '-',
+        events: [event(2, [character(13, 'Zuko'), character(7, 'Ícaro')])],
+      },
+    ])
+
+    expect(result.map((c) => c.name)).toEqual(['Aang', 'Ícaro', 'Zuko'])
+    expect(timelineCharacters(undefined)).toEqual([])
   })
 })
