@@ -24,6 +24,8 @@ export default function FavoriteButton({
   const { showToast } = useToast()
   const invalidate = useInvalidateUserContent()
   const [pressed, setPressed] = useState(isFavorite)
+  // Só anima quando o próprio usuário favorita, não ao carregar a página.
+  const [justFavorited, setJustFavorited] = useState(false)
 
   // Quando o servidor responde com outro valor (refetch), ele prevalece.
   const [serverValue, setServerValue] = useState(isFavorite)
@@ -35,9 +37,13 @@ export default function FavoriteButton({
   const mutation = useMutation({
     mutationFn: (favorite: boolean) =>
       favorite ? addFavorite(characterId) : removeFavorite(characterId),
-    onMutate: (favorite) => setPressed(favorite),
+    onMutate: (favorite) => {
+      setPressed(favorite)
+      setJustFavorited(favorite)
+    },
     onError: (_error, favorite) => {
       setPressed(!favorite)
+      setJustFavorited(false)
       showToast('Não foi possível atualizar seus favoritos. Tente novamente.', 'error')
     },
     onSuccess: (_data, favorite) => {
@@ -58,7 +64,11 @@ export default function FavoriteButton({
       aria-pressed={pressed}
       aria-label={variant === 'icon' ? `Favoritar ${name}` : undefined}
     >
-      <Star size={variant === 'icon' ? 18 : 20} aria-hidden="true" className={styles.star} />
+      <Star
+        size={variant === 'icon' ? 18 : 20}
+        aria-hidden="true"
+        className={justFavorited && pressed ? `${styles.star} ${styles.pop}` : styles.star}
+      />
       {variant === 'full' && (pressed ? 'Favoritado' : 'Favoritar')}
     </button>
   )
