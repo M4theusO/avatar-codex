@@ -15,7 +15,7 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 **Fase 16 — Documentação final** (próxima, ainda não iniciada). Fases 0 a 15 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-28):** Fase 15 concluída e commitada localmente (ainda **não** publicada no GitHub; push só quando o usuário pedir).
+**Onde paramos (2026-10-28):** Fase 15 concluída, commitada e publicada no GitHub (`main` = `origin/main`).
 - **Pendência:** imagens reais dos personagens. O usuário vai fornecer; basta preencher `image` (`url`, `sourceUrl`, `credit`) em `characters.json`. A Avatar Wiki (Fandom) bloqueia hotlink (`Cross-Origin-Resource-Policy: same-origin`), então as imagens precisam ser servidas pelo próprio projeto.
 - **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas, 4 quizzes × 10 perguntas), API com busca/filtros/paginação, tratamento global de erros.
 - **Frontend base:** layout, navbar (completa a partir de 1280px), rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, 404.
