@@ -1,4 +1,5 @@
 using AvatarCodex.Domain.Entities;
+using AvatarCodex.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace AvatarCodex.Infrastructure.Data.Seed;
@@ -92,6 +93,7 @@ public class ContentSeeder(AppDbContext db)
             character.IsAvatar = seed.IsAvatar;
             character.Status = seed.Status;
             character.FirstAppearance = seed.FirstAppearance;
+            character.Image = SyncImage(character.Image, seed.Image);
 
             Sync(character.Series, seed.Series.Select(code => series[code]));
             Sync(character.BendingSubtypes, seed.BendingSubtypes.Select(name => subtypes[name]));
@@ -302,6 +304,18 @@ public class ContentSeeder(AppDbContext db)
 
     private static TEntity? Lookup<TEntity>(Dictionary<string, TEntity> items, string? key) where TEntity : class =>
         key is null ? null : items[key];
+
+    /// <summary>Atualiza a imagem existente no lugar, para o EF só registrar mudança quando os valores mudam.</summary>
+    private static ImageInfo? SyncImage(ImageInfo? current, ImageSeed? seed)
+    {
+        if (seed is null)
+            return null;
+        current ??= new ImageInfo { Url = seed.Url };
+        current.Url = seed.Url;
+        current.SourceUrl = seed.SourceUrl;
+        current.Credit = seed.Credit;
+        return current;
+    }
 
     private static void Sync<TEntity>(ICollection<TEntity> current, IEnumerable<TEntity> desired) where TEntity : class
     {

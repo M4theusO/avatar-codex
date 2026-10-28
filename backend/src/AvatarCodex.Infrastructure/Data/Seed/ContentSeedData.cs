@@ -48,6 +48,8 @@ public record QuestionSeed(string Text, string? Explanation, List<QuizOptionSeed
 
 public record QuizSeed(string Title, string Description, string Category, QuizDifficulty Difficulty, List<QuestionSeed> Questions);
 
+public record ImageSeed(string Url, string? SourceUrl, string? Credit);
+
 public record RelationshipSeed(string Related, RelationshipType Type, string? Description);
 
 public record CharacterSeed(
@@ -64,7 +66,8 @@ public record CharacterSeed(
     List<string> Series,
     List<string> BendingSubtypes,
     List<string> Abilities,
-    List<RelationshipSeed> Relationships);
+    List<RelationshipSeed> Relationships,
+    ImageSeed? Image = null);
 
 /// <summary>
 /// Conteúdo de demonstração lido dos JSON em Data/Seed/Content (embutidos no assembly).
