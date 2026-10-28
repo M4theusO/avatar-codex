@@ -15,7 +15,7 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 **Fase 15 — Refinamento visual** (próxima, ainda não iniciada). Fases 0 a 14 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-28):** Fases 13 e 14 concluídas e commitadas localmente, **sem push** (o usuário pediu para publicar depois).
+**Onde paramos (2026-10-28):** Fases 13 e 14 concluídas, commitadas e publicadas no GitHub (`main` = `origin/main`). Nenhum trabalho pendente.
 - **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas, 4 quizzes × 10 perguntas), API com busca/filtros/paginação, tratamento global de erros.
 - **Frontend base:** layout, navbar (completa a partir de 1280px), rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, 404.
 - **Autenticação:** cadastro, login, logout, JWT (15 min, em memória) + refresh rotacionado em cookie httpOnly, sessão recuperada ao recarregar, rotas protegidas, usuário demo (README).
