@@ -30,3 +30,8 @@ Thumbs.db
 
 # Claude Code (configurações locais)
 .claude/settings.local.json
+
+# Artefatos do Cypress
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/
