@@ -125,3 +125,35 @@ export interface CharacterQuery {
   sort?: CharacterSort
   order?: SortOrder
 }
+
+// Linha do tempo (docs/api.md §6 Conteúdo)
+
+export interface Era {
+  id: number
+  name: string
+  description: string
+  eventCount: number
+}
+
+export interface TimelineEvent {
+  id: number
+  title: string
+  description: string
+  /** Texto livre, ex.: "100 AG". */
+  dateLabel: string
+  image: Image | null
+  characters: CharacterSummary[]
+}
+
+/** Era com os eventos que passaram pelo filtro, já em ordem cronológica. */
+export interface TimelineEra {
+  id: number
+  name: string
+  description: string
+  events: TimelineEvent[]
+}
+
+export interface TimelineFilters {
+  eraId?: number
+  characterId?: number
+}

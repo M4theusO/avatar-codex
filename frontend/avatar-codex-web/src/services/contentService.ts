@@ -3,10 +3,13 @@ import type {
   CharacterListItem,
   CharacterQuery,
   Element,
+  Era,
   Nation,
   NationDetails,
   PagedResult,
   Series,
+  TimelineEra,
+  TimelineFilters,
 } from '../types/content'
 import { api } from './api'
 
@@ -41,5 +44,15 @@ export async function getElements(): Promise<Element[]> {
 
 export async function getSeries(): Promise<Series[]> {
   const { data } = await api.get<Series[]>('/api/series')
+  return data
+}
+
+export async function getTimeline(filters: TimelineFilters): Promise<TimelineEra[]> {
+  const { data } = await api.get<TimelineEra[]>('/api/timeline', { params: filters })
+  return data
+}
+
+export async function getEras(): Promise<Era[]> {
+  const { data } = await api.get<Era[]>('/api/eras')
   return data
 }
