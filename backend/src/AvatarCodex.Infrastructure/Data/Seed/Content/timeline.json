@@ -1,0 +1,121 @@
+[
+  {
+    "title": "Wan se torna o primeiro Avatar",
+    "era": "A Era de Wan",
+    "dateLabel": "≈ 10.000 anos antes de Korra",
+    "description": "Wan se funde a Raava, o espírito da luz, aprende a dobrar os quatro elementos e aprisiona Vaatu durante a Convergência Harmônica. Nasce o ciclo do Avatar.",
+    "characters": ["Wan"]
+  },
+  {
+    "title": "Kyoshi separa sua península do continente",
+    "era": "Os Avatares do Passado",
+    "dateLabel": "Era de Kyoshi",
+    "description": "Para proteger seu povo do conquistador Chin, Kyoshi separa a península do Reino da Terra, criando a Ilha de Kyoshi.",
+    "characters": ["Kyoshi"]
+  },
+  {
+    "title": "Kyoshi funda os Dai Li",
+    "era": "Os Avatares do Passado",
+    "dateLabel": "Era de Kyoshi",
+    "description": "Kyoshi cria os Dai Li para proteger as tradições culturais de Ba Sing Se. Séculos depois, a organização se torna a polícia secreta da cidade.",
+    "characters": ["Kyoshi", "Long Feng"]
+  },
+  {
+    "title": "A morte de Roku",
+    "era": "Os Avatares do Passado",
+    "dateLabel": "12 BG",
+    "description": "Roku morre na erupção do vulcão de sua ilha. O Senhor do Fogo Sozin, seu antigo amigo, se recusa a ajudá-lo, e o caminho para a guerra fica livre.",
+    "characters": ["Roku"]
+  },
+  {
+    "title": "O genocídio dos Nômades do Ar",
+    "era": "A Guerra dos Cem Anos",
+    "dateLabel": "0 AG",
+    "description": "Fortalecido pelo Cometa de Sozin, o exército da Nação do Fogo ataca os templos do ar. O monge Gyatso está entre os que tombam, e a guerra começa.",
+    "characters": ["Gyatso"]
+  },
+  {
+    "title": "Aang desaparece no iceberg",
+    "era": "A Guerra dos Cem Anos",
+    "dateLabel": "0 AG",
+    "description": "Ao saber que seria separado de Gyatso, Aang foge com Appa. Uma tempestade os derruba no mar, e o Estado Avatar os congela num iceberg por cem anos.",
+    "characters": ["Aang", "Gyatso"]
+  },
+  {
+    "title": "Katara e Sokka encontram o Avatar",
+    "era": "A Guerra dos Cem Anos",
+    "dateLabel": "99 AG",
+    "description": "No Polo Sul, os irmãos libertam Aang do iceberg. Zuko, o príncipe banido, encontra o rastro do Avatar logo em seguida.",
+    "characters": ["Aang", "Katara", "Sokka", "Zuko", "Iroh"]
+  },
+  {
+    "title": "O Cerco do Norte",
+    "era": "A Guerra dos Cem Anos",
+    "dateLabel": "99 AG",
+    "description": "O almirante Zhao ataca a Tribo da Água do Norte e mata o espírito da Lua. A princesa Yue dá a vida para trazê-la de volta.",
+    "characters": ["Aang", "Katara", "Sokka", "Yue", "Pakku", "Zhao", "Zuko", "Iroh"]
+  },
+  {
+    "title": "A queda de Ba Sing Se",
+    "era": "A Guerra dos Cem Anos",
+    "dateLabel": "100 AG",
+    "description": "Azula se infiltra na capital do Reino da Terra, vira os Dai Li contra Long Feng e toma a cidade. Aang é gravemente ferido.",
+    "characters": ["Azula", "Mai", "Ty Lee", "Long Feng", "Zuko", "Iroh", "Aang", "Katara"]
+  },
+  {
+    "title": "O Dia do Sol Negro",
+    "era": "A Guerra dos Cem Anos",
+    "dateLabel": "100 AG",
+    "description": "Durante um eclipse, a invasão da Nação do Fogo falha. Zuko enfrenta o pai, Ozai, e deixa a Nação do Fogo para ensinar Aang.",
+    "characters": ["Aang", "Sokka", "Katara", "Toph Beifong", "Zuko", "Ozai", "Azula"]
+  },
+  {
+    "title": "O Cometa de Sozin e o fim da guerra",
+    "era": "A Guerra dos Cem Anos",
+    "dateLabel": "100 AG",
+    "description": "Aang retira a dobra de Ozai sem matá-lo, Zuko e Katara vencem Azula, e a Ordem do Lótus Branco liberta Ba Sing Se. Zuko se torna Senhor do Fogo.",
+    "characters": ["Aang", "Ozai", "Zuko", "Azula", "Katara", "Sokka", "Toph Beifong", "Suki", "Iroh"]
+  },
+  {
+    "title": "Nasce a Cidade República",
+    "era": "A Era de Korra",
+    "dateLabel": "Pós-guerra",
+    "description": "Aang e Zuko transformam as antigas colônias do Fogo na República Unida, onde as quatro nações vivem juntas. Toph cria a polícia de dobradores de metal.",
+    "characters": ["Aang", "Zuko", "Toph Beifong"]
+  },
+  {
+    "title": "A morte de Aang e o nascimento de Korra",
+    "era": "A Era de Korra",
+    "dateLabel": "153 AG",
+    "description": "Aang morre, e o ciclo segue para a Tribo da Água do Sul, onde nasce Korra.",
+    "characters": ["Aang", "Korra", "Katara", "Tenzin"]
+  },
+  {
+    "title": "A Revolução Igualitária",
+    "era": "A Era de Korra",
+    "dateLabel": "170 AG",
+    "description": "Amon e os Igualitários tiram a dobra de seus inimigos e tentam tomar a Cidade República. Korra perde três elementos e se conecta ao espírito de Aang.",
+    "characters": ["Korra", "Amon", "Mako", "Bolin", "Asami Sato", "Hiroshi Sato", "Tenzin", "Lin Beifong"]
+  },
+  {
+    "title": "A Convergência Harmônica",
+    "era": "A Era de Korra",
+    "dateLabel": "171 AG",
+    "description": "Unalaq se funde a Vaatu e se torna o Avatar das Trevas. Korra o vence com a ajuda de Jinora e deixa os portais espirituais abertos.",
+    "characters": ["Korra", "Unalaq", "Jinora", "Tenzin", "Varrick", "Mako", "Bolin"]
+  },
+  {
+    "title": "A Lótus Vermelha",
+    "era": "A Era de Korra",
+    "dateLabel": "171 AG",
+    "description": "Com a volta dos dobradores de ar, Zaheer e a Lótus Vermelha derrubam a Rainha da Terra e envenenam Korra. Os novos Nômades do Ar salvam a Avatar.",
+    "characters": ["Zaheer", "P'Li", "Korra", "Suyin Beifong", "Jinora", "Tenzin", "Lin Beifong"]
+  },
+  {
+    "title": "O Império da Terra",
+    "era": "A Era de Korra",
+    "dateLabel": "174 AG",
+    "description": "Kuvira unifica o Reino da Terra à força e ataca a Cidade República com um robô gigante. Hiroshi Sato se sacrifica, e Korra convence Kuvira a se render.",
+    "characters": ["Kuvira", "Korra", "Suyin Beifong", "Varrick", "Asami Sato", "Hiroshi Sato", "Bolin", "Mako", "Lin Beifong"]
+  }
+]

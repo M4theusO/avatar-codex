@@ -29,6 +29,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TimeProvider t
     public DbSet<ChallengeTemplate> ChallengeTemplates => Set<ChallengeTemplate>();
     public DbSet<DailyChallenge> DailyChallenges => Set<DailyChallenge>();
     public DbSet<UserDailyChallenge> UserDailyChallenges => Set<UserDailyChallenge>();
+    public DbSet<Era> Eras => Set<Era>();
+    public DbSet<TimelineEvent> TimelineEvents => Set<TimelineEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
