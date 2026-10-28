@@ -4,6 +4,28 @@
   gap: var(--space-10);
 }
 
+.columns {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .columns {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-12);
+  }
+}
+
 .lead {
   max-width: 48rem;
   font-size: var(--text-lg);

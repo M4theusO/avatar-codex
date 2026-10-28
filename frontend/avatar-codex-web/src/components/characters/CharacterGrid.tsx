@@ -4,9 +4,15 @@ import CharacterCard from './CharacterCard'
 import cardStyles from './CharacterCard.module.css'
 import styles from './CharacterGrid.module.css'
 
-export function CharacterGrid({ characters }: { characters: CharacterListItem[] }) {
+interface CharacterGridProps {
+  characters: CharacterListItem[]
+  /** Ajusta as colunas para um conjunto fixo (ex.: os 5 Avatares numa linha). */
+  className?: string
+}
+
+export function CharacterGrid({ characters, className }: CharacterGridProps) {
   return (
-    <ul className={styles.grid}>
+    <ul className={className ? `${styles.grid} ${className}` : styles.grid}>
       {characters.map((character) => (
         <li key={character.id}>
           <CharacterCard character={character} />
@@ -16,9 +22,15 @@ export function CharacterGrid({ characters }: { characters: CharacterListItem[] 
   )
 }
 
-export function CharacterGridSkeleton({ count = 8 }: { count?: number }) {
+export function CharacterGridSkeleton({
+  count = 8,
+  className,
+}: {
+  count?: number
+  className?: string
+}) {
   return (
-    <div className={styles.grid} aria-busy="true">
+    <div className={className ? `${styles.grid} ${className}` : styles.grid} aria-busy="true">
       <span className="visually-hidden" role="status">
         Carregando personagens…
       </span>
