@@ -1,0 +1,441 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/*
+ * Cores das séries pela posição (A = Água, B = Fogo), nunca pelo elemento do personagem:
+ * dois dobradores de fogo continuam distinguíveis. Validadas contra a superfície escura.
+ * Só marcas usam essas cores; textos ficam nas cores de texto (DA-02).
+ */
+.seriesA {
+  --series-color: var(--color-water);
+}
+
+.seriesB {
+  --series-color: var(--color-fire);
+}
+
+.swatch {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background-color: var(--series-color);
+}
+
+/* Seleção */
+.pickers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--space-4);
+}
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--series-color);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+}
+
+.pickerLegend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.pickerMessage {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.inlineButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.selectedInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.selectedName {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.result:hover {
+  border-color: var(--color-border);
+  background-color: var(--color-surface-raised);
+}
+
+.resultName {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.resultMeta {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.swap {
+  align-self: center;
+}
+
+/* Aviso de não canonicidade (RN-11) */
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-air);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.notice svg {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  color: var(--color-air);
+}
+
+/* Resultado */
+.comparison {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.versus {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.contender {
+  --element-color: var(--color-text-muted);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-5) var(--space-3) var(--space-6);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      color-mix(in srgb, var(--element-color) 22%, transparent),
+      transparent 70%
+    ),
+    var(--color-surface);
+  text-align: center;
+  text-decoration: none;
+  transition: border-color var(--transition-fast);
+}
+
+.contender:hover {
+  border-color: var(--element-color);
+}
+
+.contenderName {
+  max-width: 100%;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.contenderMeta {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+/* Faixa na cor da série: liga o card às marcas dos gráficos. */
+.legendMark {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background-color: var(--series-color);
+}
+
+.vs {
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.charts {
+  display: grid;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+/* Radar */
+.radar {
+  width: 100%;
+  max-width: 30rem;
+  height: auto;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.radarGrid polygon,
+.radarGrid line {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.radarSeries polygon {
+  fill: color-mix(in srgb, var(--series-color) 18%, transparent);
+  stroke: var(--series-color);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.radarSeries circle {
+  fill: var(--series-color);
+  stroke: var(--color-surface);
+  stroke-width: 2;
+}
+
+.radarLabel {
+  fill: var(--color-text-muted);
+  font-size: 13px;
+}
+
+/* Barras */
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.attribute {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.attributeHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.attributeName {
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.attributeDescription {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: minmax(0, 7rem) 1fr 3.5rem;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.barLabel {
+  overflow: hidden;
+  font-size: var(--text-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.track {
+  height: 0.625rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-raised);
+}
+
+.fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background-color: var(--series-color);
+}
+
+.barValue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.leader {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.leader svg {
+  color: var(--color-air);
+}
+
+/* Tabela de informações */
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: var(--text-sm);
+}
+
+.table th,
+.table td {
+  padding: var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.table thead th {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+}
+
+.table tbody th {
+  width: 28%;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cellList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cellLink {
+  text-decoration-color: var(--color-text-muted);
+  text-underline-offset: 3px;
+}
+
+.none {
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 768px) {
+  .versus {
+    gap: var(--space-6);
+  }
+
+  .contenderName {
+    font-size: var(--text-xl);
+  }
+
+  .vs {
+    font-size: var(--text-2xl);
+  }
+
+  .table th,
+  .table td {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .table tbody th {
+    width: 22%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .charts {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}

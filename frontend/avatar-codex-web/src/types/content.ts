@@ -157,3 +157,32 @@ export interface TimelineFilters {
   eraId?: number
   characterId?: number
 }
+
+/** Informações de um personagem na comparação (GET /api/characters/compare). */
+export interface ComparedCharacter extends Omit<CharacterListItem, 'isFavorite' | 'isDiscovered'> {
+  firstAppearance: string | null
+  bendingSubtypes: Reference[]
+  abilities: Ability[]
+  series: Series[]
+}
+
+export interface AttributeComparison {
+  id: number
+  name: string
+  description: string
+  /** Um valor (0–100) por personagem, na ordem de `characters`; null se não houver estimativa. */
+  values: (number | null)[]
+  /** Maior valor; null em empate ou sem estimativa. Decidido pela API. */
+  leaderId: number | null
+}
+
+export interface CharacterComparison {
+  characters: ComparedCharacter[]
+  attributes: AttributeComparison[]
+}
+
+/** Os dois personagens escolhidos em /compare (?a=1&b=2). */
+export interface ComparePair {
+  a?: number
+  b?: number
+}

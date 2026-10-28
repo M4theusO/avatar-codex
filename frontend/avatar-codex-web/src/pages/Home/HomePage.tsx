@@ -33,6 +33,9 @@ export default function HomePage() {
             <ArrowRight size={18} aria-hidden="true" />
           </ButtonLink>
           <ButtonLink to="/nations">Conhecer as nações</ButtonLink>
+          <ButtonLink to="/compare" variant="ghost">
+            Comparar personagens
+          </ButtonLink>
         </div>
       </section>
 

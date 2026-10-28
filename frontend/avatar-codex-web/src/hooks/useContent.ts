@@ -1,5 +1,6 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import {
+  compareCharacters,
   getCharacter,
   getCharacters,
   getElements,
@@ -72,4 +73,12 @@ export function useTimeline(filters: TimelineFilters) {
 
 export function useEras() {
   return useQuery({ queryKey: ['eras'], queryFn: getEras })
+}
+
+export function useComparison(a: number | undefined, b: number | undefined) {
+  return useQuery({
+    queryKey: ['comparison', a, b],
+    queryFn: () => compareCharacters(a!, b!),
+    enabled: a !== undefined && b !== undefined && a !== b,
+  })
 }

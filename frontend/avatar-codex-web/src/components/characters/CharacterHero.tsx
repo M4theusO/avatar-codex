@@ -1,4 +1,4 @@
-import { Eye, Landmark, Star } from 'lucide-react'
+import { Eye, Landmark, Scale, Star } from 'lucide-react'
 import { Link, useLocation } from 'react-router'
 import { useAuth } from '../../hooks/useAuth'
 import type { CharacterDetails } from '../../types/content'
@@ -69,6 +69,10 @@ export default function CharacterHero({ character }: { character: CharacterDetai
               </ButtonLink>
             )
           )}
+          <ButtonLink to={`/compare?a=${id}`} variant="ghost">
+            <Scale size={18} aria-hidden="true" />
+            Comparar
+          </ButtonLink>
         </div>
       </div>
     </header>
