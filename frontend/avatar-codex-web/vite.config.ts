@@ -8,6 +8,11 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
   },
+  // O E2E roda contra o build (npm run preview), na mesma origem liberada no CORS da API.
+  preview: {
+    port: 5173,
+    strictPort: true,
+  },
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
