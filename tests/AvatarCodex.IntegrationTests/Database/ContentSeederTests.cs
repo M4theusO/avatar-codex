@@ -35,6 +35,14 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
         var questions = await check.Questions.Include(q => q.Options).ToListAsync();
         Assert.Equal(data.Quizzes.Sum(q => q.Questions.Count), questions.Count);
         Assert.All(questions, q => Assert.Single(q.Options, o => o.IsCorrect));
+
+        Assert.Equal(data.ComparisonAttributes.Count, await check.ComparisonAttributes.CountAsync());
+        Assert.Equal(
+            data.CharacterAttributes.Sum(c => c.Values.Count),
+            await check.CharacterAttributeValues.CountAsync());
+        var sokkaBending = await check.CharacterAttributeValues
+            .SingleAsync(v => v.Character.Name == "Sokka" && v.ComparisonAttribute.Name == "Domínio elemental");
+        Assert.Equal(0, sokkaBending.Value);
     }
 
     /// <summary>xmin muda a cada UPDATE no PostgreSQL: o maior valor indica se alguma linha foi reescrita.</summary>
@@ -53,11 +61,13 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
         DateTimeOffset updatedAtAfterFirstRun;
         int relationshipsAfterFirstRun;
         long optionsWrittenAt;
+        long attributeValuesWrittenAt;
         await using (var check = database.CreateContext())
         {
             updatedAtAfterFirstRun = await check.Characters.MaxAsync(c => c.UpdatedAt);
             relationshipsAfterFirstRun = await check.CharacterRelationships.CountAsync();
             optionsWrittenAt = await LastWriteAsync(check, "question_options");
+            attributeValuesWrittenAt = await LastWriteAsync(check, "character_attribute_values");
         }
 
         await using (var second = database.CreateContext())
@@ -68,6 +78,7 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
         Assert.Equal(relationshipsAfterFirstRun, await final.CharacterRelationships.CountAsync());
         Assert.Equal(updatedAtAfterFirstRun, await final.Characters.MaxAsync(c => c.UpdatedAt));
         Assert.Equal(optionsWrittenAt, await LastWriteAsync(final, "question_options"));
+        Assert.Equal(attributeValuesWrittenAt, await LastWriteAsync(final, "character_attribute_values"));
     }
 
     [SkippableFact]
@@ -93,7 +104,12 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
             Challenges = [.. data.Challenges.Select(c => c.Code == "QUIZ_PERFECT" ? c with { IsActive = false } : c)],
             Eras = data.Eras,
             // Troca a ordem de dois eventos da mesma era e muda os personagens de um deles.
-            TimelineEvents = SwapFirstTwoEventsOfKorra(data.TimelineEvents)
+            TimelineEvents = SwapFirstTwoEventsOfKorra(data.TimelineEvents),
+            // Inverte a ordem dos atributos e muda um valor do Aang.
+            ComparisonAttributes = [.. Enumerable.Reverse(data.ComparisonAttributes)],
+            CharacterAttributes = [.. data.CharacterAttributes.Select(c => c.Character == "Aang"
+                ? c with { Values = new(c.Values) { ["Estratégia"] = 99 } }
+                : c)]
         };
 
         await using (var second = database.CreateContext())
@@ -129,6 +145,16 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
             .Select(o => o.IsCorrect)
             .ToListAsync();
         Assert.Equal([true, false, false, false], options);
+
+        Assert.Equal(
+            data.ComparisonAttributes.Select(a => a.Name).Reverse(),
+            await check.ComparisonAttributes.OrderBy(a => a.Order).Select(a => a.Name).ToListAsync());
+        var aangStrategy = await check.CharacterAttributeValues
+            .SingleAsync(v => v.Character.Name == "Aang" && v.ComparisonAttribute.Name == "Estratégia");
+        Assert.Equal(99, aangStrategy.Value);
+        Assert.Equal(
+            data.CharacterAttributes.Sum(c => c.Values.Count),
+            await check.CharacterAttributeValues.CountAsync());
     }
 
     private static List<TimelineEventSeed> SwapFirstTwoEventsOfKorra(List<TimelineEventSeed> events)

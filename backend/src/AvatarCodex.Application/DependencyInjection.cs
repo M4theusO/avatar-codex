@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<DashboardService>();
         services.AddScoped<DailyChallengeService>();
         services.AddScoped<TimelineService>();
+        services.AddScoped<ComparisonService>();
 
         return services;
     }

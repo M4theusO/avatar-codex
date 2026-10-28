@@ -53,6 +53,21 @@ public static class ContentMappings
             .ThenBy(r => r.RelatedCharacter.Name)
             .Select(r => new CharacterRelationshipDto(r.RelatedCharacter.ToSummaryDto(), r.Type, r.Description))]);
 
+    public static ComparedCharacterDto ToComparedDto(this Character character) => new(
+        character.Id,
+        character.Name,
+        character.Description,
+        character.Image.ToDto(),
+        character.Nation.ToReferenceDto(),
+        character.Element.ToSummaryDto(),
+        character.IsBender,
+        character.IsAvatar,
+        character.Status,
+        character.FirstAppearance,
+        [.. character.BendingSubtypes.OrderBy(b => b.Name).Select(b => new ReferenceDto(b.Id, b.Name))],
+        [.. character.Abilities.OrderBy(a => a.Name).Select(a => a.ToDto())],
+        [.. character.Series.OrderBy(s => s.Id).Select(s => s.ToDto())]);
+
     public static AbilityDto ToDto(this Ability ability) => new(
         ability.Id,
         ability.Name,
