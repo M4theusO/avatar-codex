@@ -156,6 +156,8 @@ Linha vertical (horizontal em telas largas) agrupada por era, com marcadores, ca
 ### Comparação
 Dois seletores com busca. Colunas lado a lado: imagem, elemento, nação, habilidades, informações, e **gráfico de barras ou radar** com os atributos. Aviso fixo: *"Atributos são estimativas da comunidade do projeto, não informações canônicas."*
 
+✅ Fase 13: dois seletores (fieldset com a cor da série na borda) com busca e lista de 6 resultados; escolhido, mostra avatar + nome + "Trocar". Seleção na URL (`?a=&b=`), "Inverter lados". Resultado: cards frente a frente ("vs") com faixa na cor da série (é a legenda dos gráficos), radar SVG + barras pareadas (lado a lado a partir de 1024px) com valor escrito e coroa no maior, e tabela de informações (elemento, nação, tipo, situação, primeira aparição, séries, subtipos, habilidades). **Cores das séries pela posição** (1º = Água, 2º = Fogo), não pelo elemento, para dois personagens do mesmo elemento continuarem distinguíveis; só as marcas usam essas cores. O aviso de não canonicidade fica sempre visível, acima do resultado. Entradas: botão "Comparar" no detalhe do personagem e chamada na Home (sem item na navbar, que não comporta uma sexta seção).
+
 ### Quiz
 Uma pergunta por vez, com barra de progresso, opções como botões grandes e acessíveis, e possibilidade de voltar antes de enviar. Ao submeter: tela de resultado com pontuação, %, correção pergunta a pergunta (certa/errada + explicação), XP ganho e eventuais conquistas.
 

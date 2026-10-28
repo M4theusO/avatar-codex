@@ -146,14 +146,17 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 
 **CharacterAbility** — PK (`CharacterId`, `AbilityId`)
 
-**ComparisonAttribute** (ex.: Força, Agilidade, Estratégia, Domínio elemental)
+✅ Fase 13 (migration `AddCharacterComparison`).
+
+**ComparisonAttribute** (Domínio elemental, Combate, Agilidade, Estratégia, Liderança)
 | Campo | Tipo | Restrições |
 |---|---|---|
 | Id | int | PK |
-| Name | varchar(50) | único |
+| Name | varchar(50) | único (chave do seed) |
 | Description | varchar(200) | |
+| Order | int | ordem de exibição (posição no JSON; não é único) |
 
-**CharacterAttributeValue** — PK (`CharacterId`, `ComparisonAttributeId`), `Value` int com CHECK 0–100.
+**CharacterAttributeValue** — PK (`CharacterId`, `ComparisonAttributeId`), `Value` int com CHECK 0–100 (`ck_character_attribute_values_value_range`); tabela `character_attribute_values`, CASCADE pelo personagem e pelo atributo.
 
 ✅ Fase 12 (migration `AddTimeline`). `Order` vem da posição no JSON; ao reordenar, o seed grava valores negativos temporários antes dos definitivos, para não violar a unicidade.
 
@@ -346,7 +349,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 | Character | ~40 (ATLA + LOK) | 37 |
 | Ability | ~25 | 23 |
 | CharacterRelationship | — | 79 |
-| ComparisonAttribute | 5 | — |
+| ComparisonAttribute / CharacterAttributeValue | 5 | 5 / 185 (`comparison-attributes.json`, `character-attributes.json`: todos os 37 personagens) |
 | Era / TimelineEvent | 3–4 / ~20 | 4 / 17 (`eras.json`, `timeline.json`) |
 | Quiz / Question | 3–5 / ~10 por quiz | 4 / 10 por quiz (`quizzes.json`) |
 | Achievement | ~12 | 6 (`achievements.json`, upsert por `Code`) |
@@ -369,6 +372,7 @@ Uma migration por mudança coesa de esquema, com nome descritivo (ex.: `AddQuizT
 | `AddFavoritesDiscoveriesAndExperience` | `character_discoveries` (UserCharacterDiscovery), `nation_discoveries` (UserNationDiscovery), `favorite_characters` (UserFavoriteCharacter), `experience_transactions` com unique (`user_id`, `type`, `source_id`) e `CHECK amount > 0`. `type` gravado como texto. |
 | `AddDailyChallenges` | `challenge_templates` (`code` único, CHECKs de meta e XP), `daily_challenges` com unique (`challenge_template_id`, `date`), `user_daily_challenges` com PK (`user_id`, `daily_challenge_id`) |
 | `AddTimeline` | `eras` (`name` e `order` únicos), `timeline_events` (`title` e `order` únicos, imagem owned, FK `era_id` RESTRICT), `timeline_event_characters` |
+| `AddCharacterComparison` | `comparison_attributes` (`name` único, `order`), `character_attribute_values` (PK composta, `CHECK value` 0–100) |
 
 ## 6. Testes de banco
 

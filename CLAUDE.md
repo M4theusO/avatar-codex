@@ -13,9 +13,9 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 ## Status atual
 
-**Fase 13 — Comparação** (próxima, ainda não iniciada). Fases 0 a 12 concluídas (`docs/development-phases.md`).
+**Fase 14 — Testes** (próxima, ainda não iniciada). Fases 0 a 13 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-27):** Fase 12 concluída, commitada e publicada no GitHub (`main` = `origin/main`). Nenhum trabalho pendente.
+**Onde paramos (2026-10-27):** Fase 13 concluída e commitada localmente (push só quando o usuário pedir).
 - **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas, 4 quizzes × 10 perguntas), API com busca/filtros/paginação, tratamento global de erros.
 - **Frontend base:** layout, navbar (completa a partir de 1280px), rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, 404.
 - **Autenticação:** cadastro, login, logout, JWT (15 min, em memória) + refresh rotacionado em cookie httpOnly, sessão recuperada ao recarregar, rotas protegidas, usuário demo (README).
@@ -26,10 +26,11 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 - **Dashboard:** `GET /api/users/me/dashboard` (agregado; escolhas em `DashboardRules`: quiz em destaque, próxima conquista, recomendações com rotação diária), `/dashboard` como destino após login/cadastro, "Painel" na navbar para quem está logado.
 - **Desafios diários:** `ChallengeRules` (sorteio determinístico pela data, progresso, conclusão) + `DailyChallengeService` (geração preguiçosa de 3 por dia em UTC, progresso calculado pelas atividades do dia); conclusão automática no `ProgressionService` antes das conquistas, PK garante XP único; `/challenges`, seção no painel, toast "Desafio concluído".
 - **Timeline:** `Era` + `TimelineEvent` (seed: 4 eras, 17 eventos), `GET /api/timeline` agrupado por era com filtros `eraId`/`characterId`, `GET /api/eras`, `/timeline` com linha vertical (alterna lados ≥ 1024px), filtros na URL e entrada ao rolar.
+- **Comparação:** `ComparisonAttribute` + `CharacterAttributeValue` (seed: 5 atributos × 37 personagens, CHECK 0–100), `ComparisonService` (ordem pedida, `leaderId` decidido no backend), `GET /api/characters/compare?ids=1,2`, `/compare?a=&b=` com seletores com busca, radar + barras (cores pela posição: 1º Água, 2º Fogo), tabela lado a lado e aviso fixo de não canonicidade (RN-11). Entradas pelo detalhe do personagem ("Comparar") e pela Home.
 - **Testes de integração:** a fixture principal da API desativa os desafios diários (o sorteio depende da data); os testes de desafios usam `ChallengesApiFixture`, com outro banco.
-- **Testes:** backend 254 (159 unitários + 95 integração), frontend 121. Lint, format e build passando.
+- **Testes:** backend 274 (175 unitários + 99 integração), frontend 126. Lint, format e build passando.
 
-**Próximo passo — Fase 13 (Comparação):** `ComparisonAttribute` + `CharacterAttributeValue` (0–100, seed), `GET /api/characters/compare?ids=1,2`, página `/compare?a=1&b=2` com seleção de dois personagens, visualização em barras/radar e aviso de que os atributos não são canônicos (RN-11).
+**Próximo passo — Fase 14 (Testes):** completar a cobertura de unit, integração e frontend (ver "Cobertura de testes esperada" em `docs/development-phases.md`) e criar os fluxos E2E com Cypress (ainda não configurado).
 - **Não iniciar uma nova fase sem confirmação explícita do usuário.**
 
 **Fluxo de trabalho combinado:** ao fim de cada fase → testes + lint + build + teste num Chrome real (CDP) → docs → commits pequenos → **push só quando o usuário pedir**. O usuário costuma pedir "rode o projeto para eu testar" (subir API + Vite em background) e depois "pare de rodar".
