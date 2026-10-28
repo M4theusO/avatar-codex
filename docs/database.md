@@ -337,7 +337,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 - O seeder é **idempotente**: faz upsert pela chave natural (nome; `Code` para séries), sincroniza as N:N e as relações, e **não remove** conteúdo que não esteja nos JSON. Rodar duas vezes não altera nenhuma linha.
 - Antes de gravar, `ContentSeedData.Validate()` verifica nomes duplicados e referências inexistentes entre os arquivos. Um seed inválido impede o startup.
 - Referências entre arquivos são feitas por nome (ex.: `"nation": "Nação do Fogo"`).
-- Imagens ainda não fazem parte do seed: os campos `ImageInfo` ficam nulos até a curadoria de imagens (Fase 4).
+- Imagens ainda não fazem parte do seed: os campos `ImageInfo` ficam nulos. O seed de personagens já aceita `image` (`url`, `sourceUrl`, `credit`) em `characters.json`; as imagens reais são uma pendência da Fase 15.
 - Conteúdo mínimo para demonstração:
 
 | Tabela | Quantidade alvo | Atual (Fase 2) |

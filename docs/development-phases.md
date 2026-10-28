@@ -39,7 +39,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 12 | Timeline | P2 | Era, TimelineEvent, personagens relacionados, navegação visual, filtros | Eras e eventos no banco, filtros por era e personagem ✅ (2026-10-27) |
 | 13 | Comparação | P2 | Atributos, seleção de dois personagens, visualização (barras/radar), aviso de não-canonicidade | Comparação lado a lado com atributos do banco e aviso fixo ✅ (2026-10-27) |
 | 14 | Testes | — | Completar unit, integração, frontend e E2E (ver abaixo) | Regras de negócio cobertas; E2E verde ✅ (2026-10-28) |
-| 15 | Refinamento visual | — | Espaçamento, tipografia, responsividade, acessibilidade, animações, loading/empty/error, microinterações | Aparência de produto final |
+| 15 | Refinamento visual | — | Espaçamento, tipografia, responsividade, acessibilidade, animações, loading/empty/error, microinterações | Aparência de produto final ✅ (2026-10-28) |
 | 16 | Documentação final | — | README, arquitetura, banco, API, instalação, testes, decisões técnicas | Outro dev executa o projeto só com a doc |
 | 17 | Deploy | — | Frontend (Vercel/Netlify), backend (Render/Azure/Railway), PostgreSQL gerenciado; sem serviços pagos | Aplicação pública; decisões documentadas |
 
@@ -345,3 +345,20 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 **Ajustes em relação ao planejado:**
 - O E2E não usa `data-testid`: as consultas são por papel e nome acessível (Testing Library), como nos testes de frontend. Assim o E2E também confere a acessibilidade básica.
 - "Ganha XP" e "consulta o progresso" não conferem um total exato: os desafios do dia (sorteados pela data) podem somar XP ao mesmo evento. O E2E confere o XP do evento no toast e um mínimo no perfil.
+
+## Fase 15 — Refinamento visual (concluída)
+
+- [x] **Auditoria primeiro:** capturas de todas as telas a 390px e 1440px (logado como demo) num Chrome real via CDP. A base já tinha skeletons, estados vazio/erro, foco visível, skip link, `prefers-reduced-motion`, hover e entrada dos cards; o trabalho foi corrigir o que as capturas mostraram.
+- [x] **Placeholders melhores (DA-04):** o `CharacterAvatar` recebe o elemento (cor + ícone) em vez de só a cor e mostra as iniciais sobre o símbolo do elemento em marca d'água, com anel interno e brilho na cor do elemento. Não dobradores ficam só com as iniciais. No tamanho pequeno (40px) o símbolo é omitido.
+- [x] **Pronto para imagens reais:** o seed de personagens aceita `image` (`url`, `sourceUrl`, `credit`), gravado no `ImageInfo` (atualizado no lugar, sem reescrever a linha a cada subida). Com imagem, ela cobre as iniciais; se o link falhar (`onError`), as iniciais voltam.
+- [x] **Layouts:** os 5 Avatares da Home numa linha a partir de 1024px; nações em flex centralizado (3 + 2 no desktop, sem card órfão); detalhe do personagem em duas colunas a partir de 1024px (história e habilidades | subtipos, relações e aparições); estatísticas do perfil em 2 colunas no celular e 3 + 3 no desktop; cards do "vs" da comparação com a mesma altura.
+- [x] **Microinterações:** transição discreta entre páginas (fade + 6px, 250ms, só quando muda o pathname, não nos filtros) e "pop" da estrela ao favoritar (só no clique, não ao carregar). Ambas zeradas pelo `prefers-reduced-motion`.
+- [x] Testes: backend 285 (185 unitários + 100 de integração), frontend 139 (novo `CharacterAvatar.test.tsx`: iniciais + símbolo, sem símbolo para quem não tem elemento, volta para as iniciais quando a imagem falha), E2E 7 testes / 9 fluxos verdes. Lint, format e build passando.
+- [x] Validado num Chrome real (CDP): capturas de antes e depois a 390px e 1440px; favoritar dispara a animação e desfavoritar volta ao estado anterior; navegação pela navbar dispara a transição.
+
+**Ajustes em relação ao planejado:**
+- **Imagens reais ficam pendentes.** A ideia era usar as imagens da Avatar Wiki (Fandom), mas a Fandom responde com `Cross-Origin-Resource-Policy: same-origin`, e o navegador bloqueia o hotlink em qualquer site. A decisão do usuário foi melhorar os placeholders agora e adicionar as imagens depois: basta preencher `image` em `characters.json`, sem mudança de código.
+- Os toasts já ficavam no rodapé da tela; nas capturas de página inteira eles apareciam no meio por causa do `position: fixed`.
+
+**Pendências:**
+- Imagens reais dos personagens (o usuário vai fornecer). Imagens dos eventos da timeline continuam sem curadoria.
