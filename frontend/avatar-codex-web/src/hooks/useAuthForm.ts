@@ -1,21 +1,23 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useSearchParams } from 'react-router'
 import type { SessionResult, User } from '../types/auth'
 import { getApiError } from '../utils/apiError'
-import { safeRedirect } from '../utils/redirect'
 import { useAchievementToasts } from './useAchievementToasts'
 import { useToast } from './useToast'
 
 /**
  * Estado comum dos formulários de login e cadastro. A validação é toda do backend:
  * os erros por campo da resposta 400 aparecem ao lado de cada input.
+ *
+ * Depois do sucesso quem redireciona é o `GuestOnly` (a sessão passa a existir e ele segue para
+ * `?redirect=` ou o painel). Navegar daqui também criaria duas navegações concorrentes, e com a
+ * página de destino ainda carregando (lazy) a tela às vezes ficava parada no formulário.
  */
 export function useAuthForm<T extends Record<string, string>>(
   initialValues: T,
   submit: (values: T) => Promise<SessionResult>,
   successMessage: (user: User) => string,
 ) {
-  const navigate = useNavigate()
   const [params] = useSearchParams()
   const { showToast } = useToast()
   const announceAchievements = useAchievementToasts()
@@ -49,7 +51,6 @@ export function useAuthForm<T extends Record<string, string>>(
       showToast(successMessage(user))
       // O XP do "Primeiro passo" já vem no `user`; aqui só o anúncio da conquista.
       if (reward) announceAchievements(reward.achievementsUnlocked)
-      navigate(safeRedirect(redirectParam), { replace: true })
     } catch (error) {
       const details = getApiError(error)
       setFieldErrors(details.fieldErrors)
