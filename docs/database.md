@@ -155,11 +155,13 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 
 **CharacterAttributeValue** — PK (`CharacterId`, `ComparisonAttributeId`), `Value` int com CHECK 0–100.
 
+✅ Fase 12 (migration `AddTimeline`). `Order` vem da posição no JSON; ao reordenar, o seed grava valores negativos temporários antes dos definitivos, para não violar a unicidade.
+
 **Era**
 | Campo | Tipo | Restrições |
 |---|---|---|
 | Id | int | PK |
-| Name | varchar(100) | ex. "Era de Aang", "Era de Korra" |
+| Name | varchar(100) | único; ex. "A Guerra dos Cem Anos", "A Era de Korra" |
 | Description | text | |
 | Order | int | único |
 
@@ -167,14 +169,14 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 | Campo | Tipo | Restrições |
 |---|---|---|
 | Id | int | PK |
-| Title | varchar(150) | |
+| Title | varchar(150) | único (chave do seed) |
 | Description | text | |
 | DateLabel | varchar(50) | ex. "100 AG" |
 | Image | ImageInfo | owned |
 | Order | int | único |
 | EraId | int | FK → Era |
 
-**TimelineEventCharacter** — PK (`TimelineEventId`, `CharacterId`)
+**TimelineEventCharacter** — PK (`TimelineEventId`, `CharacterId`); tabela `timeline_event_characters`, CASCADE pelo evento e RESTRICT pelo personagem.
 
 ### 3.2 Usuário e autenticação
 
@@ -345,7 +347,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 | Ability | ~25 | 23 |
 | CharacterRelationship | — | 79 |
 | ComparisonAttribute | 5 | — |
-| Era / TimelineEvent | 3–4 / ~20 | — |
+| Era / TimelineEvent | 3–4 / ~20 | 4 / 17 (`eras.json`, `timeline.json`) |
 | Quiz / Question | 3–5 / ~10 por quiz | 4 / 10 por quiz (`quizzes.json`) |
 | Achievement | ~12 | 6 (`achievements.json`, upsert por `Code`) |
 | ChallengeTemplate | ~8 | 8 (`challenges.json`, upsert por `Code`) |
@@ -366,6 +368,7 @@ Uma migration por mudança coesa de esquema, com nome descritivo (ex.: `AddQuizT
 | `InitialContentSchema` | Extensão `citext`; `elements`, `bending_subtypes`, `nations`, `series`, `abilities`, `characters`, `character_relationships`, `character_abilities`, `character_bending_subtypes`, `character_series`, `users`, `refresh_tokens` |
 | `AddFavoritesDiscoveriesAndExperience` | `character_discoveries` (UserCharacterDiscovery), `nation_discoveries` (UserNationDiscovery), `favorite_characters` (UserFavoriteCharacter), `experience_transactions` com unique (`user_id`, `type`, `source_id`) e `CHECK amount > 0`. `type` gravado como texto. |
 | `AddDailyChallenges` | `challenge_templates` (`code` único, CHECKs de meta e XP), `daily_challenges` com unique (`challenge_template_id`, `date`), `user_daily_challenges` com PK (`user_id`, `daily_challenge_id`) |
+| `AddTimeline` | `eras` (`name` e `order` únicos), `timeline_events` (`title` e `order` únicos, imagem owned, FK `era_id` RESTRICT), `timeline_event_characters` |
 
 ## 6. Testes de banco
 

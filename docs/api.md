@@ -106,8 +106,8 @@ Exemplo de resposta de login:
 | GET | `/api/nations/{id}` | 🔓* | Detalhe + personagens. 404 se não existir. | ✅ Fase 3 |
 | GET | `/api/elements` | 🔓 | Elementos (com cor e ícone) e seus subtipos de dobra | ✅ Fase 3 |
 | GET | `/api/abilities` | 🔓 | Lista ordenada por nome (filtro opcional `elementId`) | ✅ Fase 3 |
-| GET | `/api/timeline` | 🔓 | Eventos ordenados com era e personagens. Filtros: `eraId`, `characterId` (P2) | Fase 12 |
-| GET | `/api/eras` | 🔓 | Eras (P2) | Fase 12 |
+| GET | `/api/timeline` | 🔓 | Eventos em ordem cronológica **agrupados por era** (`TimelineEraDto[]`: `id`, `name`, `description`, `events[]` com `id`, `title`, `description`, `dateLabel`, `image`, `characters` resumidos e ordenados por nome). Filtros opcionais e combináveis: `eraId`, `characterId`; eras sem eventos no filtro ficam de fora, filtro sem resultado → `[]`, id ≤ 0 ou não numérico → 400 | ✅ Fase 12 |
+| GET | `/api/eras` | 🔓 | Eras em ordem cronológica (`EraDto[]`: `id`, `name`, `description`, `eventCount`) | ✅ Fase 12 |
 | GET | `/api/series` | 🔓 | Séries (para filtro) | ✅ Fase 3 |
 
 > Com token, os endpoints 🔓* preenchem `isFavorite` e `isDiscovered` (✅ Fase 6). Sem token, ou com token inválido, respondem como para um visitante (`false`).
