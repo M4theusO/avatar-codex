@@ -31,7 +31,7 @@ export default function UserMenu({ onNavigate }: { onNavigate: () => void }) {
   return (
     <div className={styles.menu}>
       <Link to="/profile" className={styles.profile} onClick={onNavigate}>
-        <CharacterAvatar name={user.username} image={null} color={user.element?.color} size="sm" />
+        <CharacterAvatar name={user.username} image={null} element={user.element} size="sm" />
         <span className={styles.identity}>
           <span className={styles.username}>
             {user.username}

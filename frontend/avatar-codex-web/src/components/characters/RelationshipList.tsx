@@ -22,7 +22,7 @@ export default function RelationshipList({
               <CharacterAvatar
                 name={character.name}
                 image={character.image}
-                color={character.element?.color}
+                element={character.element}
                 size="sm"
               />
               <span className={styles.relationshipText}>

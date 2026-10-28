@@ -52,7 +52,7 @@ export function DiscoveryList({ discoveries }: { discoveries: Discovery[] }) {
                 <CharacterAvatar
                   name={discovery.name}
                   image={discovery.image}
-                  color={discovery.element?.color}
+                  element={discovery.element}
                   size="sm"
                 />
               ) : (

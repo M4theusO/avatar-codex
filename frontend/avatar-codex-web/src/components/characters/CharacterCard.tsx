@@ -16,7 +16,7 @@ export default function CharacterCard({ character }: { character: CharacterListI
 
   return (
     <article className={styles.card} style={elementStyle(element?.color)}>
-      <CharacterAvatar name={name} image={image} color={element?.color} />
+      <CharacterAvatar name={name} image={image} element={element} />
       <div className={styles.body}>
         <h3 className={styles.name}>
           {/* O link cobre o card inteiro (ver ::after no CSS) */}

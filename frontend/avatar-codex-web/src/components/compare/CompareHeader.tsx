@@ -26,7 +26,7 @@ export default function CompareHeader({ characters }: { characters: ComparedChar
             <CharacterAvatar
               name={character.name}
               image={character.image}
-              color={character.element?.color}
+              element={character.element}
               size="lg"
             />
             <span className={styles.contenderName}>{character.name}</span>

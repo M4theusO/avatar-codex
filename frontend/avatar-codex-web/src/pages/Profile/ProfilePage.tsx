@@ -30,7 +30,7 @@ export default function ProfilePage() {
         <CharacterAvatar
           name={user.username}
           image={avatarImage}
-          color={user.element?.color}
+          element={user.element}
           size="lg"
         />
         <div className={styles.info}>

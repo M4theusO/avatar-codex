@@ -28,7 +28,7 @@ export default function TimelineEventCard({ event }: { event: TimelineEvent }) {
                   <CharacterAvatar
                     name={character.name}
                     image={character.image}
-                    color={character.element?.color}
+                    element={character.element}
                     size="sm"
                   />
                   <span>{character.name}</span>

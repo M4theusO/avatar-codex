@@ -17,7 +17,7 @@ export default function CharacterHero({ character }: { character: CharacterDetai
 
   return (
     <header className={styles.hero} style={elementStyle(element?.color)}>
-      <CharacterAvatar name={name} image={image} color={element?.color} size="lg" />
+      <CharacterAvatar name={name} image={image} element={element} size="lg" />
       <div className={styles.info}>
         <h1 className={styles.name}>{name}</h1>
         {aliases.length > 0 && (
