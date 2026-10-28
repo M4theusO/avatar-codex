@@ -302,6 +302,32 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.ToTable("characters", (string)null);
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.CharacterAttributeValue", b =>
+                {
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("integer")
+                        .HasColumnName("character_id");
+
+                    b.Property<int>("ComparisonAttributeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("comparison_attribute_id");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("integer")
+                        .HasColumnName("value");
+
+                    b.HasKey("CharacterId", "ComparisonAttributeId")
+                        .HasName("pk_character_attribute_values");
+
+                    b.HasIndex("ComparisonAttributeId")
+                        .HasDatabaseName("ix_character_attribute_values_comparison_attribute_id");
+
+                    b.ToTable("character_attribute_values", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_character_attribute_values_value_range", "value >= 0 AND value <= 100");
+                        });
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.CharacterRelationship", b =>
                 {
                     b.Property<int>("CharacterId")
@@ -332,6 +358,41 @@ namespace AvatarCodex.Infrastructure.Migrations
                         {
                             t.HasCheckConstraint("ck_character_relationships_not_self", "character_id <> related_character_id");
                         });
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.ComparisonAttribute", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("name");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer")
+                        .HasColumnName("order");
+
+                    b.HasKey("Id")
+                        .HasName("pk_comparison_attributes");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_comparison_attributes_name");
+
+                    b.ToTable("comparison_attributes", (string)null);
                 });
 
             modelBuilder.Entity("AvatarCodex.Domain.Entities.DailyChallenge", b =>
@@ -1252,6 +1313,27 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.Navigation("Nation");
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.CharacterAttributeValue", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.Character", "Character")
+                        .WithMany("AttributeValues")
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_character_attribute_values_characters_character_id");
+
+                    b.HasOne("AvatarCodex.Domain.Entities.ComparisonAttribute", "ComparisonAttribute")
+                        .WithMany()
+                        .HasForeignKey("ComparisonAttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_character_attribute_values_comparison_attributes_comparison");
+
+                    b.Navigation("Character");
+
+                    b.Navigation("ComparisonAttribute");
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.CharacterRelationship", b =>
                 {
                     b.HasOne("AvatarCodex.Domain.Entities.Character", "Character")
@@ -1671,6 +1753,8 @@ namespace AvatarCodex.Infrastructure.Migrations
 
             modelBuilder.Entity("AvatarCodex.Domain.Entities.Character", b =>
                 {
+                    b.Navigation("AttributeValues");
+
                     b.Navigation("Relationships");
                 });
 

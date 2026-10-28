@@ -13,7 +13,8 @@ namespace AvatarCodex.Api.Controllers;
 public class CharactersController(
     CharacterService characters,
     DiscoveryService discoveries,
-    FavoriteService favorites) : ControllerBase
+    FavoriteService favorites,
+    ComparisonService comparison) : ControllerBase
 {
     /// <summary>Lista paginada com busca, filtros e ordenação. Com token, preenche isFavorite/isDiscovered.</summary>
     [HttpGet]
@@ -22,6 +23,18 @@ public class CharactersController(
     public async Task<ActionResult<PagedResult<CharacterListItemDto>>> GetAll(
         [FromQuery] CharacterQueryParameters query, CancellationToken cancellationToken) =>
         Ok(await characters.GetPagedAsync(query, User.GetUserIdOrNull(), cancellationToken));
+
+    /// <summary>
+    /// Compara dois personagens (ids=1,2): informações lado a lado e atributos de 0 a 100, que são
+    /// estimativas do projeto e não informação canônica.
+    /// </summary>
+    [HttpGet("compare")]
+    [ProducesResponseType<CharacterComparisonDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CharacterComparisonDto>> Compare(
+        [FromQuery] CharacterComparisonQuery query, CancellationToken cancellationToken) =>
+        Ok(await comparison.CompareAsync(query, cancellationToken));
 
     /// <summary>Detalhe com nação, elemento, subtipos, habilidades, séries e relações.</summary>
     [HttpGet("{id:int}")]

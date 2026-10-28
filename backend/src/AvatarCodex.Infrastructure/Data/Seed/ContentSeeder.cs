@@ -134,6 +134,47 @@ public class ContentSeeder(AppDbContext db)
         await db.SaveChangesAsync(cancellationToken);
         await SeedQuizzesAsync(data.Quizzes, cancellationToken);
         await SeedTimelineAsync(data, characters, cancellationToken);
+        await SeedComparisonAsync(data, characters, cancellationToken);
+    }
+
+    /// <summary>Atributos pelo nome (a ordem é a posição no arquivo) e valores por personagem + atributo.</summary>
+    private async Task SeedComparisonAsync(
+        ContentSeedData data, Dictionary<string, Character> characters, CancellationToken cancellationToken)
+    {
+        var attributes = await db.ComparisonAttributes.ToDictionaryAsync(a => a.Name, cancellationToken);
+        foreach (var (seed, index) in data.ComparisonAttributes.Select((a, i) => (a, i)))
+        {
+            var attribute = GetOrAdd(attributes, seed.Name, () => new ComparisonAttribute
+            {
+                Name = seed.Name, Description = seed.Description
+            });
+            attribute.Description = seed.Description;
+            attribute.Order = index + 1;
+        }
+
+        var values = await db.CharacterAttributeValues
+            .ToDictionaryAsync(v => (v.CharacterId, v.ComparisonAttributeId), cancellationToken);
+        foreach (var seed in data.CharacterAttributes)
+        {
+            var character = characters[seed.Character];
+            foreach (var (name, value) in seed.Values)
+            {
+                var attribute = attributes[name];
+                if (character.Id != 0 && attribute.Id != 0 &&
+                    values.TryGetValue((character.Id, attribute.Id), out var existing))
+                {
+                    existing.Value = value;
+                    continue;
+                }
+
+                db.CharacterAttributeValues.Add(new CharacterAttributeValue
+                {
+                    Character = character, ComparisonAttribute = attribute, Value = value
+                });
+            }
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
     }
 
     /// <summary>

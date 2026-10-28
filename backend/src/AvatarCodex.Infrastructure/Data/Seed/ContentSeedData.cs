@@ -36,6 +36,12 @@ public record EraSeed(string Name, string Description);
 
 public record TimelineEventSeed(string Title, string Era, string DateLabel, string Description, List<string> Characters);
 
+/// <param name="RequiresBending">Só dobradores pontuam: quem não dobra tem 0, quem dobra tem mais que 0.</param>
+public record ComparisonAttributeSeed(string Name, string Description, bool RequiresBending = false);
+
+/// <summary>Valores de 0 a 100 de um personagem, por nome do atributo.</summary>
+public record CharacterAttributesSeed(string Character, Dictionary<string, int> Values);
+
 public record QuizOptionSeed(string Text, bool IsCorrect);
 
 public record QuestionSeed(string Text, string? Explanation, List<QuizOptionSeed> Options);
@@ -87,6 +93,11 @@ public class ContentSeedData
     /// <summary>Na ordem cronológica, entre todas as eras.</summary>
     public required List<TimelineEventSeed> TimelineEvents { get; init; }
 
+    /// <summary>Na ordem de exibição.</summary>
+    public required List<ComparisonAttributeSeed> ComparisonAttributes { get; init; }
+
+    public required List<CharacterAttributesSeed> CharacterAttributes { get; init; }
+
     public static ContentSeedData Load() => new()
     {
         Elements = Read<ElementSeed>("elements.json"),
@@ -99,7 +110,9 @@ public class ContentSeedData
         Quizzes = Read<QuizSeed>("quizzes.json"),
         Challenges = Read<ChallengeSeed>("challenges.json"),
         Eras = Read<EraSeed>("eras.json"),
-        TimelineEvents = Read<TimelineEventSeed>("timeline.json")
+        TimelineEvents = Read<TimelineEventSeed>("timeline.json"),
+        ComparisonAttributes = Read<ComparisonAttributeSeed>("comparison-attributes.json"),
+        CharacterAttributes = Read<CharacterAttributesSeed>("character-attributes.json")
     };
 
     /// <summary>Retorna os problemas encontrados (nomes duplicados ou referências inexistentes).</summary>
@@ -202,6 +215,8 @@ public class ContentSeedData
             }
         }
 
+        ValidateComparison(characters, errors);
+
         UniqueNames(Quizzes.Select(q => q.Title), "quiz", errors);
         foreach (var quiz in Quizzes)
         {
@@ -219,6 +234,38 @@ public class ContentSeedData
         }
 
         return errors;
+    }
+
+    /// <summary>Cada personagem listado tem todos os atributos, de 0 a 100 (RN-11: são estimativas, não cânone).</summary>
+    private void ValidateComparison(HashSet<string> characters, List<string> errors)
+    {
+        var attributes = UniqueNames(ComparisonAttributes.Select(a => a.Name), "atributo de comparação", errors);
+        UniqueNames(CharacterAttributes.Select(c => c.Character), "personagem nos atributos", errors);
+        var benders = Characters.Where(c => c.IsBender).Select(c => c.Name).ToHashSet();
+
+        foreach (var entry in CharacterAttributes)
+        {
+            var owner = $"Atributos de '{entry.Character}'";
+            CheckReference(characters, entry.Character, owner, "personagem", errors);
+
+            foreach (var (name, value) in entry.Values)
+            {
+                CheckReference(attributes, name, owner, "atributo", errors);
+                if (value is < 0 or > 100)
+                    errors.Add($"{owner}: '{name}' deve estar entre 0 e 100.");
+            }
+
+            foreach (var missing in attributes.Where(a => !entry.Values.ContainsKey(a)))
+                errors.Add($"{owner}: falta o atributo '{missing}'.");
+
+            foreach (var attribute in ComparisonAttributes.Where(a => a.RequiresBending))
+            {
+                if (!entry.Values.TryGetValue(attribute.Name, out var value) || !characters.Contains(entry.Character))
+                    continue;
+                if (benders.Contains(entry.Character) != value > 0)
+                    errors.Add($"{owner}: '{attribute.Name}' deve ser 0 para quem não dobra e maior que 0 para dobradores.");
+            }
+        }
     }
 
     private static List<T> Read<T>(string fileName)

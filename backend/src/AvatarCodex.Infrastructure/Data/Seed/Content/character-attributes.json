@@ -1,0 +1,372 @@
+[
+  {
+    "character": "Aang",
+    "values": {
+      "Domínio elemental": 95,
+      "Combate": 75,
+      "Agilidade": 95,
+      "Estratégia": 65,
+      "Liderança": 75
+    }
+  },
+  {
+    "character": "Katara",
+    "values": {
+      "Domínio elemental": 88,
+      "Combate": 78,
+      "Agilidade": 75,
+      "Estratégia": 70,
+      "Liderança": 75
+    }
+  },
+  {
+    "character": "Sokka",
+    "values": {
+      "Domínio elemental": 0,
+      "Combate": 72,
+      "Agilidade": 70,
+      "Estratégia": 92,
+      "Liderança": 75
+    }
+  },
+  {
+    "character": "Toph Beifong",
+    "values": {
+      "Domínio elemental": 92,
+      "Combate": 82,
+      "Agilidade": 65,
+      "Estratégia": 70,
+      "Liderança": 62
+    }
+  },
+  {
+    "character": "Zuko",
+    "values": {
+      "Domínio elemental": 82,
+      "Combate": 85,
+      "Agilidade": 80,
+      "Estratégia": 65,
+      "Liderança": 75
+    }
+  },
+  {
+    "character": "Iroh",
+    "values": {
+      "Domínio elemental": 92,
+      "Combate": 85,
+      "Agilidade": 60,
+      "Estratégia": 90,
+      "Liderança": 85
+    }
+  },
+  {
+    "character": "Azula",
+    "values": {
+      "Domínio elemental": 93,
+      "Combate": 88,
+      "Agilidade": 90,
+      "Estratégia": 88,
+      "Liderança": 70
+    }
+  },
+  {
+    "character": "Ozai",
+    "values": {
+      "Domínio elemental": 95,
+      "Combate": 78,
+      "Agilidade": 60,
+      "Estratégia": 75,
+      "Liderança": 75
+    }
+  },
+  {
+    "character": "Suki",
+    "values": {
+      "Domínio elemental": 0,
+      "Combate": 85,
+      "Agilidade": 85,
+      "Estratégia": 72,
+      "Liderança": 82
+    }
+  },
+  {
+    "character": "Mai",
+    "values": {
+      "Domínio elemental": 0,
+      "Combate": 82,
+      "Agilidade": 78,
+      "Estratégia": 60,
+      "Liderança": 40
+    }
+  },
+  {
+    "character": "Ty Lee",
+    "values": {
+      "Domínio elemental": 0,
+      "Combate": 82,
+      "Agilidade": 95,
+      "Estratégia": 50,
+      "Liderança": 35
+    }
+  },
+  {
+    "character": "Roku",
+    "values": {
+      "Domínio elemental": 92,
+      "Combate": 80,
+      "Agilidade": 70,
+      "Estratégia": 72,
+      "Liderança": 80
+    }
+  },
+  {
+    "character": "Kyoshi",
+    "values": {
+      "Domínio elemental": 96,
+      "Combate": 85,
+      "Agilidade": 60,
+      "Estratégia": 80,
+      "Liderança": 88
+    }
+  },
+  {
+    "character": "Bumi",
+    "values": {
+      "Domínio elemental": 93,
+      "Combate": 80,
+      "Agilidade": 65,
+      "Estratégia": 85,
+      "Liderança": 80
+    }
+  },
+  {
+    "character": "Jet",
+    "values": {
+      "Domínio elemental": 0,
+      "Combate": 82,
+      "Agilidade": 85,
+      "Estratégia": 70,
+      "Liderança": 78
+    }
+  },
+  {
+    "character": "Yue",
+    "values": {
+      "Domínio elemental": 0,
+      "Combate": 20,
+      "Agilidade": 40,
+      "Estratégia": 60,
+      "Liderança": 70
+    }
+  },
+  {
+    "character": "Pakku",
+    "values": {
+      "Domínio elemental": 88,
+      "Combate": 75,
+      "Agilidade": 65,
+      "Estratégia": 75,
+      "Liderança": 70
+    }
+  },
+  {
+    "character": "Zhao",
+    "values": {
+      "Domínio elemental": 72,
+      "Combate": 70,
+      "Agilidade": 60,
+      "Estratégia": 60,
+      "Liderança": 65
+    }
+  },
+  {
+    "character": "Hama",
+    "values": {
+      "Domínio elemental": 90,
+      "Combate": 70,
+      "Agilidade": 55,
+      "Estratégia": 78,
+      "Liderança": 30
+    }
+  },
+  {
+    "character": "Gyatso",
+    "values": {
+      "Domínio elemental": 85,
+      "Combate": 60,
+      "Agilidade": 75,
+      "Estratégia": 65,
+      "Liderança": 75
+    }
+  },
+  {
+    "character": "Long Feng",
+    "values": {
+      "Domínio elemental": 70,
+      "Combate": 75,
+      "Agilidade": 65,
+      "Estratégia": 85,
+      "Liderança": 75
+    }
+  },
+  {
+    "character": "Korra",
+    "values": {
+      "Domínio elemental": 95,
+      "Combate": 88,
+      "Agilidade": 80,
+      "Estratégia": 60,
+      "Liderança": 75
+    }
+  },
+  {
+    "character": "Mako",
+    "values": {
+      "Domínio elemental": 78,
+      "Combate": 80,
+      "Agilidade": 78,
+      "Estratégia": 72,
+      "Liderança": 60
+    }
+  },
+  {
+    "character": "Bolin",
+    "values": {
+      "Domínio elemental": 75,
+      "Combate": 72,
+      "Agilidade": 70,
+      "Estratégia": 50,
+      "Liderança": 50
+    }
+  },
+  {
+    "character": "Asami Sato",
+    "values": {
+      "Domínio elemental": 0,
+      "Combate": 78,
+      "Agilidade": 75,
+      "Estratégia": 80,
+      "Liderança": 80
+    }
+  },
+  {
+    "character": "Tenzin",
+    "values": {
+      "Domínio elemental": 85,
+      "Combate": 65,
+      "Agilidade": 80,
+      "Estratégia": 70,
+      "Liderança": 78
+    }
+  },
+  {
+    "character": "Lin Beifong",
+    "values": {
+      "Domínio elemental": 85,
+      "Combate": 82,
+      "Agilidade": 75,
+      "Estratégia": 75,
+      "Liderança": 80
+    }
+  },
+  {
+    "character": "Amon",
+    "values": {
+      "Domínio elemental": 75,
+      "Combate": 88,
+      "Agilidade": 82,
+      "Estratégia": 88,
+      "Liderança": 90
+    }
+  },
+  {
+    "character": "Unalaq",
+    "values": {
+      "Domínio elemental": 85,
+      "Combate": 70,
+      "Agilidade": 65,
+      "Estratégia": 78,
+      "Liderança": 70
+    }
+  },
+  {
+    "character": "Zaheer",
+    "values": {
+      "Domínio elemental": 88,
+      "Combate": 85,
+      "Agilidade": 92,
+      "Estratégia": 88,
+      "Liderança": 82
+    }
+  },
+  {
+    "character": "P'Li",
+    "values": {
+      "Domínio elemental": 85,
+      "Combate": 70,
+      "Agilidade": 55,
+      "Estratégia": 60,
+      "Liderança": 50
+    }
+  },
+  {
+    "character": "Kuvira",
+    "values": {
+      "Domínio elemental": 88,
+      "Combate": 88,
+      "Agilidade": 82,
+      "Estratégia": 85,
+      "Liderança": 88
+    }
+  },
+  {
+    "character": "Suyin Beifong",
+    "values": {
+      "Domínio elemental": 85,
+      "Combate": 80,
+      "Agilidade": 82,
+      "Estratégia": 75,
+      "Liderança": 82
+    }
+  },
+  {
+    "character": "Jinora",
+    "values": {
+      "Domínio elemental": 75,
+      "Combate": 40,
+      "Agilidade": 75,
+      "Estratégia": 72,
+      "Liderança": 65
+    }
+  },
+  {
+    "character": "Varrick",
+    "values": {
+      "Domínio elemental": 0,
+      "Combate": 35,
+      "Agilidade": 50,
+      "Estratégia": 82,
+      "Liderança": 70
+    }
+  },
+  {
+    "character": "Hiroshi Sato",
+    "values": {
+      "Domínio elemental": 0,
+      "Combate": 50,
+      "Agilidade": 45,
+      "Estratégia": 80,
+      "Liderança": 70
+    }
+  },
+  {
+    "character": "Wan",
+    "values": {
+      "Domínio elemental": 80,
+      "Combate": 70,
+      "Agilidade": 72,
+      "Estratégia": 65,
+      "Liderança": 60
+    }
+  }
+]

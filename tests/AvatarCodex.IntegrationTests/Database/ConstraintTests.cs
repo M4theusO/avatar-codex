@@ -72,6 +72,30 @@ public class ConstraintTests(TestDatabase database) : IClassFixture<TestDatabase
         await Assert.ThrowsAsync<DbUpdateException>(() => db.SaveChangesAsync());
     }
 
+    [SkippableTheory]
+    [InlineData(-1)]
+    [InlineData(101)]
+    public async Task CharacterAttributeValue_MustBeBetween0And100(int value)
+    {
+        database.SkipIfUnavailable();
+
+        await using var db = database.CreateContext();
+        db.CharacterAttributeValues.Add(new CharacterAttributeValue
+        {
+            Character = new Character
+            {
+                Name = $"Atributo fora da faixa {value}",
+                Description = "Descrição",
+                Biography = "Biografia",
+                Status = CharacterStatus.Unknown
+            },
+            ComparisonAttribute = new ComparisonAttribute { Name = $"Atributo {value}", Description = "-" },
+            Value = value
+        });
+
+        await Assert.ThrowsAsync<DbUpdateException>(() => db.SaveChangesAsync());
+    }
+
     [SkippableFact]
     public async Task AuditTimestamps_AreSetOnInsertAndUpdate()
     {

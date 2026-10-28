@@ -34,4 +34,5 @@ public class Character : IAuditableEntity
     public ICollection<Ability> Abilities { get; set; } = [];
     public ICollection<Series> Series { get; set; } = [];
     public ICollection<CharacterRelationship> Relationships { get; set; } = [];
+    public ICollection<CharacterAttributeValue> AttributeValues { get; set; } = [];
 }

@@ -18,6 +18,8 @@ public class ContentSeedDataTests
         Assert.NotEmpty(data.Characters);
         Assert.Contains(data.Achievements, a => a.Code == "FIRST_STEP");
         Assert.All(data.Quizzes, q => Assert.Equal(10, q.Questions.Count));
+        // Todo personagem do seed pode ser comparado.
+        Assert.Equal(data.Characters.Select(c => c.Name).Order(), data.CharacterAttributes.Select(c => c.Character).Order());
     }
 
     [Fact]
@@ -138,6 +140,34 @@ public class ContentSeedDataTests
         Assert.Contains(errors, e => e.Contains("era inexistente: 'Inexistente'"));
     }
 
+    [Fact]
+    public void Validate_ReportsInvalidComparisonAttributes()
+    {
+        var data = MinimalData(Character("Aang", element: "Ar"), Character("Sokka", element: null));
+        data.ComparisonAttributes.AddRange(
+        [
+            new ComparisonAttributeSeed("Domínio elemental", "-", RequiresBending: true),
+            new ComparisonAttributeSeed("Estratégia", "-")
+        ]);
+        data.CharacterAttributes.AddRange(
+        [
+            new CharacterAttributesSeed("Aang", new() { ["Domínio elemental"] = 0, ["Estratégia"] = 101 }),
+            new CharacterAttributesSeed("Sokka", new() { ["Domínio elemental"] = 10, ["Força"] = 50 }),
+            new CharacterAttributesSeed("Ninguém", new() { ["Domínio elemental"] = 0, ["Estratégia"] = 50 }),
+            new CharacterAttributesSeed("Aang", new() { ["Domínio elemental"] = 90, ["Estratégia"] = 60 })
+        ]);
+
+        var errors = data.Validate();
+
+        Assert.Contains(errors, e => e.Contains("personagem nos atributos duplicado: 'Aang'"));
+        Assert.Contains(errors, e => e.Contains("Atributos de 'Aang': 'Estratégia' deve estar entre 0 e 100"));
+        Assert.Contains(errors, e => e.Contains("Atributos de 'Aang': 'Domínio elemental' deve ser 0 para quem não dobra"));
+        Assert.Contains(errors, e => e.Contains("Atributos de 'Sokka': 'Domínio elemental' deve ser 0 para quem não dobra"));
+        Assert.Contains(errors, e => e.Contains("Atributos de 'Sokka': falta o atributo 'Estratégia'"));
+        Assert.Contains(errors, e => e.Contains("atributo inexistente: 'Força'"));
+        Assert.Contains(errors, e => e.Contains("personagem inexistente: 'Ninguém'"));
+    }
+
     private static AchievementSeed Achievement(string code, AchievementRequirementType type, int value, int xp) =>
         new(code, code, "Descrição", "award", type, value, xp);
 
@@ -153,7 +183,9 @@ public class ContentSeedDataTests
         Quizzes = [],
         Challenges = [],
         Eras = [],
-        TimelineEvents = []
+        TimelineEvents = [],
+        ComparisonAttributes = [],
+        CharacterAttributes = []
     };
 
     private static CharacterSeed Character(

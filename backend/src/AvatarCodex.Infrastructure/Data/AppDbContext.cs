@@ -31,6 +31,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TimeProvider t
     public DbSet<UserDailyChallenge> UserDailyChallenges => Set<UserDailyChallenge>();
     public DbSet<Era> Eras => Set<Era>();
     public DbSet<TimelineEvent> TimelineEvents => Set<TimelineEvent>();
+    public DbSet<ComparisonAttribute> ComparisonAttributes => Set<ComparisonAttribute>();
+    public DbSet<CharacterAttributeValue> CharacterAttributeValues => Set<CharacterAttributeValue>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Domínio elemental",
+    "description": "Controle, potência e versatilidade na dobra. Quem não dobra fica com 0.",
+    "requiresBending": true
+  },
+  {
+    "name": "Combate",
+    "description": "Técnica de luta, com ou sem dobra: armas, corpo a corpo e resistência em batalha."
+  },
+  {
+    "name": "Agilidade",
+    "description": "Velocidade, reflexos e mobilidade."
+  },
+  {
+    "name": "Estratégia",
+    "description": "Planejamento, leitura de situações e criatividade tática."
+  },
+  {
+    "name": "Liderança",
+    "description": "Capacidade de inspirar, organizar e conduzir outras pessoas."
+  }
+]
