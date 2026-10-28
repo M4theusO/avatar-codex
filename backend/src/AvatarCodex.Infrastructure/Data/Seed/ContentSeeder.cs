@@ -133,6 +133,56 @@ public class ContentSeeder(AppDbContext db)
 
         await db.SaveChangesAsync(cancellationToken);
         await SeedQuizzesAsync(data.Quizzes, cancellationToken);
+        await SeedTimelineAsync(data, characters, cancellationToken);
+    }
+
+    /// <summary>
+    /// Eras e eventos pelo nome/título; a ordem é a posição no arquivo. Order é único, então uma reordenação
+    /// grava primeiro valores temporários (negativos) e depois os definitivos, sem violar a unicidade no meio.
+    /// </summary>
+    private async Task SeedTimelineAsync(
+        ContentSeedData data, Dictionary<string, Character> characters, CancellationToken cancellationToken)
+    {
+        var eras = await db.Eras.ToDictionaryAsync(e => e.Name, cancellationToken);
+        var desiredEras = data.Eras.Select((seed, index) =>
+        {
+            var era = GetOrAdd(eras, seed.Name, () => new Era { Name = seed.Name, Description = seed.Description });
+            era.Description = seed.Description;
+            return (Entity: era, Order: index + 1);
+        }).ToList();
+
+        var events = await db.TimelineEvents
+            .Include(e => e.Characters)
+            .ToDictionaryAsync(e => e.Title, cancellationToken);
+        var desiredEvents = data.TimelineEvents.Select((seed, index) =>
+        {
+            var timelineEvent = GetOrAdd(events, seed.Title, () => new TimelineEvent
+            {
+                Title = seed.Title, Description = seed.Description, DateLabel = seed.DateLabel
+            });
+            timelineEvent.Description = seed.Description;
+            timelineEvent.DateLabel = seed.DateLabel;
+            timelineEvent.Era = eras[seed.Era];
+            Sync(timelineEvent.Characters, seed.Characters.Select(name => characters[name]));
+            return (Entity: timelineEvent, Order: index + 1);
+        }).ToList();
+
+        var reordering = desiredEras.Any(e => e.Entity.Id != 0 && e.Entity.Order != e.Order)
+            || desiredEvents.Any(e => e.Entity.Id != 0 && e.Entity.Order != e.Order);
+        if (reordering)
+        {
+            foreach (var (era, order) in desiredEras)
+                era.Order = -order;
+            foreach (var (timelineEvent, order) in desiredEvents)
+                timelineEvent.Order = -order;
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        foreach (var (era, order) in desiredEras)
+            era.Order = order;
+        foreach (var (timelineEvent, order) in desiredEvents)
+            timelineEvent.Order = order;
+        await db.SaveChangesAsync(cancellationToken);
     }
 
     /// <summary>

@@ -117,6 +117,27 @@ public class ContentSeedDataTests
         Assert.Contains(errors, e => e.Contains("pelo menos um desafio ativo"));
     }
 
+    [Fact]
+    public void Validate_ReportsInvalidTimeline()
+    {
+        var data = MinimalData(Character("Aang", element: "Ar"));
+        data.Eras.AddRange([new EraSeed("Antes", "-"), new EraSeed("Depois", "-"), new EraSeed("Antes", "-")]);
+        data.TimelineEvents.AddRange(
+        [
+            new TimelineEventSeed("Começo", "Depois", "1 AG", "-", ["Aang", "Aang"]),
+            new TimelineEventSeed("Volta no tempo", "Antes", "0 AG", "-", ["Ninguém"]),
+            new TimelineEventSeed("Sem era", "Inexistente", "?", "-", [])
+        ]);
+
+        var errors = data.Validate();
+
+        Assert.Contains(errors, e => e.Contains("era duplicado: 'Antes'"));
+        Assert.Contains(errors, e => e.Contains("'Começo' repete um personagem"));
+        Assert.Contains(errors, e => e.Contains("'Volta no tempo' está fora da ordem das eras"));
+        Assert.Contains(errors, e => e.Contains("personagem inexistente: 'Ninguém'"));
+        Assert.Contains(errors, e => e.Contains("era inexistente: 'Inexistente'"));
+    }
+
     private static AchievementSeed Achievement(string code, AchievementRequirementType type, int value, int xp) =>
         new(code, code, "Descrição", "award", type, value, xp);
 
@@ -130,7 +151,9 @@ public class ContentSeedDataTests
         Characters = [.. characters],
         Achievements = [],
         Quizzes = [],
-        Challenges = []
+        Challenges = [],
+        Eras = [],
+        TimelineEvents = []
     };
 
     private static CharacterSeed Character(

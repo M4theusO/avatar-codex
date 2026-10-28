@@ -90,7 +90,10 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
             Characters = [.. data.Characters.Select(c => c.Name == "Aang" ? changed : c)],
             Achievements = [.. data.Achievements.Select(a => a.Code == "CURIOUS" ? a with { ExperienceReward = 75 } : a)],
             Quizzes = [.. data.Quizzes.Select(q => q.Title == "O Time Avatar" ? SwapCorrectOption(q) : q)],
-            Challenges = [.. data.Challenges.Select(c => c.Code == "QUIZ_PERFECT" ? c with { IsActive = false } : c)]
+            Challenges = [.. data.Challenges.Select(c => c.Code == "QUIZ_PERFECT" ? c with { IsActive = false } : c)],
+            Eras = data.Eras,
+            // Troca a ordem de dois eventos da mesma era e muda os personagens de um deles.
+            TimelineEvents = SwapFirstTwoEventsOfKorra(data.TimelineEvents)
         };
 
         await using (var second = database.CreateContext())
@@ -105,6 +108,19 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
         Assert.False((await check.ChallengeTemplates.SingleAsync(c => c.Code == "QUIZ_PERFECT")).IsActive);
         Assert.Equal(data.Challenges.Count, await check.ChallengeTemplates.CountAsync());
 
+        var korraEvents = await check.TimelineEvents
+            .Where(e => e.Era.Name == "A Era de Korra")
+            .OrderBy(e => e.Order)
+            .Select(e => new { e.Title, Characters = e.Characters.Select(c => c.Name).ToList() })
+            .ToListAsync();
+        Assert.Equal("A morte de Aang e o nascimento de Korra", korraEvents[0].Title);
+        Assert.Equal("Nasce a Cidade República", korraEvents[1].Title);
+        Assert.Equal(["Aang"], korraEvents[1].Characters);
+        Assert.Equal(data.TimelineEvents.Count, await check.TimelineEvents.CountAsync());
+        Assert.Equal(
+            Enumerable.Range(1, data.TimelineEvents.Count),
+            await check.TimelineEvents.OrderBy(e => e.Order).Select(e => e.Order).ToListAsync());
+
         // A resposta correta da 1ª pergunta mudou da 2ª para a 1ª opção sem violar "uma correta por pergunta".
         var options = await check.QuestionOptions
             .Where(o => check.Questions.Any(q => q.Id == o.QuestionId && q.Order == 1
@@ -113,6 +129,14 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
             .Select(o => o.IsCorrect)
             .ToListAsync();
         Assert.Equal([true, false, false, false], options);
+    }
+
+    private static List<TimelineEventSeed> SwapFirstTwoEventsOfKorra(List<TimelineEventSeed> events)
+    {
+        var result = events.ToList();
+        var first = result.FindIndex(e => e.Era == "A Era de Korra");
+        (result[first], result[first + 1]) = (result[first + 1], result[first] with { Characters = ["Aang"] });
+        return result;
     }
 
     private static QuizSeed SwapCorrectOption(QuizSeed quiz)

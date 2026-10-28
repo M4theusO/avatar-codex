@@ -407,6 +407,44 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.ToTable("elements", (string)null);
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.Era", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer")
+                        .HasColumnName("order");
+
+                    b.HasKey("Id")
+                        .HasName("pk_eras");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_eras_name");
+
+                    b.HasIndex("Order")
+                        .IsUnique()
+                        .HasDatabaseName("ix_eras_order");
+
+                    b.ToTable("eras", (string)null);
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.ExperienceTransaction", b =>
                 {
                     b.Property<long>("Id")
@@ -694,6 +732,57 @@ namespace AvatarCodex.Infrastructure.Migrations
                         .HasDatabaseName("ix_series_code");
 
                     b.ToTable("series", (string)null);
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.TimelineEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DateLabel")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("date_label");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<int>("EraId")
+                        .HasColumnType("integer")
+                        .HasColumnName("era_id");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer")
+                        .HasColumnName("order");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id")
+                        .HasName("pk_timeline_events");
+
+                    b.HasIndex("EraId")
+                        .HasDatabaseName("ix_timeline_events_era_id");
+
+                    b.HasIndex("Order")
+                        .IsUnique()
+                        .HasDatabaseName("ix_timeline_events_order");
+
+                    b.HasIndex("Title")
+                        .IsUnique()
+                        .HasDatabaseName("ix_timeline_events_title");
+
+                    b.ToTable("timeline_events", (string)null);
                 });
 
             modelBuilder.Entity("AvatarCodex.Domain.Entities.User", b =>
@@ -1036,6 +1125,25 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.ToTable("character_series", (string)null);
                 });
 
+            modelBuilder.Entity("timeline_event_characters", b =>
+                {
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("integer")
+                        .HasColumnName("character_id");
+
+                    b.Property<int>("TimelineEventId")
+                        .HasColumnType("integer")
+                        .HasColumnName("timeline_event_id");
+
+                    b.HasKey("CharacterId", "TimelineEventId")
+                        .HasName("pk_timeline_event_characters");
+
+                    b.HasIndex("TimelineEventId")
+                        .HasDatabaseName("ix_timeline_event_characters_timeline_event_id");
+
+                    b.ToTable("timeline_event_characters", (string)null);
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.Ability", b =>
                 {
                     b.HasOne("AvatarCodex.Domain.Entities.Element", "Element")
@@ -1299,6 +1407,51 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.TimelineEvent", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.Era", "Era")
+                        .WithMany("Events")
+                        .HasForeignKey("EraId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_timeline_events_eras_era_id");
+
+                    b.OwnsOne("AvatarCodex.Domain.ValueObjects.ImageInfo", "Image", b1 =>
+                        {
+                            b1.Property<int>("TimelineEventId")
+                                .HasColumnType("integer")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Credit")
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)")
+                                .HasColumnName("image_credit");
+
+                            b1.Property<string>("SourceUrl")
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("image_source_url");
+
+                            b1.Property<string>("Url")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("image_url");
+
+                            b1.HasKey("TimelineEventId");
+
+                            b1.ToTable("timeline_events");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TimelineEventId")
+                                .HasConstraintName("fk_timeline_events_timeline_events_id");
+                        });
+
+                    b.Navigation("Era");
+
+                    b.Navigation("Image");
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.User", b =>
                 {
                     b.HasOne("AvatarCodex.Domain.Entities.Element", "Element")
@@ -1499,6 +1652,23 @@ namespace AvatarCodex.Infrastructure.Migrations
                         .HasConstraintName("fk_character_series_series_series_id");
                 });
 
+            modelBuilder.Entity("timeline_event_characters", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.Character", null)
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_timeline_event_characters_characters_character_id");
+
+                    b.HasOne("AvatarCodex.Domain.Entities.TimelineEvent", null)
+                        .WithMany()
+                        .HasForeignKey("TimelineEventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_timeline_event_characters_timeline_events_timeline_event_id");
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.Character", b =>
                 {
                     b.Navigation("Relationships");
@@ -1507,6 +1677,11 @@ namespace AvatarCodex.Infrastructure.Migrations
             modelBuilder.Entity("AvatarCodex.Domain.Entities.Element", b =>
                 {
                     b.Navigation("BendingSubtypes");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.Era", b =>
+                {
+                    b.Navigation("Events");
                 });
 
             modelBuilder.Entity("AvatarCodex.Domain.Entities.Nation", b =>

@@ -32,6 +32,10 @@ public record ChallengeSeed(
     int ExperienceReward,
     bool IsActive = true);
 
+public record EraSeed(string Name, string Description);
+
+public record TimelineEventSeed(string Title, string Era, string DateLabel, string Description, List<string> Characters);
+
 public record QuizOptionSeed(string Text, bool IsCorrect);
 
 public record QuestionSeed(string Text, string? Explanation, List<QuizOptionSeed> Options);
@@ -77,6 +81,12 @@ public class ContentSeedData
     public required List<QuizSeed> Quizzes { get; init; }
     public required List<ChallengeSeed> Challenges { get; init; }
 
+    /// <summary>Na ordem cronológica: a posição no arquivo é a ordem de exibição.</summary>
+    public required List<EraSeed> Eras { get; init; }
+
+    /// <summary>Na ordem cronológica, entre todas as eras.</summary>
+    public required List<TimelineEventSeed> TimelineEvents { get; init; }
+
     public static ContentSeedData Load() => new()
     {
         Elements = Read<ElementSeed>("elements.json"),
@@ -87,7 +97,9 @@ public class ContentSeedData
         Characters = Read<CharacterSeed>("characters.json"),
         Achievements = Read<AchievementSeed>("achievements.json"),
         Quizzes = Read<QuizSeed>("quizzes.json"),
-        Challenges = Read<ChallengeSeed>("challenges.json")
+        Challenges = Read<ChallengeSeed>("challenges.json"),
+        Eras = Read<EraSeed>("eras.json"),
+        TimelineEvents = Read<TimelineEventSeed>("timeline.json")
     };
 
     /// <summary>Retorna os problemas encontrados (nomes duplicados ou referências inexistentes).</summary>
@@ -168,6 +180,27 @@ public class ContentSeedData
         }
         if (!Challenges.Any(c => c.IsActive))
             errors.Add("É preciso pelo menos um desafio ativo para sortear os desafios do dia.");
+
+        var eras = UniqueNames(Eras.Select(e => e.Name), "era", errors);
+        UniqueNames(TimelineEvents.Select(e => e.Title), "evento da linha do tempo", errors);
+        var eraOrder = Eras.Select((era, index) => (era.Name, index)).DistinctBy(e => e.Name).ToDictionary(e => e.Name, e => e.index);
+        var previousEra = -1;
+        foreach (var timelineEvent in TimelineEvents)
+        {
+            var owner = $"Evento '{timelineEvent.Title}'";
+            CheckReference(eras, timelineEvent.Era, owner, "era", errors);
+            timelineEvent.Characters.ForEach(c => CheckReference(characters, c, owner, "personagem", errors));
+            if (timelineEvent.Characters.Distinct().Count() != timelineEvent.Characters.Count)
+                errors.Add($"{owner} repete um personagem.");
+
+            // Os eventos são cronológicos: uma era nunca pode voltar depois que a seguinte começou.
+            if (eraOrder.TryGetValue(timelineEvent.Era, out var era))
+            {
+                if (era < previousEra)
+                    errors.Add($"{owner} está fora da ordem das eras ('{timelineEvent.Era}' depois de uma era posterior).");
+                previousEra = Math.Max(previousEra, era);
+            }
+        }
 
         UniqueNames(Quizzes.Select(q => q.Title), "quiz", errors);
         foreach (var quiz in Quizzes)
