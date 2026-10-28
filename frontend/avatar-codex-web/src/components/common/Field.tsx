@@ -7,9 +7,10 @@ interface SearchInputProps {
   value: string
   onChange: (value: string) => void
   placeholder?: string
+  autoFocus?: boolean
 }
 
-export function SearchInput({ label, value, onChange, placeholder }: SearchInputProps) {
+export function SearchInput({ label, value, onChange, placeholder, autoFocus }: SearchInputProps) {
   const id = useId()
   return (
     <div className={styles.field}>
@@ -26,6 +27,7 @@ export function SearchInput({ label, value, onChange, placeholder }: SearchInput
           onChange={(event) => onChange(event.target.value)}
           placeholder={placeholder}
           autoComplete="off"
+          autoFocus={autoFocus}
         />
       </div>
     </div>

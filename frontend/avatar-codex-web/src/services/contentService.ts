@@ -1,4 +1,5 @@
 import type {
+  CharacterComparison,
   CharacterDetails,
   CharacterListItem,
   CharacterQuery,
@@ -54,5 +55,12 @@ export async function getTimeline(filters: TimelineFilters): Promise<TimelineEra
 
 export async function getEras(): Promise<Era[]> {
   const { data } = await api.get<Era[]>('/api/eras')
+  return data
+}
+
+export async function compareCharacters(a: number, b: number): Promise<CharacterComparison> {
+  const { data } = await api.get<CharacterComparison>('/api/characters/compare', {
+    params: { ids: `${a},${b}` },
+  })
   return data
 }

@@ -5,6 +5,7 @@ import { getPageItems } from './pagination'
 import { getApiError } from './apiError'
 import { safeRedirect } from './redirect'
 import { parseTimelineFilters, timelineCharacters, timelineFiltersToParams } from './timeline'
+import { comparePairToParams, parseComparePair } from './compare'
 import { apiError } from '../test/fixtures'
 
 describe('parseCharacterQuery', () => {
@@ -146,5 +147,14 @@ describe('linha do tempo', () => {
 
     expect(result.map((c) => c.name)).toEqual(['Aang', 'Ícaro', 'Zuko'])
     expect(timelineCharacters(undefined)).toEqual([])
+  })
+})
+
+describe('comparação', () => {
+  it('lê os dois ids da URL e descarta valores inválidos ou repetidos', () => {
+    expect(parseComparePair(new URLSearchParams('a=1&b=13'))).toEqual({ a: 1, b: 13 })
+    expect(parseComparePair(new URLSearchParams('a=0&b=1.5'))).toEqual({})
+    expect(parseComparePair(new URLSearchParams('a=7&b=7'))).toEqual({ a: 7 })
+    expect(comparePairToParams({ b: 13 }).toString()).toBe('b=13')
   })
 })
