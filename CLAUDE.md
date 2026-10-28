@@ -13,9 +13,9 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 ## Status atual
 
-**Fase 14 — Testes** (próxima, ainda não iniciada). Fases 0 a 13 concluídas (`docs/development-phases.md`).
+**Fase 15 — Refinamento visual** (próxima, ainda não iniciada). Fases 0 a 14 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-27):** Fase 13 concluída e commitada localmente (push só quando o usuário pedir).
+**Onde paramos (2026-10-28):** Fases 13 e 14 concluídas e commitadas localmente, **sem push** (o usuário pediu para publicar depois).
 - **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas, 4 quizzes × 10 perguntas), API com busca/filtros/paginação, tratamento global de erros.
 - **Frontend base:** layout, navbar (completa a partir de 1280px), rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, 404.
 - **Autenticação:** cadastro, login, logout, JWT (15 min, em memória) + refresh rotacionado em cookie httpOnly, sessão recuperada ao recarregar, rotas protegidas, usuário demo (README).
@@ -28,9 +28,9 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 - **Timeline:** `Era` + `TimelineEvent` (seed: 4 eras, 17 eventos), `GET /api/timeline` agrupado por era com filtros `eraId`/`characterId`, `GET /api/eras`, `/timeline` com linha vertical (alterna lados ≥ 1024px), filtros na URL e entrada ao rolar.
 - **Comparação:** `ComparisonAttribute` + `CharacterAttributeValue` (seed: 5 atributos × 37 personagens, CHECK 0–100), `ComparisonService` (ordem pedida, `leaderId` decidido no backend), `GET /api/characters/compare?ids=1,2`, `/compare?a=&b=` com seletores com busca, radar + barras (cores pela posição: 1º Água, 2º Fogo), tabela lado a lado e aviso fixo de não canonicidade (RN-11). Entradas pelo detalhe do personagem ("Comparar") e pela Home.
 - **Testes de integração:** a fixture principal da API desativa os desafios diários (o sorteio depende da data); os testes de desafios usam `ChallengesApiFixture`, com outro banco.
-- **Testes:** backend 274 (175 unitários + 99 integração), frontend 126. Lint, format e build passando.
+- **Testes:** backend 285 (185 unitários + 100 integração), frontend 136 (`npm run test:coverage` mede a cobertura), E2E Cypress com os 9 fluxos (7 testes, no Chrome, contra o build + banco `avatar_codex_e2e`; passo a passo no README). Lint, format e build passando.
 
-**Próximo passo — Fase 14 (Testes):** completar a cobertura de unit, integração e frontend (ver "Cobertura de testes esperada" em `docs/development-phases.md`) e criar os fluxos E2E com Cypress (ainda não configurado).
+**Próximo passo — Fase 15 (Refinamento visual):** espaçamento, tipografia, responsividade, acessibilidade, animações, microinterações e curadoria de imagens reais no lugar dos placeholders (DA-04).
 - **Não iniciar uma nova fase sem confirmação explícita do usuário.**
 
 **Fluxo de trabalho combinado:** ao fim de cada fase → testes + lint + build + teste num Chrome real (CDP) → docs → commits pequenos → **push só quando o usuário pedir**. O usuário costuma pedir "rode o projeto para eu testar" (subir API + Vite em background) e depois "pare de rodar".
@@ -116,6 +116,8 @@ AVATARCODEX_TEST_DB="Host=localhost;Port=5432;Username=postgres;Password=..." do
 # Frontend (http://localhost:5173)
 cd frontend/avatar-codex-web
 npm run dev | npm run test | npm run lint | npm run format:check | npm run build
+
+# E2E (Chrome): API com Database=avatar_codex_e2e + `npm run build && npm run preview` → `npm run e2e`
 ```
 
 Connection string via `dotnet user-secrets` no projeto `AvatarCodex.Api` (ver README).

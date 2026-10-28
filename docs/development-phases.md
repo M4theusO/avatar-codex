@@ -38,7 +38,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 11 | Desafios diários | P2 | ChallengeTemplate, geração diária, progresso, conclusão automática, recompensa, histórico | Testes com `TimeProvider` simulando dias ✅ (2026-10-27) |
 | 12 | Timeline | P2 | Era, TimelineEvent, personagens relacionados, navegação visual, filtros | Eras e eventos no banco, filtros por era e personagem ✅ (2026-10-27) |
 | 13 | Comparação | P2 | Atributos, seleção de dois personagens, visualização (barras/radar), aviso de não-canonicidade | Comparação lado a lado com atributos do banco e aviso fixo ✅ (2026-10-27) |
-| 14 | Testes | — | Completar unit, integração, frontend e E2E (ver abaixo) | Regras de negócio cobertas; E2E verde |
+| 14 | Testes | — | Completar unit, integração, frontend e E2E (ver abaixo) | Regras de negócio cobertas; E2E verde ✅ (2026-10-28) |
 | 15 | Refinamento visual | — | Espaçamento, tipografia, responsividade, acessibilidade, animações, loading/empty/error, microinterações | Aparência de produto final |
 | 16 | Documentação final | — | README, arquitetura, banco, API, instalação, testes, decisões técnicas | Outro dev executa o projeto só com a doc |
 | 17 | Deploy | — | Frontend (Vercel/Netlify), backend (Render/Azure/Railway), PostgreSQL gerenciado; sem serviços pagos | Aplicação pública; decisões documentadas |
@@ -324,3 +324,24 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - A comparação **não** entrou na navbar: com uma sexta seção, a barra não cabe a partir de 1280px. O acesso é pelo detalhe do personagem e pela Home.
 - Os atributos são estimativas do projeto; o aviso aparece sempre, antes do resultado.
 - **Limitação conhecida:** a 390px, palavras muito longas na tabela (ex.: "Redirecionamento") quebram no meio, porque o Chrome no Windows não hifeniza português. Não gera rolagem horizontal.
+
+## Fase 14 — Testes (concluída)
+
+- [x] **Cobertura medida** antes de escrever testes: backend ~96% das linhas (unit + integração, sem código gerado e migrations) e frontend 87% (`npm run test:coverage`, novo). Os testes novos foram para as lacunas reais:
+  - backend: cada tipo de conquista lê a própria métrica; **cadastros simultâneos com o mesmo email** criam uma conta só (os demais recebem 409, decidido pela unique do banco); `Jwt:Secret` curto falha com mensagem útil
+  - frontend: página de nações (lista, singular/plural, vazio, erro), Home (Avatares, elementos, convite só para visitante, erro isolado por seção), filtros de elemento/tipo/status/série combinados na URL e na consulta, erro nos favoritos
+- [x] **E2E com Cypress** (`frontend/avatar-codex-web/cypress`), os 9 fluxos em 3 specs:
+  - `auth.cy.ts`: cria conta pelo formulário (painel + "Primeiro passo"); entra, mantém a sessão ao recarregar e sai; senha errada não entra
+  - `explore.cy.ts`: pesquisa, abre o personagem, ganha +10 XP pela descoberta e favorita (aparece em `/favorites`); segunda visita não dá XP
+  - `progress.cy.ts`: faz um quiz (correção no backend, XP na 1ª conclusão, histórico); descobre as 5 nações, desbloqueia "Historiador" e confere em `/achievements` e no perfil
+- [x] Testes: backend 285 (185 unitários + 100 de integração, 3 vezes seguidas), frontend 136, E2E 7 testes cobrindo os 9 fluxos (3 vezes seguidas, todos verdes)
+
+**Encontrado pelos testes:**
+- **Bug corrigido:** quando uma descoberta também concluía um desafio do dia, o toast da descoberta mostrava o XP do desafio junto (ex.: "+40 XP" em vez de "+10 XP"), além do toast próprio do desafio. `eventXp` agora desconta conquistas **e** desafios (o mesmo cuidado que o backend já tinha no `QuizService`).
+- **Simplificação:** depois do login/cadastro, o formulário e o `GuestOnly` navegavam os dois para o mesmo destino; agora só o `GuestOnly` redireciona.
+- **E2E no Chrome, não no Electron:** no Electron (navegador padrão do Cypress, marcado como depreciado) a troca de página depois do login às vezes não acontecia, mesmo com a API respondendo em menos de 100ms. No Chrome, 10 de 10 execuções seguidas passaram (e 15 de 15 num teste à parte via CDP). `npm run e2e` usa `--browser chrome`.
+- **E2E contra o build:** `vite preview` na porta 5173 (a mesma origem liberada no CORS), mais próximo de produção e sem a otimização de dependências do servidor de desenvolvimento.
+
+**Ajustes em relação ao planejado:**
+- O E2E não usa `data-testid`: as consultas são por papel e nome acessível (Testing Library), como nos testes de frontend. Assim o E2E também confere a acessibilidade básica.
+- "Ganha XP" e "consulta o progresso" não conferem um total exato: os desafios do dia (sorteados pela data) podem somar XP ao mesmo evento. O E2E confere o XP do evento no toast e um mínimo no perfil.

@@ -104,10 +104,35 @@ AVATARCODEX_TEST_DB="Host=localhost;Port=5432;Username=postgres;Password=<senha>
 # Frontend
 cd frontend/avatar-codex-web
 npm run test          # Vitest
+npm run test:coverage # Vitest com cobertura (relatório em coverage/)
 npm run lint          # oxlint
 npm run format:check  # Prettier
 npm run build
 ```
+
+### Testes E2E (Cypress)
+
+Os 9 fluxos principais (cadastro, login, busca, personagem, favorito, quiz, XP, conquista e progresso) rodam no **Chrome** contra o app de verdade: o build do frontend e a API usando um banco **só para E2E** (`avatar_codex_e2e`, criado com migrations e seed na primeira subida). Cada teste cria o próprio usuário, então o banco não precisa ser limpo entre execuções.
+
+Pré-requisitos: Google Chrome instalado e a porta 5173 livre (o `npm run dev` precisa estar parado).
+
+```bash
+# 1. API com o banco de E2E (mesma connection string do user-secrets, trocando só o Database)
+cd backend
+ConnectionStrings__Default="Host=localhost;Port=5432;Database=avatar_codex_e2e;Username=postgres;Password=<senha>" \
+  dotnet run --project src/AvatarCodex.Api --launch-profile http
+
+# 2. Frontend: build servido na porta 5173 (a origem liberada no CORS)
+cd frontend/avatar-codex-web
+npm run build && npm run preview
+
+# 3. Em outro terminal
+cd frontend/avatar-codex-web
+npm run e2e        # headless
+npm run e2e:open   # interface do Cypress
+```
+
+No PowerShell, o passo 1 fica: `$env:ConnectionStrings__Default = "Host=...;Database=avatar_codex_e2e;..."` seguido do `dotnet run`.
 
 ## Variáveis de ambiente
 

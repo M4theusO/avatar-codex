@@ -219,8 +219,8 @@ Proposta sem custo: frontend na **Vercel**, backend no **Render** (container Doc
 |---|---|---|
 | Unitário backend | xUnit | `LevelCalculator`, `ProgressionService`, regras de conquistas e desafios, validação de quiz, validators. |
 | Integração backend | xUnit + `WebApplicationFactory` + PostgreSQL real em banco descartável (`AVATARCODEX_TEST_DB`; Testcontainers quando houver Docker) | Cadastro/login, auth/permissões, personagens (busca, 404), favoritos, idempotência de XP, quiz sem `IsCorrect`. |
-| Frontend | Vitest + React Testing Library (+ MSW para mock da API) | Login, cadastro, listagem/filtros/busca, detalhe, favoritos, perfil, quiz e feedback. |
-| E2E | Cypress | 9 fluxos de `development-phases.md` (Fase 14), contra API + banco de teste com seed. |
+| Frontend | Vitest + React Testing Library, com os `services` mockados (`vi.mock`) e o app inteiro renderizado (providers, layout e rotas reais) | Login, cadastro, listagem/filtros/busca, detalhe, favoritos, perfil, quiz e feedback. Cobertura com `npm run test:coverage` (v8). |
+| E2E | Cypress + Testing Library (`@testing-library/cypress`) no Chrome | 9 fluxos de `development-phases.md` (Fase 14), contra o build (`vite preview` na 5173) + API com o banco `avatar_codex_e2e` (migrations + seed). Cada teste cria o próprio usuário; seletores por papel e texto acessível, sem `data-testid` e sem esperas fixas. |
 
 ## 9. Decisões do projeto
 
@@ -267,6 +267,6 @@ Proposta sem custo: frontend na **Vercel**, backend no **Render** (container Doc
 | Recompensas duplicadas / condições de corrida | Constraints únicas + transação; tratar violação de unique como "já concedido". |
 | Complexidade do refresh token + CORS com cookies | Implementar e testar na Fase 5 com testes de integração; documentar a configuração. |
 | Fuso horário dos desafios diários | Tudo em UTC via `TimeProvider`; UI informa o horário do reset. |
-| E2E instável | Banco dedicado com seed determinístico, seletores `data-testid`, sem esperas fixas. |
+| E2E instável | Banco dedicado com seed, um usuário novo por teste, seletores acessíveis (Testing Library), sem esperas fixas; roda no build e no Chrome (o Electron do Cypress, depreciado, travava navegações de forma intermitente). |
 | Migrations no Docker | Aplicar no startup só em Development; script/documentação para os demais ambientes. |
 | Cold start no deploy gratuito (Render) | Documentar a limitação; loading amigável no frontend. |
