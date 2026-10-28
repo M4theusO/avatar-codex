@@ -13,9 +13,10 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 ## Status atual
 
-**Fase 15 — Refinamento visual** (próxima, ainda não iniciada). Fases 0 a 14 concluídas (`docs/development-phases.md`).
+**Fase 16 — Documentação final** (próxima, ainda não iniciada). Fases 0 a 15 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-28):** Fases 13 e 14 concluídas, commitadas e publicadas no GitHub (`main` = `origin/main`). Nenhum trabalho pendente.
+**Onde paramos (2026-10-28):** Fase 15 concluída e commitada localmente (ainda **não** publicada no GitHub; push só quando o usuário pedir).
+- **Pendência:** imagens reais dos personagens. O usuário vai fornecer; basta preencher `image` (`url`, `sourceUrl`, `credit`) em `characters.json`. A Avatar Wiki (Fandom) bloqueia hotlink (`Cross-Origin-Resource-Policy: same-origin`), então as imagens precisam ser servidas pelo próprio projeto.
 - **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas, 4 quizzes × 10 perguntas), API com busca/filtros/paginação, tratamento global de erros.
 - **Frontend base:** layout, navbar (completa a partir de 1280px), rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, 404.
 - **Autenticação:** cadastro, login, logout, JWT (15 min, em memória) + refresh rotacionado em cookie httpOnly, sessão recuperada ao recarregar, rotas protegidas, usuário demo (README).
@@ -28,9 +29,11 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 - **Timeline:** `Era` + `TimelineEvent` (seed: 4 eras, 17 eventos), `GET /api/timeline` agrupado por era com filtros `eraId`/`characterId`, `GET /api/eras`, `/timeline` com linha vertical (alterna lados ≥ 1024px), filtros na URL e entrada ao rolar.
 - **Comparação:** `ComparisonAttribute` + `CharacterAttributeValue` (seed: 5 atributos × 37 personagens, CHECK 0–100), `ComparisonService` (ordem pedida, `leaderId` decidido no backend), `GET /api/characters/compare?ids=1,2`, `/compare?a=&b=` com seletores com busca, radar + barras (cores pela posição: 1º Água, 2º Fogo), tabela lado a lado e aviso fixo de não canonicidade (RN-11). Entradas pelo detalhe do personagem ("Comparar") e pela Home.
 - **Testes de integração:** a fixture principal da API desativa os desafios diários (o sorteio depende da data); os testes de desafios usam `ChallengesApiFixture`, com outro banco.
-- **Testes:** backend 285 (185 unitários + 100 integração), frontend 136 (`npm run test:coverage` mede a cobertura), E2E Cypress com os 9 fluxos (7 testes, no Chrome, contra o build + banco `avatar_codex_e2e`; passo a passo no README). Lint, format e build passando.
+- **Refinamento visual:** `CharacterAvatar` recebe o elemento e mostra iniciais sobre o símbolo do elemento (fallback para as iniciais se a imagem falhar); 5 Avatares numa linha na Home, nações 3 + 2 centralizadas, detalhe do personagem em 2 colunas (≥ 1024px), estatísticas do perfil em 2 colunas no celular, "vs" alinhado; transição entre páginas e "pop" ao favoritar.
+- **Testes:** backend 285 (185 unitários + 100 integração), frontend 139 (`npm run test:coverage` mede a cobertura), E2E Cypress com os 9 fluxos (7 testes, no Chrome, contra o build + banco `avatar_codex_e2e`; passo a passo no README). Lint, format e build passando.
+- **Line endings:** neste PC `core.autocrlf=true`; o Prettier reescreve os arquivos em LF e o `git status` lista todos como modificados, mas sem diferença de conteúdo (`git diff --ignore-cr-at-eol`). Commitar só os arquivos alterados de verdade.
 
-**Próximo passo — Fase 15 (Refinamento visual):** espaçamento, tipografia, responsividade, acessibilidade, animações, microinterações e curadoria de imagens reais no lugar dos placeholders (DA-04).
+**Próximo passo — Fase 16 (Documentação final):** README, arquitetura, banco, API, instalação, testes e decisões técnicas, para outro dev executar o projeto só com a doc.
 - **Não iniciar uma nova fase sem confirmação explícita do usuário.**
 
 **Fluxo de trabalho combinado:** ao fim de cada fase → testes + lint + build + teste num Chrome real (CDP) → docs → commits pequenos → **push só quando o usuário pedir**. O usuário costuma pedir "rode o projeto para eu testar" (subir API + Vite em background) e depois "pare de rodar".
@@ -43,7 +46,7 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 - **DA-01** — Descoberta de nação: +10 XP só na 1ª vez por usuário, registrada depois que o conteúdo principal foi exibido, com idempotência garantida no backend.
 - **DA-02** — Paleta dark: fundo `#101820`, superfície `#1B2835`; acentos Água `#3186B5`, Fogo `#B86B35`, Terra `#638B58`, Ar `#D5C7A2`. Elementos são acentos, nunca dominantes; Água/Fogo/Terra não podem ser usadas como texto pequeno (contraste).
 - **DA-03** — Tipografia: Cinzel em títulos e destaques narrativos (com moderação); Inter em todo o resto.
-- **DA-04** — Imagens de personagens: placeholders próprios (iniciais + cor do elemento) até a Fase 15, quando entra a curadoria de imagens reais.
+- **DA-04** — Imagens de personagens: placeholders próprios (iniciais + símbolo e cor do elemento) até o usuário fornecer as imagens reais (pendência registrada na Fase 15).
 
 ## Stack
 

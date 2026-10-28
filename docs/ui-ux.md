@@ -61,7 +61,7 @@ Consequências:
 - Badges de elemento: fundo com a cor em baixa opacidade (~15–20%), borda na cor sólida e **texto em `--color-text`**, sempre acompanhado de ícone/nome do elemento (nunca só cor).
 - Texto branco sobre as cores sólidas também fica abaixo de 4,5:1 (≈ 3,9–4,0:1), por isso evitar botões com fundo sólido de elemento e texto pequeno.
 - Os componentes recebem a cor do elemento que vem da API (campo `color`) na variável `--element-color`. Cards, badges e bordas se adaptam sem lógica extra. Sem elemento (não dobradores), o acento é o neutro `--color-text-muted`.
-- **Imagens de personagem (DA-04):** até a curadoria da Fase 15, o `CharacterAvatar` mostra as iniciais sobre um círculo com borda e brilho na cor do elemento. Quando houver `image`, a imagem real substitui o placeholder sem mudança nas páginas.
+- **Imagens de personagem (DA-04):** enquanto não houver imagens reais (pendência da Fase 15), o `CharacterAvatar` mostra as iniciais sobre o símbolo do elemento em marca d'água, num círculo com borda, anel interno e brilho na cor do elemento (sem símbolo para não dobradores e no tamanho pequeno). Quando houver `image`, ela cobre as iniciais sem mudança nas páginas; se o link falhar, as iniciais voltam.
 
 ## 3. Tipografia (DA-03 — aprovada)
 
@@ -230,3 +230,12 @@ Quando chegam vários eventos de uma vez, eles entram numa fila e aparecem em se
 ## 12. Animações
 
 Transições de 150–300ms em hover/foco, entrada de cards com fade/slide leve e transição entre rotas discreta. Nada de animações longas, em loop ou chamativas.
+
+✅ Fase 15: transição entre páginas (fade + 6px em 250ms, reiniciada só quando muda o pathname, então filtros e paginação não animam) e "pop" da estrela ao favoritar (só no clique). Tudo é zerado pela regra global de `prefers-reduced-motion`.
+
+### Ajustes de layout (Fase 15)
+- Home: os 5 Avatares numa linha a partir de 1024px.
+- Nações: flex centralizado, 1 / 2 / 3 colunas; com 5 nações o desktop fica 3 + 2 centralizado.
+- Detalhe do personagem: a partir de 1024px, duas colunas (2:1): "Sobre" e "Habilidades" à esquerda; "Subtipos de dobra", "Relações" e "Aparições" à direita. No celular, a ordem é a mesma, empilhada.
+- Perfil: os 6 indicadores em 2 colunas no celular e 3 no desktop.
+- Comparação: os dois cards do "vs" sempre com a mesma altura.
