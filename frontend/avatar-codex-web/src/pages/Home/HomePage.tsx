@@ -79,11 +79,11 @@ function AvatarsSection() {
       }
     >
       {isPending ? (
-        <CharacterGridSkeleton count={4} />
+        <CharacterGridSkeleton count={5} className={styles.avatarGrid} />
       ) : isError ? (
         <ErrorState onRetry={() => refetch()} />
       ) : (
-        <CharacterGrid characters={data.items} />
+        <CharacterGrid characters={data.items} className={styles.avatarGrid} />
       )}
     </Section>
   )

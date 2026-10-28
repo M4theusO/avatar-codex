@@ -1,8 +1,35 @@
+/* Flex em vez de grid: com 5 nações a última linha fica centralizada (3 + 2), sem card órfão à esquerda. */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  --columns: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-5);
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.grid > * {
+  flex: 0 0 calc((100% - (var(--columns) - 1) * var(--space-5)) / var(--columns));
+}
+
+.grid > li {
+  display: flex;
+}
+
+.grid > li > * {
+  flex: 1;
+}
+
+@media (min-width: 640px) {
+  .grid {
+    --columns: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    --columns: 3;
+  }
 }

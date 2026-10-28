@@ -46,44 +46,54 @@ export default function CharacterDetailsPage() {
 function CharacterContent({ character }: { character: CharacterDetails }) {
   const { name, description, biography, bendingSubtypes, abilities, series, relationships } =
     character
+  const hasAside = bendingSubtypes.length > 0 || relationships.length > 0 || series.length > 0
 
   return (
     <article className={styles.content}>
       <title>{`${name} · Avatar Codex`}</title>
       <CharacterHero character={character} />
 
-      <Section title="Sobre">
-        <p className={styles.lead}>{description}</p>
-        {biography.split(/\n{2,}/).map((paragraph, index) => (
-          <p key={index} className={styles.paragraph}>
-            {paragraph}
-          </p>
-        ))}
-      </Section>
+      {/* No desktop: história e habilidades à esquerda, dados de consulta rápida à direita. */}
+      <div className={hasAside ? styles.columns : undefined}>
+        <div className={styles.column}>
+          <Section title="Sobre">
+            <p className={styles.lead}>{description}</p>
+            {biography.split(/\n{2,}/).map((paragraph, index) => (
+              <p key={index} className={styles.paragraph}>
+                {paragraph}
+              </p>
+            ))}
+          </Section>
 
-      {bendingSubtypes.length > 0 && (
-        <Section title="Subtipos de dobra">
-          <ChipList items={bendingSubtypes} />
-        </Section>
-      )}
+          {abilities.length > 0 && (
+            <Section title="Habilidades">
+              <AbilityList abilities={abilities} />
+            </Section>
+          )}
+        </div>
 
-      {abilities.length > 0 && (
-        <Section title="Habilidades">
-          <AbilityList abilities={abilities} />
-        </Section>
-      )}
+        {hasAside && (
+          <div className={styles.column}>
+            {bendingSubtypes.length > 0 && (
+              <Section title="Subtipos de dobra">
+                <ChipList items={bendingSubtypes} />
+              </Section>
+            )}
 
-      {relationships.length > 0 && (
-        <Section title="Relações">
-          <RelationshipList relationships={relationships} />
-        </Section>
-      )}
+            {relationships.length > 0 && (
+              <Section title="Relações">
+                <RelationshipList relationships={relationships} />
+              </Section>
+            )}
 
-      {series.length > 0 && (
-        <Section title="Aparições">
-          <ChipList items={series} />
-        </Section>
-      )}
+            {series.length > 0 && (
+              <Section title="Aparições">
+                <ChipList items={series} />
+              </Section>
+            )}
+          </div>
+        )}
+      </div>
     </article>
   )
 }
