@@ -1,8 +1,12 @@
-import { Outlet, ScrollRestoration } from 'react-router'
+import { Outlet, ScrollRestoration, useLocation } from 'react-router'
 import styles from './AppLayout.module.css'
 import Navbar from './Navbar'
 
 export default function AppLayout() {
+  // A chave pelo pathname reinicia a animação de entrada a cada troca de página
+  // (mudanças só na query string, como filtros, não animam).
+  const { pathname } = useLocation()
+
   return (
     <div className={styles.app}>
       <a href="#main-content" className={styles.skipLink}>
@@ -10,7 +14,9 @@ export default function AppLayout() {
       </a>
       <Navbar />
       <main id="main-content" className={styles.main} tabIndex={-1}>
-        <Outlet />
+        <div key={pathname} className={styles.page}>
+          <Outlet />
+        </div>
       </main>
       <footer className={styles.footer}>
         <p>

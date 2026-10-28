@@ -44,6 +44,20 @@
   transform: scale(1.2);
 }
 
+/* Ao favoritar: a estrela cresce e assenta, com um leve giro. */
+.pop {
+  animation: star-pop 350ms ease-out;
+}
+
+@keyframes star-pop {
+  40% {
+    transform: scale(1.35) rotate(-12deg);
+  }
+  70% {
+    transform: scale(0.92) rotate(4deg);
+  }
+}
+
 .icon {
   width: 2.5rem;
   height: 2.5rem;
