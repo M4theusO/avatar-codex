@@ -56,8 +56,8 @@ public class DashboardApiTests(ContentApiFixture api)
         Assert.Equal(auth.User.Id, dashboard.User.Id);
         Assert.Equal((10, 1), (dashboard.User.ExperiencePoints, dashboard.User.Level));
         Assert.Equal((0, 37), (dashboard.Statistics.DiscoveredCharacters, dashboard.Statistics.TotalCharacters));
-        Assert.Equal(3, dashboard.DailyChallenges.Challenges.Count);
-        Assert.All(dashboard.DailyChallenges.Challenges, c => Assert.False(c.IsCompleted));
+        // Nesta fixture os desafios ficam desativados (ver ChallengesApiTests).
+        Assert.Empty(dashboard.DailyChallenges.Challenges);
         // Só o "Primeiro passo", ganho no cadastro.
         var firstStep = Assert.Single(dashboard.RecentAchievements);
         Assert.True(firstStep.IsUnlocked);
