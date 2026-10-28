@@ -36,7 +36,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 9 | Quiz | P1 | Quizzes, perguntas, opções, submissão, validação, resultado, XP, histórico; UI atraente | `isCorrect` nunca exposto antes da submissão; testes cobrindo isso ✅ (2026-10-26) |
 | 10 | Dashboard | P1/P2 | Endpoint agregado + página: XP, nível, progresso, conquistas, desafios, descobertas, quiz recomendado, favoritos | Destino padrão após login ✅ (2026-10-27) |
 | 11 | Desafios diários | P2 | ChallengeTemplate, geração diária, progresso, conclusão automática, recompensa, histórico | Testes com `TimeProvider` simulando dias ✅ (2026-10-27) |
-| 12 | Timeline | P2 | Era, TimelineEvent, personagens relacionados, navegação visual, filtros | — |
+| 12 | Timeline | P2 | Era, TimelineEvent, personagens relacionados, navegação visual, filtros | Eras e eventos no banco, filtros por era e personagem ✅ (2026-10-27) |
 | 13 | Comparação | P2 | Atributos, seleção de dois personagens, visualização (barras/radar), aviso de não-canonicidade | — |
 | 14 | Testes | — | Completar unit, integração, frontend e E2E (ver abaixo) | Regras de negócio cobertas; E2E verde |
 | 15 | Refinamento visual | — | Espaçamento, tipografia, responsividade, acessibilidade, animações, loading/empty/error, microinterações | Aparência de produto final |
@@ -291,3 +291,19 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - Bug evitado: o `experienceEarned` da tentativa de quiz descontava só o XP das conquistas; agora também desconta o dos desafios concluídos no mesmo evento.
 - **Limitação conhecida:** os desafios do dia são os mesmos para todos. Quem já descobriu todas as nações (ou todos os personagens) não consegue cumprir os desafios de descoberta. Rever quando o conteúdo crescer (Fase 15) ou com desafios por usuário.
 - Navbar: entre 1280 e 1439px os espaçamentos ficaram mais justos para caber o quarto atalho da área do usuário.
+
+## Fase 12 — Timeline (concluída)
+
+- [x] Entidades `Era` (`Name` e `Order` únicos) e `TimelineEvent` (`Title` e `Order` únicos, `DateLabel`, imagem owned, `EraId`) + N:N `timeline_event_characters`; migration `AddTimeline`
+- [x] Seed em `eras.json` (4 eras) e `timeline.json` (17 eventos em ordem cronológica, só com personagens do seed). A ordem é a posição no arquivo; o seed valida eras e personagens inexistentes, personagem repetido e evento fora da ordem das eras, e grava valores temporários antes de reordenar (sem violar o `Order` único)
+- [x] `GET /api/timeline` (eventos agrupados por era, filtros `eraId`/`characterId` combináveis, 400 para id inválido, lista vazia para filtro sem resultado) e `GET /api/eras` (com `eventCount`)
+- [x] Frontend: `/timeline` no lugar do placeholder: eras com título em Cinzel, cards de evento numa linha vertical (à esquerda no celular, alternando lados a partir de 1024px), data, descrição e personagens com avatar e link; filtros de era e personagem na URL (opções de personagem a partir da timeline completa); entrada suave ao rolar (`useReveal`, respeita `prefers-reduced-motion`); loading, erro e estado vazio com "Limpar filtros"
+- [x] Testes: backend 254 (159 unitários + 95 de integração), incluindo a validação do seed da timeline e a **reordenação de eventos pelo seeder**; frontend 121
+- [x] Validado num Chrome real (CDP), como visitante: 4 eras e 17 eventos, todos visíveis depois de rolar; filtro "Zuko" → 6 eventos em 2 eras com `?characterId=` na URL; link do personagem abre o detalhe; 390px sem rolagem horizontal; console sem erros
+
+**Ajustes em relação ao planejado:**
+- **Linha vertical também em telas largas** (com cards alternando dos dois lados), em vez de horizontal: os eventos têm texto e personagens demais para uma faixa horizontal legível.
+- `GET /api/timeline` já devolve os eventos agrupados por era (`TimelineEraDto[]`), em vez de uma lista plana: o frontend não precisa montar os grupos.
+- Datas em AG/BG (anos depois/antes do genocídio dos Nômades do Ar, convenção dos fãs), explicadas no topo da página. Onde a data exata não é bem estabelecida, o rótulo é descritivo ("Era de Kyoshi", "Pós-guerra").
+- Imagens dos eventos ficam para a curadoria da Fase 15 (o campo já existe).
+- **Correção nos testes da Fase 11:** o sorteio dos desafios depende da data, e em alguns dias somava XP de desafio a testes de outras áreas que conferem XP exato. A fixture principal da API agora desativa os modelos de desafio, e os testes de desafios rodam numa fixture própria (outro banco) com eles ativos.

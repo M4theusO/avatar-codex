@@ -151,6 +151,8 @@ Cards com símbolo e cor do elemento como acento; detalhe com descrição e pers
 ### Timeline
 Linha vertical (horizontal em telas largas) agrupada por era, com marcadores, cards de evento, avatares dos personagens relacionados e filtros por era/personagem. A animação de entrada ao rolar deve ser sutil e respeitar `prefers-reduced-motion`.
 
+✅ Fase 12: linha vertical também em telas largas: à esquerda no celular e, a partir de 1024px, central com os cards alternando de lado (mais legível que uma faixa horizontal com textos longos). Título da era e do evento em Cinzel; data em caixa alta no acento do Ar; personagens como "pílulas" com avatar (cor do elemento) e link para o detalhe. Filtros "Era" e "Personagem" no topo, guardados na URL, com "Limpar filtros". Entrada ao rolar com fade + leve deslocamento (`useReveal` + IntersectionObserver), zerada pela regra global de `prefers-reduced-motion`.
+
 ### Comparação
 Dois seletores com busca. Colunas lado a lado: imagem, elemento, nação, habilidades, informações, e **gráfico de barras ou radar** com os atributos. Aviso fixo: *"Atributos são estimativas da comunidade do projeto, não informações canônicas."*
 
