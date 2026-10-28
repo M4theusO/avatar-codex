@@ -37,7 +37,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 10 | Dashboard | P1/P2 | Endpoint agregado + página: XP, nível, progresso, conquistas, desafios, descobertas, quiz recomendado, favoritos | Destino padrão após login ✅ (2026-10-27) |
 | 11 | Desafios diários | P2 | ChallengeTemplate, geração diária, progresso, conclusão automática, recompensa, histórico | Testes com `TimeProvider` simulando dias ✅ (2026-10-27) |
 | 12 | Timeline | P2 | Era, TimelineEvent, personagens relacionados, navegação visual, filtros | Eras e eventos no banco, filtros por era e personagem ✅ (2026-10-27) |
-| 13 | Comparação | P2 | Atributos, seleção de dois personagens, visualização (barras/radar), aviso de não-canonicidade | — |
+| 13 | Comparação | P2 | Atributos, seleção de dois personagens, visualização (barras/radar), aviso de não-canonicidade | Comparação lado a lado com atributos do banco e aviso fixo ✅ (2026-10-27) |
 | 14 | Testes | — | Completar unit, integração, frontend e E2E (ver abaixo) | Regras de negócio cobertas; E2E verde |
 | 15 | Refinamento visual | — | Espaçamento, tipografia, responsividade, acessibilidade, animações, loading/empty/error, microinterações | Aparência de produto final |
 | 16 | Documentação final | — | README, arquitetura, banco, API, instalação, testes, decisões técnicas | Outro dev executa o projeto só com a doc |
@@ -307,3 +307,20 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - Datas em AG/BG (anos depois/antes do genocídio dos Nômades do Ar, convenção dos fãs), explicadas no topo da página. Onde a data exata não é bem estabelecida, o rótulo é descritivo ("Era de Kyoshi", "Pós-guerra").
 - Imagens dos eventos ficam para a curadoria da Fase 15 (o campo já existe).
 - **Correção nos testes da Fase 11:** o sorteio dos desafios depende da data, e em alguns dias somava XP de desafio a testes de outras áreas que conferem XP exato. A fixture principal da API agora desativa os modelos de desafio, e os testes de desafios rodam numa fixture própria (outro banco) com eles ativos.
+
+## Fase 13 — Comparação (concluída)
+
+- [x] Entidades `ComparisonAttribute` (`Name` único, `Order` de exibição) e `CharacterAttributeValue` (PK `CharacterId` + `ComparisonAttributeId`, `CHECK` 0–100); migration `AddCharacterComparison`
+- [x] Seed: `comparison-attributes.json` (5 atributos: Domínio elemental, Combate, Agilidade, Estratégia, Liderança) e `character-attributes.json` (valores para os 37 personagens). O seed valida personagem e atributo inexistentes, duplicados, faixa 0–100, atributo faltando e o atributo marcado com `requiresBending` (0 para quem não dobra, maior que 0 para dobradores)
+- [x] `GET /api/characters/compare?ids=1,2` (público): os dois personagens na ordem pedida (elemento, nação, tipo, situação, primeira aparição, séries, subtipos e habilidades) e, por atributo, os dois valores e o `leaderId` (maior valor; `null` em empate). 400 para ids ausentes, inválidos, diferente de dois ou repetidos; 404 para personagem inexistente
+- [x] Frontend: `/compare?a=1&b=2` com dois seletores com busca (debounce, 6 resultados, sem o personagem do outro lado), "Trocar" e "Inverter lados", cards frente a frente, radar SVG + barras pareadas com o valor escrito e coroa no maior, tabela de informações lado a lado e o aviso fixo de não canonicidade (RN-11). Entradas: botão "Comparar" no detalhe do personagem (já preenche o primeiro lado) e chamada na Home. Loading, erro com "Tentar novamente", estado inicial e personagem inexistente tratados
+- [x] Testes: backend 274 (175 unitários + 99 de integração), incluindo a validação do seed, o seeder (reordenar atributos, mudar valor, rodar duas vezes sem reescrever linhas) e o `CHECK` do banco; frontend 126
+- [x] Validado num Chrome real (CDP), como visitante: detalhe do Zuko → "Comparar" → `?a=` preenchido → busca "Sok" (sem o Zuko nos resultados) → comparação Zuko × Sokka com radar, barras e tabela; "Inverter lados" troca a URL; Zuko × Azula (mesmo elemento) com cores distintas; 390px sem rolagem horizontal; console sem erros
+
+**Ajustes em relação ao planejado:**
+- **Cores pela posição, não pelo elemento:** o primeiro personagem é sempre Água e o segundo sempre Fogo (validados contra a superfície escura, inclusive para daltonismo). Pela cor do elemento, Zuko × Azula ficariam iguais. As cores só aparecem nas marcas; textos e valores ficam nas cores de texto (DA-02).
+- **Radar e barras juntos:** o radar dá a forma geral; as barras trazem os números exatos e são a leitura acessível (o radar é uma imagem com descrição e dica por ponto).
+- O "maior valor" vem da API (`leaderId`), não é calculado no componente.
+- A comparação **não** entrou na navbar: com uma sexta seção, a barra não cabe a partir de 1280px. O acesso é pelo detalhe do personagem e pela Home.
+- Os atributos são estimativas do projeto; o aviso aparece sempre, antes do resultado.
+- **Limitação conhecida:** a 390px, palavras muito longas na tabela (ex.: "Redirecionamento") quebram no meio, porque o Chrome no Windows não hifeniza português. Não gera rolagem horizontal.

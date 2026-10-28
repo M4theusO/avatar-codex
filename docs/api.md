@@ -101,7 +101,7 @@ Exemplo de resposta de login:
 | GET | `/api/characters` | 🔓* | Lista paginada (`PagedResult<CharacterListItemDto>`). Filtros: `search`, `nationId`, `elementId`, `type` (`avatar`/`bender`/`nonBender`), `status` (`Alive`/`Deceased`/`Unknown`), `seriesId`; `sort` = `name`/`nation`/`element`; `order` = `asc`/`desc`. 400 em parâmetros inválidos. | ✅ Fase 3 |
 | GET | `/api/characters/{id}` | 🔓* | Detalhe (`CharacterDetailsDto`): apelidos, biografia, nação, elemento, subtipos, habilidades, séries, primeira aparição e relações (com o personagem relacionado resumido). 404 se não existir. | ✅ Fase 3 |
 | GET | `/api/characters/{id}/abilities` | 🔓 | Habilidades do personagem, ordenadas por nome. 404 se o personagem não existir. | ✅ Fase 3 |
-| GET | `/api/characters/compare?ids=1,2` | 🔓 | Dados lado a lado + atributos (P2) | Fase 13 |
+| GET | `/api/characters/compare?ids=1,2` | 🔓 | Comparação (`CharacterComparisonDto`): `characters` (os dois, na ordem pedida, com nação, elemento, tipo, status, primeira aparição, subtipos, habilidades e séries) e `attributes` (`id`, `name`, `description`, `values` (um por personagem, na mesma ordem; `null` sem estimativa) e `leaderId` (maior valor; `null` em empate)). Atributos são estimativas, não cânone (RN-11). Ids ausentes, inválidos, diferente de dois ou repetidos → 400; personagem inexistente → 404 | ✅ Fase 13 |
 | GET | `/api/nations` | 🔓 | Nações com elemento e `characterCount`, na ordem dos elementos (Água, Terra, Fogo, Ar) e sem elemento por último | ✅ Fase 3 |
 | GET | `/api/nations/{id}` | 🔓* | Detalhe + personagens. 404 se não existir. | ✅ Fase 3 |
 | GET | `/api/elements` | 🔓 | Elementos (com cor e ícone) e seus subtipos de dobra | ✅ Fase 3 |

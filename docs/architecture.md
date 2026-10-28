@@ -172,6 +172,8 @@ src/
 │   ├── auth/          # AuthCard, RouteGuards (RequireAuth, GuestOnly)
 │   ├── quiz/
 │   ├── achievements/
+│   ├── timeline/      # TimelineEraSection, TimelineEventCard, TimelineFilters
+│   ├── compare/       # CharacterPicker, CompareHeader, AttributeRadar, AttributeBars, CompareInfoTable
 │   └── profile/
 ├── pages/             # Home, Login, Register, Dashboard, Characters, CharacterDetails, Nations, NationDetails,
 │                      # Timeline, Compare, Quizzes, QuizPlay, QuizHistory, Profile, Favorites, Achievements,
