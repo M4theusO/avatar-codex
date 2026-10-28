@@ -115,6 +115,29 @@ describe('descoberta (RN-12)', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('Conquista desbloqueada — Curioso! +50 XP')).toBeInTheDocument()
   })
+
+  it('anuncia o desafio do dia concluído separado do XP da descoberta', async () => {
+    mockSession()
+    vi.mocked(getCharacter).mockResolvedValue(characterDetails())
+    vi.mocked(discoverCharacter).mockResolvedValue({
+      isNew: true,
+      reward: {
+        ...reward,
+        xpGained: 40,
+        totalXp: 140,
+        leveledUp: false,
+        challengesCompleted: [{ id: 1, title: 'Descubra um personagem', experienceReward: 30 }],
+      },
+    })
+    renderRoute('/characters/13')
+
+    expect(
+      await screen.findByText('✨ Nova descoberta — Você descobriu Zuko! +10 XP'),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('Desafio concluído — Descubra um personagem! +30 XP'),
+    ).toBeInTheDocument()
+  })
 })
 
 describe('favoritar', () => {
