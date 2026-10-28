@@ -65,6 +65,22 @@ public class AuthApiTests(ContentApiFixture api)
     }
 
     [SkippableFact]
+    public async Task Register_SimultaneousWithSameEmail_CreatesOnlyOneAccount()
+    {
+        api.Database.SkipIfUnavailable();
+        var registration = NewRegistration();
+
+        // As duas passam pela checagem de duplicidade do serviço: quem decide é a unique do banco.
+        var responses = await Task.WhenAll(Enumerable.Range(0, 5).Select(i =>
+            api.CreateBrowserClient().PostAsJsonAsync("/api/auth/register",
+                registration with { Username = $"{registration.Username[..^1]}{i}" })));
+
+        Assert.Single(responses, r => r.StatusCode == HttpStatusCode.Created);
+        Assert.All(responses.Where(r => r.StatusCode != HttpStatusCode.Created),
+            r => Assert.Equal(HttpStatusCode.Conflict, r.StatusCode));
+    }
+
+    [SkippableFact]
     public async Task Register_InvalidData_ReturnsFieldErrors()
     {
         api.Database.SkipIfUnavailable();

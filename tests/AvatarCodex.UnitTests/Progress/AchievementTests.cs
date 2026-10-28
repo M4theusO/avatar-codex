@@ -71,6 +71,24 @@ public class AchievementTests
         Assert.True(AchievementRules.IsMet(Level2, Metrics(xp: 100)));
     }
 
+    [Theory]
+    [InlineData(AchievementRequirementType.QuizzesCompleted, 3)]
+    [InlineData(AchievementRequirementType.PerfectQuizzes, 4)]
+    [InlineData(AchievementRequirementType.CorrectAnswers, 5)]
+    [InlineData(AchievementRequirementType.ChallengesCompleted, 6)]
+    [InlineData(AchievementRequirementType.CharactersDiscovered, 7)]
+    [InlineData(AchievementRequirementType.NationsDiscovered, 2)]
+    [InlineData(AchievementRequirementType.LevelReached, 2)]
+    public void Rules_EachRequirementTypeReadsItsOwnMetric(AchievementRequirementType type, int expected)
+    {
+        // Valores diferentes em cada métrica: trocar uma pela outra faria o teste falhar.
+        var metrics = new ProgressMetrics(
+            ExperiencePoints: 150, CharactersDiscovered: 7, NationsDiscovered: 2, TotalNations: 5,
+            QuizzesCompleted: 3, PerfectQuizzes: 4, CorrectAnswers: 5, ChallengesCompleted: 6);
+
+        Assert.Equal(expected, AchievementRules.Current(New(9, "Teste", type, 100, 10), metrics));
+    }
+
     [Fact]
     public async Task Grant_TenthDiscovery_UnlocksCuriousWithItsXpInTheSameReward()
     {
