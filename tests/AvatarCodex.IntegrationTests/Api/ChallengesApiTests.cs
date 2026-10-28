@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AvatarCodex.IntegrationTests.Api;
 
-[Collection(ContentApiCollection.Name)]
-public class ChallengesApiTests(ContentApiFixture api)
+[Collection(ChallengesApiCollection.Name)]
+public class ChallengesApiTests(ChallengesApiFixture api)
 {
     private async Task<(HttpClient Client, AuthResponse Auth)> NewUserClientAsync()
     {
@@ -65,6 +65,10 @@ public class ChallengesApiTests(ContentApiFixture api)
         Assert.All(daily.Challenges, c => Assert.False(c.IsCompleted));
         Assert.All(daily.Challenges, c => Assert.Equal(0, c.Progress));
         Assert.Equal(daily.Challenges.Select(c => c.Id), again.Challenges.Select(c => c.Id));
+
+        // O painel traz os mesmos desafios do dia.
+        var dashboard = await ReadAsync<DashboardDto>(await client.GetAsync("/api/users/me/dashboard"));
+        Assert.Equal(daily.Challenges.Select(c => c.Id), dashboard.DailyChallenges.Challenges.Select(c => c.Id));
     }
 
     [SkippableFact]
