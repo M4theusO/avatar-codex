@@ -78,6 +78,43 @@ describe('CharactersPage', () => {
     expect(router.state.location.search).toBe('?nationId=4')
   })
 
+  it('combina elemento, tipo, status e série na URL e na consulta', async () => {
+    vi.mocked(getElements).mockResolvedValue([
+      {
+        id: 3,
+        name: 'Fogo',
+        color: '#B86B35',
+        icon: 'flame',
+        description: '',
+        bendingSubtypes: [],
+      },
+    ])
+    vi.mocked(getSeries).mockResolvedValue([{ id: 2, code: 'LOK', name: 'A Lenda de Korra' }])
+    vi.mocked(getCharacters).mockResolvedValue(page([character()]))
+    const user = userEvent.setup()
+    const { router } = renderRoute('/characters')
+
+    await screen.findByRole('option', { name: 'Fogo' })
+    await screen.findByRole('option', { name: 'A Lenda de Korra' })
+    await user.selectOptions(screen.getByLabelText('Elemento'), '3')
+    await user.selectOptions(screen.getByLabelText('Tipo'), 'bender')
+    await user.selectOptions(screen.getByLabelText('Status'), 'Alive')
+    await user.selectOptions(screen.getByLabelText('Série'), '2')
+
+    const params = new URLSearchParams(router.state.location.search)
+    expect(Object.fromEntries(params)).toEqual({
+      elementId: '3',
+      type: 'bender',
+      status: 'Alive',
+      seriesId: '2',
+    })
+    await waitFor(() =>
+      expect(getCharacters).toHaveBeenLastCalledWith(
+        expect.objectContaining({ elementId: 3, type: 'bender', status: 'Alive', seriesId: 2 }),
+      ),
+    )
+  })
+
   it('mostra estado vazio e permite limpar os filtros', async () => {
     vi.mocked(getCharacters).mockResolvedValue(page([]))
     const user = userEvent.setup()

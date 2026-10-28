@@ -13,5 +13,11 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     // tokens.css é processado para que tokens.test.ts leia os valores reais (?raw).
     css: { include: [/tokens\.css/], modules: { classNameStrategy: 'non-scoped' } },
+    coverage: {
+      provider: 'v8',
+      include: ['src/**'],
+      exclude: ['src/**/*.test.*', 'src/test/**', 'src/main.tsx', 'src/vite-env.d.ts'],
+      reporter: ['text-summary', 'html'],
+    },
   },
 })
