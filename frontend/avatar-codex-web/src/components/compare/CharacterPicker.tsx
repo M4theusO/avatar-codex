@@ -78,7 +78,7 @@ function SelectedCharacter({
         <p className={styles.pickerMessage}>Personagem não encontrado.</p>
       ) : (
         <div className={styles.selectedInfo}>
-          <CharacterAvatar name={data.name} image={data.image} color={data.element?.color} />
+          <CharacterAvatar name={data.name} image={data.image} element={data.element} />
           <span className={styles.selectedName}>{data.name}</span>
         </div>
       )}
@@ -145,7 +145,7 @@ function CharacterSearch({
                 <CharacterAvatar
                   name={character.name}
                   image={character.image}
-                  color={character.element?.color}
+                  element={character.element}
                   size="sm"
                 />
                 <span className={styles.resultName}>{character.name}</span>
