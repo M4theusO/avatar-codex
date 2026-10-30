@@ -76,7 +76,7 @@ Prioridades: **P0** essencial · **P1** núcleo de gamificação · **P2** compl
 | RF-ACH-01 | Catálogo de conquistas (desbloqueadas e bloqueadas) com progresso. |
 | RF-ACH-02 | Desbloqueio automático verificado pelo backend, com notificação. |
 
-Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personagens descobertos), **Explorador** (50 personagens; no seed atual, 30, porque há 37 personagens — ver Fase 8), **Historiador** (todas as nações), **Mestre dos elementos** (N desafios concluídos), **Conhecedor de Avatar** (100 respostas corretas).
+Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personagens descobertos), **Explorador** (50 personagens na especificação; no seed, 30, porque há 37 personagens), **Historiador** (todas as nações), **Mestre dos elementos** (N desafios concluídos), **Conhecedor de Avatar** (100 respostas corretas).
 
 ### 4.7 Quiz — P1
 | ID | Requisito |
@@ -162,7 +162,7 @@ Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personage
 | Performance | Paginação, lazy loading de rotas e imagens, imagens otimizadas, cache de requisições, sem chamadas duplicadas. Sem otimização prematura. |
 | Testabilidade | Testes unitários, de integração, de frontend e E2E nas partes importantes (ver `architecture.md` §8). |
 | Manutenibilidade | Conteúdo no banco; novos personagens, habilidades, eventos, quizzes e conquistas sem alterar código. |
-| Setup | Ambiente sobe do zero com Docker + migrations + seed, já com dados de demonstração. |
+| Setup | Ambiente sobe do zero (PostgreSQL local ou via Docker) com migrations + seed aplicados pela API, já com dados de demonstração. |
 | Documentação | README e `docs/` permitem que outro desenvolvedor entenda e execute o projeto. |
 
 ## 7. Direitos autorais
@@ -179,3 +179,16 @@ Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personage
 - Recuperação de senha por email.
 - Upload de avatar (v1 usa URL ou avatares pré-definidos).
 - Internacionalização (UI em português).
+
+## 9. Status de implementação (v1)
+
+Todos os requisitos P0, P1 e P2 estão implementados, com as exceções e ajustes abaixo. Os P3 (§4.12) não foram iniciados.
+
+| Requisito | Situação |
+|---|---|
+| RF-CHAR-02 / RF-CHAR-03 (imagem do personagem) | 12 dos 37 personagens têm retrato; os demais usam o placeholder próprio (DA-04). Adicionar imagens não exige código (`database.md` §4). |
+| RF-ELEM-01 (elementos e subtipos) | Disponível na API (`GET /api/elements`) e usado na Home, nos filtros e nos badges; não há uma página só de elementos. |
+| RF-ABIL-01 (habilidades e quem as possui) | Disponível na API (`GET /api/abilities`, `GET /api/characters/{id}/abilities`); na interface, as habilidades aparecem no detalhe e na comparação de personagens. Não há página de habilidades com a lista de quem as possui. |
+| RF-PROF-01 (avatar e elemento no perfil) | O perfil mostra avatar e elemento quando existem, mas não há edição de perfil na v1 (`avatarUrl` e `elementId` ficam nulos). A escolha do elemento fica para o teste de elemento (RF-ELTEST-01, P3). |
+| RF-CHAL-01 ("Explore uma nação") | Coberto pelo tipo de desafio `DiscoverNations`. |
+| `POST /api/challenges/{id}/complete` da especificação | Removido de propósito (D9): a conclusão é automática no backend. |

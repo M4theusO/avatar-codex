@@ -61,7 +61,7 @@ Consequências:
 - Badges de elemento: fundo com a cor em baixa opacidade (~15–20%), borda na cor sólida e **texto em `--color-text`**, sempre acompanhado de ícone/nome do elemento (nunca só cor).
 - Texto branco sobre as cores sólidas também fica abaixo de 4,5:1 (≈ 3,9–4,0:1), por isso evitar botões com fundo sólido de elemento e texto pequeno.
 - Os componentes recebem a cor do elemento que vem da API (campo `color`) na variável `--element-color`. Cards, badges e bordas se adaptam sem lógica extra. Sem elemento (não dobradores), o acento é o neutro `--color-text-muted`.
-- **Imagens de personagem (DA-04):** enquanto não houver imagens reais (pendência da Fase 15), o `CharacterAvatar` mostra as iniciais sobre o símbolo do elemento em marca d'água, num círculo com borda, anel interno e brilho na cor do elemento (sem símbolo para não dobradores e no tamanho pequeno). Quando houver `image`, ela cobre as iniciais sem mudança nas páginas; se o link falhar, as iniciais voltam.
+- **Imagens de personagem (DA-04):** os retratos são quadrados (cabeça e ombros, 320×320) e preenchem o círculo do `CharacterAvatar`. Para quem ainda não tem imagem, o componente mostra as iniciais sobre o símbolo do elemento em marca d'água, num círculo com borda, anel interno e brilho na cor do elemento (sem símbolo para não dobradores e no tamanho pequeno). Quando houver `image`, ela cobre as iniciais sem mudança nas páginas; se o link falhar, as iniciais voltam.
 
 ## 3. Tipografia (DA-03 — aprovada)
 
@@ -86,7 +86,7 @@ Consequências:
 | `sm` | ≥ 640px | grid de 2–3 colunas |
 | `md` | ≥ 768px | tablet, grid de 3, filtros em drawer |
 | `lg` | ≥ 1024px | desktop, filtros em sidebar, grid de 4 |
-| `xl` | ≥ 1280px | navbar completa (abaixo disso, menu recolhido; ✅ Fase 9), conteúdo com largura máxima (~1200px) |
+| `xl` | ≥ 1280px | navbar completa (abaixo disso, menu recolhido), conteúdo com largura máxima (~1200px) |
 
 As telas são desenhadas primeiro para mobile e expandidas. Não vale fazer o desktop e só "quebrar" para mobile.
 
@@ -137,7 +137,7 @@ Zuko · Toph · Korra         [card]
 ```
 Também mostra recomendações (personagens ainda não descobertos) e favoritos.
 
-**Implementado (Fase 10):** hero com saudação e XpBar; 4 indicadores clicáveis (personagens, nações, conquistas, quizzes); em ≥ 1024px, "Quiz em destaque" e "Conquistas" (recentes + próxima) lado a lado; depois "Continue explorando", "Descobertas recentes" e "Favoritos". Seções vazias usam uma mensagem curta com borda tracejada. Na navbar, o link "Início" vira "Painel" para quem está logado. ✅ Fase 11: seção "Desafios de hoje" logo depois dos indicadores.
+**Como ficou:** hero com saudação e XpBar; 4 indicadores clicáveis (personagens, nações, conquistas, quizzes); em ≥ 1024px, "Quiz em destaque" e "Conquistas" (recentes + próxima) lado a lado; depois "Continue explorando", "Descobertas recentes" e "Favoritos". Seções vazias usam uma mensagem curta com borda tracejada. Na navbar, o link "Início" vira "Painel" para quem está logado. Logo depois dos indicadores, a seção "Desafios de hoje".
 
 ### Listagem de personagens
 Grid de `CharacterCard` (imagem, nome, badge de elemento, nação, indicador "descoberto", botão de favorito). Busca com debounce, filtros (nação, elemento, tipo, status, série), ordenação e paginação numérica sincronizada com a URL. Em mobile/tablet, os filtros ficam num painel recolhível aberto pelo botão "Filtros" e os cards viram itens de lista; a partir de 1024px, os filtros ficam numa sidebar fixa.
@@ -151,17 +151,17 @@ Cards com símbolo e cor do elemento como acento; detalhe com descrição e pers
 ### Timeline
 Linha vertical (horizontal em telas largas) agrupada por era, com marcadores, cards de evento, avatares dos personagens relacionados e filtros por era/personagem. A animação de entrada ao rolar deve ser sutil e respeitar `prefers-reduced-motion`.
 
-✅ Fase 12: linha vertical também em telas largas: à esquerda no celular e, a partir de 1024px, central com os cards alternando de lado (mais legível que uma faixa horizontal com textos longos). Título da era e do evento em Cinzel; data em caixa alta no acento do Ar; personagens como "pílulas" com avatar (cor do elemento) e link para o detalhe. Filtros "Era" e "Personagem" no topo, guardados na URL, com "Limpar filtros". Entrada ao rolar com fade + leve deslocamento (`useReveal` + IntersectionObserver), zerada pela regra global de `prefers-reduced-motion`.
+**Como ficou:** linha vertical também em telas largas: à esquerda no celular e, a partir de 1024px, central com os cards alternando de lado (mais legível que uma faixa horizontal com textos longos). Título da era e do evento em Cinzel; data em caixa alta no acento do Ar; personagens como "pílulas" com avatar (cor do elemento) e link para o detalhe. Filtros "Era" e "Personagem" no topo, guardados na URL, com "Limpar filtros". Entrada ao rolar com fade + leve deslocamento (`useReveal` + IntersectionObserver), zerada pela regra global de `prefers-reduced-motion`.
 
 ### Comparação
 Dois seletores com busca. Colunas lado a lado: imagem, elemento, nação, habilidades, informações, e **gráfico de barras ou radar** com os atributos. Aviso fixo: *"Atributos são estimativas da comunidade do projeto, não informações canônicas."*
 
-✅ Fase 13: dois seletores (fieldset com a cor da série na borda) com busca e lista de 6 resultados; escolhido, mostra avatar + nome + "Trocar". Seleção na URL (`?a=&b=`), "Inverter lados". Resultado: cards frente a frente ("vs") com faixa na cor da série (é a legenda dos gráficos), radar SVG + barras pareadas (lado a lado a partir de 1024px) com valor escrito e coroa no maior, e tabela de informações (elemento, nação, tipo, situação, primeira aparição, séries, subtipos, habilidades). **Cores das séries pela posição** (1º = Água, 2º = Fogo), não pelo elemento, para dois personagens do mesmo elemento continuarem distinguíveis; só as marcas usam essas cores. O aviso de não canonicidade fica sempre visível, acima do resultado. Entradas: botão "Comparar" no detalhe do personagem e chamada na Home (sem item na navbar, que não comporta uma sexta seção).
+**Como ficou:** dois seletores (fieldset com a cor da série na borda) com busca e lista de 6 resultados; escolhido, mostra avatar + nome + "Trocar". Seleção na URL (`?a=&b=`), "Inverter lados". Resultado: cards frente a frente ("vs") com faixa na cor da série (é a legenda dos gráficos), radar SVG + barras pareadas (lado a lado a partir de 1024px) com valor escrito e coroa no maior, e tabela de informações (elemento, nação, tipo, situação, primeira aparição, séries, subtipos, habilidades). **Cores das séries pela posição** (1º = Água, 2º = Fogo), não pelo elemento, para dois personagens do mesmo elemento continuarem distinguíveis; só as marcas usam essas cores. O aviso de não canonicidade fica sempre visível, acima do resultado. Entradas: botão "Comparar" no detalhe do personagem e chamada na Home (sem item na navbar, que não comporta uma sexta seção).
 
 ### Quiz
 Uma pergunta por vez, com barra de progresso, opções como botões grandes e acessíveis, e possibilidade de voltar antes de enviar. Ao submeter: tela de resultado com pontuação, %, correção pergunta a pergunta (certa/errada + explicação), XP ganho e eventuais conquistas.
 
-✅ Fase 9:
+**Como ficou:**
 - **Lista** (`/quizzes`): cards com categoria, dificuldade (texto + barrinha de 1 a 3 níveis), nº de perguntas e "Melhor: 8/10 (80%)" para quem já jogou; filtros de categoria e dificuldade na URL; "Meu histórico" para quem está logado.
 - **Jogo** (`/quizzes/:id`): cartão com "Pergunta n de 10" + barra, enunciado e opções A–D. As opções são rádios nativos estilizados (setas do teclado, leitor de tela, foco visível); ao trocar de pergunta o foco vai para o enunciado. "Próxima" só com a pergunta respondida; "Enviar respostas" só com todas. Se o envio falhar, as respostas ficam.
 - **Resultado**: título conforme o desempenho ("Gabaritou!", "Mandou bem!"…), "9 / 10" + %, XP do quiz ou o aviso de que a tentativa não rende XP, conquistas desbloqueadas, e a correção com borda verde/vermelha, "Sua resposta", "Resposta correta" e a explicação. Ações: jogar novamente, ver histórico, outros quizzes.
@@ -183,12 +183,12 @@ Inclui abas/seções para descobertas, favoritos, conquistas e histórico de XP.
 ### Conquistas
 Grid com conquistas desbloqueadas (coloridas, com data) e bloqueadas (esmaecidas, com barra de progresso).
 
-✅ Fase 8: resumo "x de y conquistas desbloqueadas" com barra; cards na ordem do catálogo (cadastro → descobertas → quizzes → desafios). Desbloqueada: ícone sobre círculo com o acento do Ar, borda clara e "Desbloqueada em dd/mm/aaaa". Bloqueada: só o ícone fica esmaecido (com cadeado), os textos mantêm o contraste, e o progresso aparece como "3 / 10" + barra. Acesso pelo troféu na navbar e por "Ver conquistas" no perfil.
+**Como ficou:** resumo "x de y conquistas desbloqueadas" com barra; cards na ordem do catálogo (cadastro → descobertas → quizzes → desafios). Desbloqueada: ícone sobre círculo com o acento do Ar, borda clara e "Desbloqueada em dd/mm/aaaa". Bloqueada: só o ícone fica esmaecido (com cadeado), os textos mantêm o contraste, e o progresso aparece como "3 / 10" + barra. Acesso pelo troféu na navbar e por "Ver conquistas" no perfil.
 
 ### Desafios
 Cards dos desafios do dia com progresso, recompensa e horário do próximo reset (UTC convertido para o horário local).
 
-✅ Fase 11: `/challenges` com "Desafios de hoje" ("x de 3 concluídos" + "Novos desafios às HH:mm") e "Concluídos" (histórico paginado). Card com ícone do tipo, título, XP, descrição e barra de progresso ("2 / 3", ou "60% de 80%" no desafio de porcentagem); concluído tem borda e ícone verdes e "Concluído" no lugar da barra. Atalho por um ícone de alvo na área do usuário da navbar e por "Ver desafios" no painel. A conclusão é anunciada por um toast "Desafio concluído — título! +XP" vindo do `reward` de qualquer evento.
+**Como ficou:** `/challenges` com "Desafios de hoje" ("x de 3 concluídos" + "Novos desafios às HH:mm") e "Concluídos" (histórico paginado). Card com ícone do tipo, título, XP, descrição e barra de progresso ("2 / 3", ou "60% de 80%" no desafio de porcentagem); concluído tem borda e ícone verdes e "Concluído" no lugar da barra. Atalho por um ícone de alvo na área do usuário da navbar e por "Ver desafios" no painel. A conclusão é anunciada por um toast "Desafio concluído — título! +XP" vindo do `reward` de qualquer evento.
 
 ## 8. Componentes base (`components/common`)
 
@@ -208,10 +208,10 @@ Cards dos desafios do dia com progresso, recompensa e horário do próximo reset
 Disparados a partir do `reward` retornado pela API (nunca calculados no frontend):
 
 - **Descoberta** (personagem ou nação): `✨ NOVA DESCOBERTA — Você descobriu Zuko! +10 XP` (toast). Só aparece quando a API retorna `isNew: true`.
-- **XP**: animação curta na `XpBar` (a barra cresce e um brilho a atravessa). A `XpBar` aparece completa no perfil e compacta na navbar, sob o nome do usuário; usa a cor do elemento do usuário ou o neutro claro (DA-02). ✅ Fase 7
-- **Nível**: modal `Novo nível! Você alcançou o nível 10. Continue sua jornada!` com `<dialog>` nativo (foco preso, Esc fecha, fundo inerte), foco inicial em "Continuar". Vários níveis entram numa fila e aparecem um de cada vez. ✅ Fase 7
-- **Quiz**: toast `🎯 Quiz concluído — 9/10! +20 XP` só quando a tentativa rende XP. ✅ Fase 9
-- **Conquista**: toast com troféu, `Conquista desbloqueada — Curioso! +50 XP`, um por conquista, logo depois do toast do evento que a causou (que mostra só o XP do próprio evento). No cadastro, aparece junto da boas-vindas ("Primeiro passo"). ✅ Fase 8
+- **XP**: animação curta na `XpBar` (a barra cresce e um brilho a atravessa). A `XpBar` aparece completa no perfil e compacta na navbar, sob o nome do usuário; usa a cor do elemento do usuário ou o neutro claro (DA-02).
+- **Nível**: modal `Novo nível! Você alcançou o nível 10. Continue sua jornada!` com `<dialog>` nativo (foco preso, Esc fecha, fundo inerte), foco inicial em "Continuar". Vários níveis entram numa fila e aparecem um de cada vez.
+- **Quiz**: toast `🎯 Quiz concluído — 9/10! +20 XP` só quando a tentativa rende XP.
+- **Conquista**: toast com troféu, `Conquista desbloqueada — Curioso! +50 XP`, um por conquista, logo depois do toast do evento que a causou (que mostra só o XP do próprio evento). No cadastro, aparece junto da boas-vindas ("Primeiro passo").
 - **Desafio concluído**: toast com recompensa.
 
 Quando chegam vários eventos de uma vez, eles entram numa fila e aparecem em sequência.
@@ -231,9 +231,9 @@ Quando chegam vários eventos de uma vez, eles entram numa fila e aparecem em se
 
 Transições de 150–300ms em hover/foco, entrada de cards com fade/slide leve e transição entre rotas discreta. Nada de animações longas, em loop ou chamativas.
 
-✅ Fase 15: transição entre páginas (fade + 6px em 250ms, reiniciada só quando muda o pathname, então filtros e paginação não animam) e "pop" da estrela ao favoritar (só no clique). Tudo é zerado pela regra global de `prefers-reduced-motion`.
+**Como ficou:** transição entre páginas (fade + 6px em 250ms, reiniciada só quando muda o pathname, então filtros e paginação não animam) e "pop" da estrela ao favoritar (só no clique). Tudo é zerado pela regra global de `prefers-reduced-motion`.
 
-### Ajustes de layout (Fase 15)
+### Ajustes de layout
 - Home: os 5 Avatares numa linha a partir de 1024px.
 - Nações: flex centralizado, 1 / 2 / 3 colunas; com 5 nações o desktop fica 3 + 2 centralizado.
 - Detalhe do personagem: a partir de 1024px, duas colunas (2:1): "Sobre" e "Habilidades" à esquerda; "Subtipos de dobra", "Relações" e "Aparições" à direita. No celular, a ordem é a mesma, empilhada.
