@@ -1,0 +1,23 @@
+# Blueprint do Render: a API em container Docker (plano gratuito). Passo a passo em docs/deployment.md.
+services:
+  - type: web
+    name: avatar-codex-api
+    runtime: docker
+    plan: free
+    # Perto do banco no Neon (AWS us-east-1). Não dá para mudar depois de criado.
+    region: virginia
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    # Só reconstrói quando o backend muda (mudanças no frontend ou na doc não geram deploy da API).
+    buildFilter:
+      paths:
+        - backend/**
+    envVars:
+      # Connection string do Neon (formato Npgsql). Pedida na criação do Blueprint.
+      - key: ConnectionStrings__Default
+        sync: false
+      # Chave do JWT: gerada pelo Render (256 bits em base64) e nunca versionada.
+      - key: Jwt__Secret
+        generateValue: true
