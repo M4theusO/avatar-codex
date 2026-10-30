@@ -2,6 +2,8 @@ import axios, { type InternalAxiosRequestConfig } from 'axios'
 import type { AuthResponse } from '../types/auth'
 
 export const api = axios.create({
+  // Em dev aponta para a API local; em produção fica vazio e as chamadas são relativas (/api/...),
+  // repassadas pela Vercel para a API (docs/deployment.md).
   baseURL: import.meta.env.VITE_API_URL,
   // Envia o cookie httpOnly de refresh para /api/auth.
   withCredentials: true,
