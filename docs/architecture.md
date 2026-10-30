@@ -16,45 +16,44 @@
 ```
 
 - Monorepo com frontend e backend independentes, cada um executável separadamente.
-- PostgreSQL via Docker Compose em desenvolvimento.
+- PostgreSQL local ou via Docker Compose em desenvolvimento (passo a passo no README).
 - Comunicação exclusivamente via API REST.
 
 ## 2. Estrutura de diretórios
 
 ```text
 avatar-codex/
-├── .claude/
 ├── docs/
 ├── backend/
 │   ├── AvatarCodex.sln
 │   └── src/
 │       ├── AvatarCodex.Api/
 │       │   ├── Controllers/
-│       │   ├── Middleware/          # tratamento global de exceções
-│       │   ├── Filters/
-│       │   ├── Extensions/          # registro de DI, auth, CORS, Swagger
+│       │   ├── Middleware/          # GlobalExceptionHandler
+│       │   ├── Extensions/          # controllers + formato de erro, auth JWT, CORS, health check
 │       │   └── Program.cs
 │       ├── AvatarCodex.Application/
 │       │   ├── DTOs/
-│       │   ├── Services/            # casos de uso + ProgressionService
-│       │   ├── Interfaces/
+│       │   ├── Services/            # casos de uso, regras (…Rules, LevelCalculator) e ProgressionService
+│       │   ├── Interfaces/          # repositórios e serviços técnicos
 │       │   ├── Validators/          # FluentValidation
 │       │   └── Mappings/            # mapeamento manual entidade ↔ DTO
 │       ├── AvatarCodex.Domain/
 │       │   ├── Entities/
 │       │   ├── Enums/
 │       │   ├── Exceptions/
-│       │   ├── Interfaces/
+│       │   ├── Interfaces/          # IAuditableEntity
 │       │   └── ValueObjects/        # ImageInfo
 │       └── AvatarCodex.Infrastructure/
-│           ├── Data/                # AppDbContext, DatabaseInitializer, Seed/ (JSON + ContentSeeder)
+│           ├── Data/                # AppDbContext, DatabaseInitializer, Seed/ (JSON + ContentSeeder + DemoUserSeeder)
 │           ├── Repositories/
 │           ├── Configurations/      # IEntityTypeConfiguration<T>
 │           ├── Migrations/
-│           └── Services/            # JwtTokenService, PasswordHasher, Clock
+│           └── Security/            # JwtTokenService, PasswordHasher
 ├── frontend/
 │   └── avatar-codex-web/
 │       ├── cypress/                 # testes E2E
+│       ├── public/images/characters # retratos dos personagens (servidos pelo próprio app)
 │       └── src/                     # ver §4
 ├── tests/
 │   ├── AvatarCodex.UnitTests/
@@ -81,9 +80,9 @@ Api ──► Application ──► Domain
 | Camada | Responsabilidade | Não pode |
 |---|---|---|
 | **Api** | Rotas HTTP, autenticação, model binding, chamar serviço, mapear resultado para status HTTP, middleware de erros. | Conter regra de negócio ou acessar o DbContext diretamente. |
-| **Application** | Casos de uso (`CharacterService`, `QuizService`, `ProgressionService`…), DTOs, validators, interfaces de repositório e de serviços técnicos. | Depender de EF Core, ASP.NET ou detalhes de infraestrutura. |
-| **Domain** | Entidades, enums, exceções de domínio (`NotFoundException`, `ConflictException`, `BusinessRuleException`), regras puras (ex.: `LevelCalculator`). | Ter dependências externas. |
-| **Infrastructure** | `AppDbContext`, configurações EF, repositórios, migrations, seed, JWT, hash de senha, relógio (`TimeProvider`). | Conter regra de negócio. |
+| **Application** | Casos de uso (`CharacterService`, `QuizService`, `ProgressionService`…), regras puras e testáveis isoladamente (`LevelCalculator`, `ExperienceRewards`, `AchievementRules`, `ChallengeRules`, `DashboardRules`), DTOs, validators, interfaces de repositório e de serviços técnicos. | Depender de EF Core, ASP.NET ou detalhes de infraestrutura. |
+| **Domain** | Entidades, enums, `ImageInfo`, exceções de domínio (`NotFoundException`, `ConflictException`, `BusinessRuleException`…). | Ter dependências externas. |
+| **Infrastructure** | `AppDbContext`, configurações EF, repositórios, migrations, seed, JWT, hash de senha, registro do relógio (`TimeProvider.System`). | Conter regra de negócio. |
 
 ### 3.2 Padrões adotados
 
@@ -99,34 +98,37 @@ Api ──► Application ──► Domain
 
 ### 3.3 Gamificação centralizada
 
-Todos os ganhos de progresso passam por um único serviço:
+Todos os ganhos de progresso passam por um único serviço, o `ProgressionService`:
 
 ```text
-evento (descoberta, quiz concluído, …)
+evento (descoberta, quiz concluído, cadastro)
         │
         ▼
-ProgressionService.RegisterAsync(userId, activity)
-  1. grava ExperienceTransaction (idempotente: unique UserId+Type+SourceId;
-     violação de unicidade = "já concedido", sem XP e sem erro)
-  2. atualiza User.ExperiencePoints
-  3. LevelCalculator → detecta subida de nível
-  4. atualiza progresso dos desafios diários → conclui e concede XP se atingiu a meta
-  5. avalia conquistas → desbloqueia e concede XP (sem nova avaliação em cascata)
-  6. retorna RewardResult { xpGained, totalXp, level, leveledUp, achievementsUnlocked[], challengesCompleted[] }
+GrantAsync(userId, tipo, sourceId)          ← um evento, uma recompensa (descoberta)
+GrantAllAsync(userId, ExperienceGrant[])    ← várias recompensas (quiz: concluído + perfeito)
+EvaluateAchievementsAsync(userId)           ← sem XP próprio (cadastro → "Primeiro passo")
         │
-        ▼
-tudo em uma única transação de banco
+  1. XP do evento: grava o registro da atividade + ExperienceTransaction e soma o XP,
+     numa transação. Unique (UserId, Type, SourceId) violada = "já concedido": rollback,
+     sem XP e sem erro.
+  2. Nível: LevelCalculator compara o nível antes e depois (nível não é persistido, D5).
+  3. Desafios do dia: os cumpridos e ainda não concluídos são concluídos, cada um com seu XP.
+  4. Conquistas: as cumpridas são desbloqueadas, cada uma com seu XP, sem nova avaliação
+     em cascata (RN-08). Vêm depois dos desafios para "Mestre dos elementos" contar
+     os desafios concluídos no próprio evento.
+  5. Retorna RewardResult { xpGained, totalXp, level, leveledUp, currentLevelXp, nextLevelXp,
+     levelProgress, achievementsUnlocked[], challengesCompleted[] }, ou null se nada foi ganho.
 ```
 
-O `RewardResult` volta na resposta do endpoint que originou o evento, e o frontend usa esse retorno para os toasts de XP, nível e conquista. Assim nenhuma regra de gamificação é duplicada no frontend.
+O `RewardResult` volta na resposta do endpoint que originou o evento, e o frontend usa esse retorno para os toasts de XP, desafio e conquista e para o modal de novo nível. Nenhuma regra de gamificação é duplicada no frontend.
 
-**Implementado na Fase 6 (passos 1–3 e 6):** `ProgressionService.GrantAsync` usa a tabela de XP de `ExperienceRewards` (único lugar com os valores, RN-04) e o `IProgressionRepository`, que numa transação grava o registro da atividade (ex.: a descoberta) e a `ExperienceTransaction` e soma o XP com `UPDATE ... SET experience_points = experience_points + n` (sem perder XP com recompensas simultâneas diferentes). Violação de unicidade → rollback e `null` ("já concedido", sem erro). Desafios (passo 4) entram na Fase 11.
-
-**Implementado na Fase 8 (passo 5):** depois do XP do evento, o `ProgressionService` lê o catálogo, as conquistas já desbloqueadas e as métricas do usuário (`IAchievementRepository`) e desbloqueia as cumpridas segundo `AchievementRules` (o mesmo código calcula o progresso exibido em `/api/users/me/achievements`). As métricas são lidas uma única vez, antes do XP das conquistas, por isso esse XP não reavalia nada (RN-08). Cada desbloqueio usa o mesmo `SaveWithExperienceAsync` (`UserAchievement` + `ExperienceTransaction` do tipo `AchievementUnlocked`): com requisições simultâneas, a unicidade faz só uma delas desbloquear. O evento e as conquistas ficam em transações separadas; uma conquista que não foi gravada sai no próximo evento, porque a avaliação sempre considera todas as que continuam bloqueadas. O cadastro chama `EvaluateAchievementsAsync` para o "Primeiro passo".
-
-**Fase 9:** eventos com mais de uma recompensa usam `GrantAllAsync(userId, ExperienceGrant[])`: cada `ExperienceGrant` (tipo, `SourceId`, descrição e, opcionalmente, o registro da atividade) passa pelo mesmo `SaveWithExperienceAsync`, as já concedidas são ignoradas, e as conquistas são avaliadas uma vez no fim, mesmo sem XP novo (um quiz refeito muda as respostas corretas). No quiz, a tentativa é gravada antes (sempre) e as recompensas são `QuizCompleted` + `QuizPerfect` com `SourceId` = id do quiz. A correção fica no `QuizService`; o DTO de opção usado para jogar não tem `IsCorrect`, então não há como vazar a resposta por engano (RN-09).
-
-**Fase 11 (passo 4):** antes das conquistas, o `ProgressionService` pede ao `DailyChallengeService` os desafios de hoje já cumpridos e ainda não concluídos (gerando os do dia se for o primeiro acesso, D8) e grava cada conclusão com o mesmo `SaveWithExperienceAsync` (`UserDailyChallenge` + `ExperienceTransaction` `ChallengeCompleted`, `SourceId` = id do desafio do dia). O progresso não é armazenado: `ChallengeRules` o calcula a partir das atividades do dia em UTC (`TimeProvider`), e a PK da conclusão garante uma única recompensa com requisições simultâneas. Como as conquistas são avaliadas depois, "Mestre dos elementos" conta os desafios concluídos no próprio evento.
+**Detalhes de implementação:**
+- **Valores de XP** ficam só em `ExperienceRewards` (RN-04); conquistas e desafios trazem o próprio `ExperienceReward` do banco.
+- **Gravação idempotente:** todo ganho (evento, desafio ou conquista) passa pelo mesmo `IProgressionRepository.SaveWithExperienceAsync`, que grava o registro (`UserCharacterDiscovery`, `UserDailyChallenge`, `UserAchievement`…) e a `ExperienceTransaction` juntos e soma o XP com `UPDATE ... SET experience_points = experience_points + n`, para recompensas simultâneas diferentes não se sobrescreverem. Com requisições simultâneas iguais, a constraint única faz só uma ganhar (testado com concorrência).
+- **Transações separadas:** o XP do evento, cada desafio e cada conquista são gravados em transações próprias. Se um desafio ou conquista não chegar a ser gravado, ele sai no próximo evento, porque a avaliação sempre considera tudo o que continua pendente.
+- **Conquistas:** `AchievementRules` decide o desbloqueio **e** calcula o progresso exibido em `/api/users/me/achievements`, a partir das métricas do usuário lidas uma vez por avaliação.
+- **Desafios:** o progresso não é armazenado. `ChallengeRules` o calcula a partir das atividades do dia em UTC (`TimeProvider`); o `DailyChallengeService` gera os 3 desafios do dia no primeiro acesso (D8) e a PK `UserId + DailyChallengeId` garante uma única conclusão.
+- **Quiz:** o `QuizService` corrige no backend e grava a tentativa sempre (histórico); depois chama `GrantAllAsync` com `QuizCompleted` e, se gabaritou, `QuizPerfect` (`SourceId` = id do quiz), então só a 1ª conclusão e o 1º gabarito rendem XP (RN-06). O DTO usado para jogar não tem `IsCorrect`, então não há como vazar a resposta por engano (RN-09).
 
 - **Token opcional:** `GET /api/characters`, `/api/characters/{id}` e `/api/nations/{id}` leem o usuário do token quando ele existe e preenchem `isFavorite`/`isDiscovered` com uma consulta extra pelos ids da página (`IUserCollectionRepository.GetMarksAsync`).
 - **Frontend:** as queries de personagens incluem o id do usuário na chave e só disparam depois que a sessão foi verificada; a descoberta é enviada por `useDiscovery` (uma vez por página, só com o conteúdo já exibido) e o `reward` atualiza XP/nível em memória (`AuthProvider.updateUser`).
@@ -138,7 +140,7 @@ O `RewardResult` volta na resposta do endpoint que originou o evento, e o fronte
 - O frontend guarda o access token **apenas em memória**. Ao recarregar a página, chama `POST /api/auth/refresh` para recuperar a sessão.
 - Senhas com `PasswordHasher<User>` do ASP.NET Core Identity (PBKDF2), sem usar o Identity completo.
 - CORS restrito à origem do frontend, com `AllowCredentials` por causa do cookie.
-- **Implementação (Fase 5):** `AuthService` (Application) concentra cadastro, login, refresh, logout e "me"; `JwtTokenService` e `PasswordHasher` (Infrastructure/Security) ficam atrás de `ITokenService`/`IPasswordHasher`. O refresh token é um valor aleatório de 512 bits; no banco fica só o SHA-256 dele. O access token leva apenas `sub`, `unique_name` e `jti`.
+- **Implementação:** `AuthService` (Application) concentra cadastro, login, refresh, logout e "me"; `JwtTokenService` e `PasswordHasher` (Infrastructure/Security) ficam atrás de `ITokenService`/`IPasswordHasher`. O refresh token é um valor aleatório de 512 bits; no banco fica só o SHA-256 dele. O access token leva apenas `sub`, `unique_name` e `jti`.
 - **Frontend:** `services/api.ts` guarda o access token em memória, injeta o header e, ao receber 401, faz **um** refresh e repete a requisição. Refreshes simultâneos compartilham a mesma promessa, porque cada refresh token só vale uma vez (isso também evita a corrida do StrictMode ao recuperar a sessão). Se o refresh falha, a sessão local é encerrada.
 - **Cookie em produção:** `SameSite=Strict` funciona em dev porque `localhost:5173` e `localhost:5080` são o mesmo site. Com frontend e API em domínios diferentes (Fase 17), será preciso `SameSite=None` (ou servir a API sob o mesmo domínio).
 - **Fora do escopo por enquanto:** detecção de reuso de refresh token (revogar todas as sessões ao reapresentar um token já rotacionado) e limite de tentativas de login. Ficam registrados como melhorias de segurança.
@@ -165,27 +167,30 @@ Um `IExceptionHandler` (`Api/Middleware/GlobalExceptionHandler.cs`) converte exc
 src/
 ├── assets/
 ├── components/
-│   ├── common/        # Button, Badge, CharacterAvatar, Field, Pagination, Skeleton, StatusMessage, PageHeader, Section…
-│   ├── layout/        # AppLayout (skip link, rodapé), Navbar
+│   ├── common/        # Button, Badge, CharacterAvatar, ElementIcon, Field, Pagination, Skeleton, StatusMessage, PageHeader, Section…
+│   ├── layout/        # AppLayout (skip link, transição de página, rodapé), Navbar, UserMenu
 │   ├── characters/    # CharacterCard, CharacterGrid, CharacterFilters, CharacterHero, AbilityList, RelationshipList
 │   ├── nations/       # NationCard
 │   ├── auth/          # AuthCard, RouteGuards (RequireAuth, GuestOnly)
+│   ├── progress/      # XpBar, modal de novo nível
+│   ├── dashboard/     # seções do painel
 │   ├── quiz/
 │   ├── achievements/
+│   ├── challenges/
 │   ├── timeline/      # TimelineEraSection, TimelineEventCard, TimelineFilters
 │   ├── compare/       # CharacterPicker, CompareHeader, AttributeRadar, AttributeBars, CompareInfoTable
 │   └── profile/
 ├── pages/             # Home, Login, Register, Dashboard, Characters, CharacterDetails, Nations, NationDetails,
 │                      # Timeline, Compare, Quizzes, QuizPlay, QuizHistory, Profile, Favorites, Achievements,
 │                      # Challenges, NotFound
-├── services/          # api.ts (Axios + interceptors), contentService, authService, quizService…
-├── hooks/             # useContent, useCharacterQueryParams, useAuth, useAuthForm, useLogout, useToast…
-├── contexts/          # AuthProvider/authContext (sessão), ToastProvider/toastContext
+├── services/          # api.ts (Axios + interceptors), contentService, authService, userService, quizService
+├── hooks/             # useContent, useUserData, useQuizzes, useDiscovery, useRewardFeedback, useCharacterQueryParams, useAuth…
+├── contexts/          # AuthProvider (sessão), ToastProvider (toasts), LevelUpProvider (fila do modal de nível)
 ├── lib/               # queryClient (padrões do TanStack Query)
 ├── types/             # tipos espelhando os DTOs da API
 ├── styles/            # tokens.css, global.css
-├── test/              # setup, renderRoute (app completo em memória), fixtures
-├── utils/             # parse da query de personagens, rótulos dos enums, paginação, contraste
+├── test/              # setup, renderWithProviders (app completo em memória), fixtures
+├── utils/             # query de personagens, rótulos dos enums, paginação, contraste, reward, timeline, comparação
 ├── router.tsx         # rotas (data router) com lazy loading
 └── App.tsx
 ```
@@ -205,9 +210,9 @@ src/
 
 ## 6. Docker
 
-- `docker-compose.yml` inicial: **PostgreSQL** com volume persistente e healthcheck.
-- Opcional (fases posteriores): serviços `api` e `web`.
-- Migrations e seed aplicados no startup da API **apenas em Development**.
+- `docker-compose.yml`: só o **PostgreSQL 18** (porta `5433` no host), com volume persistente e healthcheck. API e frontend rodam fora do Docker em desenvolvimento.
+- Docker é opcional: com um PostgreSQL instalado na máquina, basta apontar a connection string para ele.
+- Migrations, seed e usuário demo são aplicados no startup da API quando `Database:MigrateAndSeedOnStartup = true`, que só está ligado em `appsettings.Development.json`. Em outros ambientes, as migrations são aplicadas de forma explícita (Fase 17).
 
 ## 7. Deploy (Fase 17)
 
@@ -222,6 +227,8 @@ Proposta sem custo: frontend na **Vercel**, backend no **Render** (container Doc
 | Frontend | Vitest + React Testing Library, com os `services` mockados (`vi.mock`) e o app inteiro renderizado (providers, layout e rotas reais) | Login, cadastro, listagem/filtros/busca, detalhe, favoritos, perfil, quiz e feedback. Cobertura com `npm run test:coverage` (v8). |
 | E2E | Cypress + Testing Library (`@testing-library/cypress`) no Chrome | 9 fluxos de `development-phases.md` (Fase 14), contra o build (`vite preview` na 5173) + API com o banco `avatar_codex_e2e` (migrations + seed). Cada teste cria o próprio usuário; seletores por papel e texto acessível, sem `data-testid` e sem esperas fixas. |
 
+Hoje: 285 testes no backend (185 unitários + 100 de integração), 139 no frontend e 7 testes E2E cobrindo os 9 fluxos. Como rodar cada suíte e o que cada pasta cobre: [testing.md](testing.md).
+
 ## 9. Decisões do projeto
 
 ### 9.1 Decisões aprovadas
@@ -231,6 +238,7 @@ Proposta sem custo: frontend na **Vercel**, backend no **Render** (container Doc
 | DA-01 | XP por descoberta de nação | +10 XP na 1ª descoberta de cada nação por usuário, registrada só depois que o conteúdo principal foi exibido; validação no backend e idempotência garantida por PK composta + unique em `ExperienceTransaction` | 2026-10-26 | `requirements.md` §5.2 (RN-12), `api.md`, `database.md` |
 | DA-02 | Paleta visual | Dark: fundo `#101820`, superfícies `#1B2835`; Água `#3186B5`, Fogo `#B86B35`, Terra `#638B58`, Ar `#D5C7A2`, usadas como acentos e inspiradas no anime (não reprodução oficial) | 2026-10-26 | `ui-ux.md` §2 |
 | DA-03 | Tipografia | Cinzel em títulos e destaques narrativos, com moderação; Inter em texto corrido, navegação, formulários, botões e componentes | 2026-10-26 | `ui-ux.md` §3 |
+| DA-04 | Imagens de personagens | Placeholder próprio (iniciais sobre o símbolo e a cor do elemento) para quem não tem imagem e como fallback se a imagem falhar. Imagens reais servidas pelo próprio app (`public/images/characters`, retratos quadrados), porque a Avatar Wiki bloqueia hotlink | 2026-10-28 (imagens: 2026-10-30) | `ui-ux.md` §2.3, `database.md` §4 |
 
 **Ajustes feitos para manter a consistência com as decisões aprovadas:**
 - O acento dourado `#E0B354` foi removido (conflitava visualmente com o Ar). Botões primários passam a usar um neutro claro e a barra de XP usa a cor do elemento do usuário.
@@ -263,7 +271,7 @@ Proposta sem custo: frontend na **Vercel**, backend no **Render** (container Doc
 | Requisições de descoberta duplicadas (StrictMode, duplo clique, abas) | PK composta + unique em `ExperienceTransaction`; violação tratada como `isNew: false` (RN-12); teste de integração com chamadas concorrentes. |
 | Escopo grande demais | Fases incrementais; fechar P0 e P1 antes de P2. |
 | Volume de conteúdo para o seed (personagens, quizzes, textos) | Meta v1: ~40 personagens, 4 nações, 4 elementos, ~25 habilidades, 3–5 quizzes. Seed em arquivos JSON, separado do código. |
-| Imagens e direitos autorais | URLs externas com `SourceUrl`/`Credit` e fallback visual; fácil de trocar. |
+| Imagens e direitos autorais | Arquivos locais em `public/images/characters` com `SourceUrl`/`Credit` no seed e placeholder como fallback (DA-04); trocar uma imagem é trocar um arquivo. Sites como a Avatar Wiki bloqueiam hotlink, então URLs externas não são uma opção confiável. |
 | Recompensas duplicadas / condições de corrida | Constraints únicas + transação; tratar violação de unique como "já concedido". |
 | Complexidade do refresh token + CORS com cookies | Implementar e testar na Fase 5 com testes de integração; documentar a configuração. |
 | Fuso horário dos desafios diários | Tudo em UTC via `TimeProvider`; UI informa o horário do reset. |

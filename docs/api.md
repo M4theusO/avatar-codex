@@ -68,20 +68,25 @@ Endpoints que geram progresso retornam um objeto `reward`, que o frontend usa no
 }
 ```
 
-`currentLevelXp`/`nextLevelXp` são o XP mínimo do nível atual e do próximo, e `levelProgress` (0–99) é a porcentagem da barra. O frontend não conhece a fórmula de nível (RN-07): exibe esses valores, que também vêm no `UserDto` (login, refresh, `/auth/me`). ✅ Fase 7
+`currentLevelXp`/`nextLevelXp` são o XP mínimo do nível atual e do próximo, e `levelProgress` (0–99) é a porcentagem da barra. O frontend não conhece a fórmula de nível (RN-07): exibe esses valores, que também vêm no `UserDto` (login, refresh, `/auth/me`).
 
 ## 6. Endpoints
 
 🔓 público · 🔒 autenticado · 🔓* público com token opcional
 
+### Saúde
+| Método | Rota | | Descrição | Respostas |
+|---|---|---|---|---|
+| GET | `/api/health` | 🔓 | Health check com o banco: `{ "status": "Healthy", "checks": { "database": "Healthy" } }`. Usado para conferir a instalação e, no deploy, pelo provedor | 200, 503 |
+
 ### Auth
 | Método | Rota | | Descrição | Respostas |
 |---|---|---|---|---|
-| POST | `/api/auth/register` | 🔓 | Cadastro (`username`, `email`, `password`, `confirmPassword`) que já inicia a sessão (mesmo corpo do login + cookie). ✅ Fase 5. A resposta traz `reward` com a conquista "Primeiro passo" (nas demais respostas de auth, `reward` é `null`) ✅ Fase 8 | 201, 400, 409 |
-| POST | `/api/auth/login` | 🔓 | Login (`email`, `password`) → `accessToken`, `user` + cookie de refresh. Email inexistente e senha errada têm a mesma mensagem. ✅ Fase 5 | 200, 400, 401 |
-| POST | `/api/auth/refresh` | 🔓 (cookie) | Novo access token, refresh rotacionado. Cookie inválido/expirado/revogado → 401 e o cookie é apagado. ✅ Fase 5 | 200, 401 |
-| POST | `/api/auth/logout` | 🔓 (cookie) | Revoga o refresh token e limpa o cookie. Idempotente e funciona com o access token expirado. ✅ Fase 5 | 204 |
-| GET | `/api/auth/me` | 🔒 | Usuário autenticado (`UserDto`) ✅ Fase 5 | 200, 401 |
+| POST | `/api/auth/register` | 🔓 | Cadastro (`username`, `email`, `password`, `confirmPassword`) que já inicia a sessão (mesmo corpo do login + cookie). A resposta traz `reward` com a conquista "Primeiro passo" (nas demais respostas de auth, `reward` é `null`) | 201, 400, 409 |
+| POST | `/api/auth/login` | 🔓 | Login (`email`, `password`) → `accessToken`, `user` + cookie de refresh. Email inexistente e senha errada têm a mesma mensagem. | 200, 400, 401 |
+| POST | `/api/auth/refresh` | 🔓 (cookie) | Novo access token, refresh rotacionado. Cookie inválido/expirado/revogado → 401 e o cookie é apagado. | 200, 401 |
+| POST | `/api/auth/logout` | 🔓 (cookie) | Revoga o refresh token e limpa o cookie. Idempotente e funciona com o access token expirado. | 204 |
+| GET | `/api/auth/me` | 🔒 | Usuário autenticado (`UserDto`) | 200, 401 |
 
 Validação do cadastro (mensagens em português, um item em `errors` por campo): `username` com 3–30 caracteres (`A-Z a-z 0-9 . _ -`), `email` válido (máx. 254), `password` com 8–128 caracteres, ao menos uma letra e um número (RN-02), `confirmPassword` igual à senha. Email é normalizado (trim + minúsculas) e email/username são únicos sem diferenciar maiúsculas (RN-01, `citext`).
 
@@ -96,45 +101,47 @@ Exemplo de resposta de login:
 ```
 
 ### Conteúdo
-| Método | Rota | | Descrição | Status |
-|---|---|---|---|---|
-| GET | `/api/characters` | 🔓* | Lista paginada (`PagedResult<CharacterListItemDto>`). Filtros: `search`, `nationId`, `elementId`, `type` (`avatar`/`bender`/`nonBender`), `status` (`Alive`/`Deceased`/`Unknown`), `seriesId`; `sort` = `name`/`nation`/`element`; `order` = `asc`/`desc`. 400 em parâmetros inválidos. | ✅ Fase 3 |
-| GET | `/api/characters/{id}` | 🔓* | Detalhe (`CharacterDetailsDto`): apelidos, biografia, nação, elemento, subtipos, habilidades, séries, primeira aparição e relações (com o personagem relacionado resumido). 404 se não existir. | ✅ Fase 3 |
-| GET | `/api/characters/{id}/abilities` | 🔓 | Habilidades do personagem, ordenadas por nome. 404 se o personagem não existir. | ✅ Fase 3 |
-| GET | `/api/characters/compare?ids=1,2` | 🔓 | Comparação (`CharacterComparisonDto`): `characters` (os dois, na ordem pedida, com nação, elemento, tipo, status, primeira aparição, subtipos, habilidades e séries) e `attributes` (`id`, `name`, `description`, `values` (um por personagem, na mesma ordem; `null` sem estimativa) e `leaderId` (maior valor; `null` em empate)). Atributos são estimativas, não cânone (RN-11). Ids ausentes, inválidos, diferente de dois ou repetidos → 400; personagem inexistente → 404 | ✅ Fase 13 |
-| GET | `/api/nations` | 🔓 | Nações com elemento e `characterCount`, na ordem dos elementos (Água, Terra, Fogo, Ar) e sem elemento por último | ✅ Fase 3 |
-| GET | `/api/nations/{id}` | 🔓* | Detalhe + personagens. 404 se não existir. | ✅ Fase 3 |
-| GET | `/api/elements` | 🔓 | Elementos (com cor e ícone) e seus subtipos de dobra | ✅ Fase 3 |
-| GET | `/api/abilities` | 🔓 | Lista ordenada por nome (filtro opcional `elementId`) | ✅ Fase 3 |
-| GET | `/api/timeline` | 🔓 | Eventos em ordem cronológica **agrupados por era** (`TimelineEraDto[]`: `id`, `name`, `description`, `events[]` com `id`, `title`, `description`, `dateLabel`, `image`, `characters` resumidos e ordenados por nome). Filtros opcionais e combináveis: `eraId`, `characterId`; eras sem eventos no filtro ficam de fora, filtro sem resultado → `[]`, id ≤ 0 ou não numérico → 400 | ✅ Fase 12 |
-| GET | `/api/eras` | 🔓 | Eras em ordem cronológica (`EraDto[]`: `id`, `name`, `description`, `eventCount`) | ✅ Fase 12 |
-| GET | `/api/series` | 🔓 | Séries (para filtro) | ✅ Fase 3 |
+| Método | Rota | | Descrição |
+|---|---|---|---|
+| GET | `/api/characters` | 🔓* | Lista paginada (`PagedResult<CharacterListItemDto>`). Filtros: `search`, `nationId`, `elementId`, `type` (`avatar`/`bender`/`nonBender`), `status` (`Alive`/`Deceased`/`Unknown`), `seriesId`; `sort` = `name`/`nation`/`element`; `order` = `asc`/`desc`. 400 em parâmetros inválidos. |
+| GET | `/api/characters/{id}` | 🔓* | Detalhe (`CharacterDetailsDto`): apelidos, biografia, nação, elemento, subtipos, habilidades, séries, primeira aparição e relações (com o personagem relacionado resumido). 404 se não existir. |
+| GET | `/api/characters/{id}/abilities` | 🔓 | Habilidades do personagem, ordenadas por nome. 404 se o personagem não existir. |
+| GET | `/api/characters/compare?ids=1,2` | 🔓 | Comparação (`CharacterComparisonDto`): `characters` (os dois, na ordem pedida, com nação, elemento, tipo, status, primeira aparição, subtipos, habilidades e séries) e `attributes` (`id`, `name`, `description`, `values` (um por personagem, na mesma ordem; `null` sem estimativa) e `leaderId` (maior valor; `null` em empate)). Atributos são estimativas, não cânone (RN-11). Ids ausentes, inválidos, diferente de dois ou repetidos → 400; personagem inexistente → 404 |
+| GET | `/api/nations` | 🔓 | Nações com elemento e `characterCount`, na ordem dos elementos (Água, Terra, Fogo, Ar) e sem elemento por último |
+| GET | `/api/nations/{id}` | 🔓* | Detalhe + personagens. 404 se não existir. |
+| GET | `/api/elements` | 🔓 | Elementos (com cor e ícone) e seus subtipos de dobra |
+| GET | `/api/abilities` | 🔓 | Lista ordenada por nome (filtro opcional `elementId`) |
+| GET | `/api/timeline` | 🔓 | Eventos em ordem cronológica **agrupados por era** (`TimelineEraDto[]`: `id`, `name`, `description`, `events[]` com `id`, `title`, `description`, `dateLabel`, `image`, `characters` resumidos e ordenados por nome). Filtros opcionais e combináveis: `eraId`, `characterId`; eras sem eventos no filtro ficam de fora, filtro sem resultado → `[]`, id ≤ 0 ou não numérico → 400 |
+| GET | `/api/eras` | 🔓 | Eras em ordem cronológica (`EraDto[]`: `id`, `name`, `description`, `eventCount`) |
+| GET | `/api/series` | 🔓 | Séries (para filtro) |
 
-> Com token, os endpoints 🔓* preenchem `isFavorite` e `isDiscovered` (✅ Fase 6). Sem token, ou com token inválido, respondem como para um visitante (`false`).
+> Com token, os endpoints 🔓* preenchem `isFavorite` e `isDiscovered`. Sem token, ou com token inválido, respondem como para um visitante (`false`).
 
-Exemplo de item da listagem:
+Exemplo de item da listagem (`image` é `null` para quem ainda não tem retrato; a `url` é relativa ao frontend, que serve os arquivos):
 
 ```json
 {
   "id": 9,
   "name": "Aang",
   "description": "O último dobrador de ar e o Avatar que encerrou a Guerra dos Cem Anos.",
-  "image": null,
+  "image": { "url": "/images/characters/aang.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
   "nation": { "id": 5, "name": "Nômades do Ar" },
   "element": { "id": 4, "name": "Ar", "color": "#D5C7A2", "icon": "wind" },
   "isBender": true,
   "isAvatar": true,
-  "status": "Deceased"
+  "status": "Deceased",
+  "isFavorite": false,
+  "isDiscovered": false
 }
 ```
 
 ### Descoberta e favoritos
 | Método | Rota | | Descrição | Respostas |
 |---|---|---|---|---|
-| POST | `/api/characters/{id}/discovery` | 🔒 | Registra a descoberta (idempotente): **+10 XP** na primeira vez. Retorna `{ isNew, reward }`. ✅ Fase 6 | 200, 401, 404 |
-| POST | `/api/nations/{id}/discovery` | 🔒 | Registra a descoberta da nação (idempotente): **+10 XP** na primeira vez (DA-01). Retorna `{ isNew, reward }`. ✅ Fase 6 | 200, 401, 404 |
-| POST | `/api/characters/{id}/favorite` | 🔒 | Adiciona favorito (idempotente, inclusive em paralelo) ✅ Fase 6 | 204, 401, 404 |
-| DELETE | `/api/characters/{id}/favorite` | 🔒 | Remove favorito (idempotente) ✅ Fase 6 | 204, 401, 404 |
+| POST | `/api/characters/{id}/discovery` | 🔒 | Registra a descoberta (idempotente): **+10 XP** na primeira vez. Retorna `{ isNew, reward }`. | 200, 401, 404 |
+| POST | `/api/nations/{id}/discovery` | 🔒 | Registra a descoberta da nação (idempotente): **+10 XP** na primeira vez (DA-01). Retorna `{ isNew, reward }`. | 200, 401, 404 |
+| POST | `/api/characters/{id}/favorite` | 🔒 | Adiciona favorito (idempotente, inclusive em paralelo) | 204, 401, 404 |
+| DELETE | `/api/characters/{id}/favorite` | 🔒 | Remove favorito (idempotente) | 204, 401, 404 |
 
 Regras de descoberta (RN-12):
 - O frontend chama o endpoint **somente depois que o conteúdo principal da página foi carregado e exibido**, e uma única vez por montagem da página.
@@ -146,17 +153,18 @@ Regras de descoberta (RN-12):
 ```
 
 ### Usuário
+
+Os dados do próprio usuário (nível, XP e progresso já calculados) vêm em `UserDto`, no login, no refresh e em `GET /api/auth/me`. Não há edição de perfil na v1 (ver `requirements.md` §9).
+
 | Método | Rota | | Descrição |
 |---|---|---|---|
-| GET | `/api/users/me` | 🔒 | Perfil completo (nível, XP atual, XP do próximo nível, % de progresso) |
-| PATCH | `/api/users/me` | 🔒 | Atualiza `avatarUrl`, `elementId` |
-| GET | `/api/users/me/statistics` | 🔒 | Descobertos x/total, favoritos, quizzes, taxa de acerto, conquistas x/total. ✅ Fase 6 (parcial): `{ discoveredCharacters, totalCharacters, discoveredNations, totalNations, favorites }` + `unlockedAchievements`, `totalAchievements` ✅ Fase 8 + `completedQuizzes`, `totalQuizzes`, `quizAttempts`, `accuracyPercent` (acertos / respostas de todas as tentativas, `null` sem tentativas) ✅ Fase 9 |
-| GET | `/api/users/me/dashboard` | 🔒 | Agregado do dashboard numa chamada (`DashboardDto`, ver abaixo) ✅ Fase 10 |
-| GET | `/api/users/me/favorites` | 🔒 | Favoritos (`PagedResult<CharacterListItemDto>`, `?page`/`?pageSize`), mais recentes primeiro ✅ Fase 6 |
-| GET | `/api/users/me/discoveries` | 🔒 | Descobertas de personagens e nações (`PagedResult<DiscoveryDto>`: `kind` = `Character`/`Nation`, `id`, `name`, `image`, `element`, `discoveredAt`), mais recentes primeiro ✅ Fase 6 |
-| GET | `/api/users/me/experience` | 🔒 | Histórico de transações de XP (`PagedResult<ExperienceTransactionDto>`: `id`, `amount`, `type`, `description`, `createdAt`), mais recente primeiro ✅ Fase 7 |
-| GET | `/api/users/me/quiz-history` | 🔒 | Todas as tentativas, mais recentes primeiro (`PagedResult<QuizAttemptDto>`: `id`, `quizId`, `quizTitle`, `score`, `totalQuestions`, `percentage`, `experienceEarned`, `completedAt`). O melhor resultado por quiz vem em `GET /api/quizzes` ✅ Fase 9 |
-| GET | `/api/users/me/achievements` | 🔒 | Catálogo completo do ponto de vista do usuário (`UserAchievementDto[]`: `id`, `name`, `description`, `icon`, `experienceReward`, `isUnlocked`, `unlockedAt`, `progress`, `target`). Bloqueadas trazem o progresso (limitado à meta); desbloqueadas, a data ✅ Fase 8 |
+| GET | `/api/users/me/statistics` | 🔒 | Estatísticas do perfil: `discoveredCharacters`, `totalCharacters`, `discoveredNations`, `totalNations`, `favorites`, `unlockedAchievements`, `totalAchievements`, `completedQuizzes`, `totalQuizzes`, `quizAttempts`, `accuracyPercent` (acertos / respostas de todas as tentativas; `null` sem tentativas) |
+| GET | `/api/users/me/dashboard` | 🔒 | Agregado do dashboard numa chamada (`DashboardDto`, ver abaixo) |
+| GET | `/api/users/me/favorites` | 🔒 | Favoritos (`PagedResult<CharacterListItemDto>`, `?page`/`?pageSize`), mais recentes primeiro |
+| GET | `/api/users/me/discoveries` | 🔒 | Descobertas de personagens e nações (`PagedResult<DiscoveryDto>`: `kind` = `Character`/`Nation`, `id`, `name`, `image`, `element`, `discoveredAt`), mais recentes primeiro |
+| GET | `/api/users/me/experience` | 🔒 | Histórico de transações de XP (`PagedResult<ExperienceTransactionDto>`: `id`, `amount`, `type`, `description`, `createdAt`), mais recente primeiro |
+| GET | `/api/users/me/quiz-history` | 🔒 | Todas as tentativas, mais recentes primeiro (`PagedResult<QuizAttemptDto>`: `id`, `quizId`, `quizTitle`, `score`, `totalQuestions`, `percentage`, `experienceEarned`, `completedAt`). O melhor resultado por quiz vem em `GET /api/quizzes` |
+| GET | `/api/users/me/achievements` | 🔒 | Catálogo completo do ponto de vista do usuário (`UserAchievementDto[]`: `id`, `name`, `description`, `icon`, `experienceReward`, `isUnlocked`, `unlockedAt`, `progress`, `target`). Bloqueadas trazem o progresso (limitado à meta); desbloqueadas, a data |
 
 Resposta de `GET /api/users/me/dashboard` (as escolhas são do backend; o frontend só exibe):
 
@@ -164,7 +172,7 @@ Resposta de `GET /api/users/me/dashboard` (as escolhas são do backend; o fronte
 |---|---|
 | `user` | `UserDto` (nível, XP e progresso já calculados) |
 | `statistics` | Mesmo formato de `GET /api/users/me/statistics` |
-| `dailyChallenges` | Mesmo formato de `GET /api/challenges/daily` ✅ Fase 11 |
+| `dailyChallenges` | Mesmo formato de `GET /api/challenges/daily` |
 | `recentAchievements` | Até 3 `UserAchievementDto` desbloqueadas, mais recentes primeiro |
 | `nextAchievement` | A bloqueada com maior fração da meta cumprida, ou `null` |
 | `recentDiscoveries` | Até 5 `DiscoveryDto`, mais recentes primeiro |
@@ -175,9 +183,9 @@ Resposta de `GET /api/users/me/dashboard` (as escolhas são do backend; o fronte
 ### Quiz
 | Método | Rota | | Descrição | Respostas |
 |---|---|---|---|---|
-| GET | `/api/quizzes` | 🔓* | Lista (filtros `category` sem diferenciar maiúsculas e `difficulty` = `Easy`/`Medium`/`Hard`), sem paginação: `id`, `title`, `description`, `category`, `difficulty`, `image`, `questionCount` e `bestResult` (`score`, `totalQuestions`, `percentage`, `attempts`) do usuário autenticado ✅ Fase 9 | 200, 400 |
-| GET | `/api/quizzes/{id}` | 🔒 | Quiz com perguntas e opções na ordem de exibição, **sem `isCorrect` e sem `explanation`** (opção = `id`, `text`) ✅ Fase 9 | 200, 401, 404 |
-| POST | `/api/quizzes/{id}/attempts` | 🔒 | Submete as respostas e devolve o resultado. Toda tentativa é gravada; XP só na 1ª conclusão (+20) e no 1º gabarito (+50) de cada quiz (RN-06) ✅ Fase 9 | 201, 400, 401, 404 |
+| GET | `/api/quizzes` | 🔓* | Lista (filtros `category` sem diferenciar maiúsculas e `difficulty` = `Easy`/`Medium`/`Hard`), sem paginação: `id`, `title`, `description`, `category`, `difficulty`, `image`, `questionCount` e `bestResult` (`score`, `totalQuestions`, `percentage`, `attempts`) do usuário autenticado | 200, 400 |
+| GET | `/api/quizzes/{id}` | 🔒 | Quiz com perguntas e opções na ordem de exibição, **sem `isCorrect` e sem `explanation`** (opção = `id`, `text`) | 200, 401, 404 |
+| POST | `/api/quizzes/{id}/attempts` | 🔒 | Submete as respostas e devolve o resultado. Toda tentativa é gravada; XP só na 1ª conclusão (+20) e no 1º gabarito (+50) de cada quiz (RN-06) | 201, 400, 401, 404 |
 
 Requisição de submissão:
 
@@ -208,15 +216,15 @@ Validações: todas as perguntas do quiz respondidas uma única vez, e cada opç
 ### Conquistas
 | Método | Rota | | Descrição |
 |---|---|---|---|
-| GET | `/api/achievements` | 🔓 | Catálogo de conquistas (`AchievementDto[]`: `id`, `name`, `description`, `icon`, `experienceReward`), do cadastro às metas maiores ✅ Fase 8 |
+| GET | `/api/achievements` | 🔓 | Catálogo de conquistas (`AchievementDto[]`: `id`, `name`, `description`, `icon`, `experienceReward`), do cadastro às metas maiores |
 
 Regras (RN-05, RN-08): as conquistas são avaliadas pelo backend depois de cada evento que gera XP e no cadastro. Cada uma é desbloqueada uma única vez (PK `UserId + AchievementId`, inclusive com requisições simultâneas), e o XP dela entra no mesmo `reward` (`xpGained` soma evento + conquistas), sem disparar nova avaliação. `icon` é o nome de um ícone do lucide-react.
 
 ### Desafios diários (P2)
 | Método | Rota | | Descrição |
 |---|---|---|---|
-| GET | `/api/challenges/daily` | 🔒 | Desafios de hoje (UTC) com progresso do usuário; gera os do dia se ainda não existirem. `DailyChallengesDto`: `date`, `resetsAt` (meia-noite UTC seguinte), `challenges[]` (`id`, `title`, `description`, `type`, `experienceReward`, `progress`, `target`, `isCompleted`, `completedAt`) ✅ Fase 11 |
-| GET | `/api/users/me/challenges` | 🔒 | Histórico de concluídos, mais recentes primeiro (`PagedResult<CompletedChallengeDto>`: `id`, `title`, `description`, `experienceReward`, `date`, `completedAt`) ✅ Fase 11 |
+| GET | `/api/challenges/daily` | 🔒 | Desafios de hoje (UTC) com progresso do usuário; gera os do dia se ainda não existirem. `DailyChallengesDto`: `date`, `resetsAt` (meia-noite UTC seguinte), `challenges[]` (`id`, `title`, `description`, `type`, `experienceReward`, `progress`, `target`, `isCompleted`, `completedAt`) |
+| GET | `/api/users/me/challenges` | 🔒 | Histórico de concluídos, mais recentes primeiro (`PagedResult<CompletedChallengeDto>`: `id`, `title`, `description`, `experienceReward`, `date`, `completedAt`) |
 
 Regras (RN-10, RN-05): 3 desafios por dia (UTC), sorteados de forma determinística pela data entre os modelos ativos, com tipos diferentes. `type` = `DiscoverCharacters` | `DiscoverNations` | `CompleteQuizzes` (quizzes diferentes no dia) | `QuizScoreAtLeast` (melhor % do dia; `progress`/`target` em porcentagem). O progresso é calculado pelas atividades do dia; quando a meta é atingida, o próprio evento conclui o desafio (uma única vez, PK `UserId + DailyChallengeId`) e o devolve em `reward.challengesCompleted`, com o XP somado em `xpGained`. Concluído aparece com `progress = target`.
 
