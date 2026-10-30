@@ -40,7 +40,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 13 | Comparação | P2 | Atributos, seleção de dois personagens, visualização (barras/radar), aviso de não-canonicidade | Comparação lado a lado com atributos do banco e aviso fixo ✅ (2026-10-27) |
 | 14 | Testes | — | Completar unit, integração, frontend e E2E (ver abaixo) | Regras de negócio cobertas; E2E verde ✅ (2026-10-28) |
 | 15 | Refinamento visual | — | Espaçamento, tipografia, responsividade, acessibilidade, animações, loading/empty/error, microinterações | Aparência de produto final ✅ (2026-10-28) |
-| 16 | Documentação final | — | README, arquitetura, banco, API, instalação, testes, decisões técnicas | Outro dev executa o projeto só com a doc |
+| 16 | Documentação final | — | README, arquitetura, banco, API, instalação, testes, decisões técnicas | Outro dev executa o projeto só com a doc ✅ (2026-10-30) |
 | 17 | Deploy | — | Frontend (Vercel/Netlify), backend (Render/Azure/Railway), PostgreSQL gerenciado; sem serviços pagos | Aplicação pública; decisões documentadas |
 
 > Os testes **não ficam todos para a Fase 14**: cada fase já entrega os testes relevantes dela. A Fase 14 completa a cobertura e os fluxos E2E.
@@ -362,3 +362,17 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 
 **Pendências:**
 - Imagens reais dos personagens (o usuário vai fornecer). Imagens dos eventos da timeline continuam sem curadoria.
+
+## Fase 16 — Documentação final (concluída)
+
+- [x] **Auditoria primeiro:** cada documento comparado com o código (rotas dos controllers, pastas, migrations, configurações, testes). Encontrado: README parado na Fase 9; `api.md` com `GET`/`PATCH /api/users/me`, que nunca existiram; `architecture.md` com pastas que não existem (`Api/Filters`, `Infrastructure/Services`), `LevelCalculator` no lugar errado (Domain em vez de Application) e o fluxo de progressão descrito como "uma única transação" (são transações separadas por recompensa); `database.md` sem as migrations `AddAchievements` e `AddQuizTables`.
+- [x] **README** reescrito para quem nunca viu o projeto: funcionalidades, pré-requisitos com versões, passo a passo com Docker **ou** PostgreSQL local, user-secrets (com as diferenças do PowerShell), usuário demo, variáveis de ambiente, tabela de problemas comuns e mapa da documentação.
+- [x] **Novo `docs/testing.md`:** as quatro suítes (quantidade, onde ficam, do que precisam), o que cada pasta cobre, fixtures (por que os desafios ficam desligados na fixture principal), E2E passo a passo e o porquê das escolhas (Chrome, build, sem `data-testid`).
+- [x] **`architecture.md`:** estrutura de pastas real, §3.3 reescrita como descrição do fluxo final (`GrantAsync`/`GrantAllAsync`/`EvaluateAchievementsAsync`, ordem desafios → conquistas, gravação idempotente), DA-04 na tabela de decisões, Docker opcional, risco de imagens atualizado.
+- [x] **`api.md`:** rotas inexistentes removidas, `/api/health` documentado, exemplo com `image`, `isFavorite` e `isDiscovered`.
+- [x] **`database.md`:** migrations completas e seção de imagens (como adicionar um retrato).
+- [x] **`requirements.md`:** nova §9 "Status de implementação" com o que ficou parcial (imagens de 12/37, sem página de elementos nem de habilidades, sem edição de perfil).
+- [x] **Marcas de andamento** ("✅ Fase N") retiradas de `api.md`, `database.md` e `ui-ux.md`: são documentos de referência; o histórico fica neste arquivo.
+- [x] **Critério de aceite verificado:** clone limpo do repositório, seguindo só o README, com um banco que ainda não existia. A API sem `Jwt:Secret` falha com a mensagem que o README descreve; com as configurações, cria o banco, aplica migrations e seed, o health check responde `Healthy`, o usuário demo entra, e o frontend (`npm install` + `npm run dev`) lista os 37 personagens com os retratos. Banco e clone removidos depois.
+
+**Pendências:** imagens de 25 personagens (sem mudança de código, ver `database.md` §4). A próxima é a Fase 17 (deploy).
