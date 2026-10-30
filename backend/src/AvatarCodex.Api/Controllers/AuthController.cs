@@ -83,8 +83,8 @@ public class AuthController(AuthService auth) : ControllerBase
         Response.Cookies.Delete(RefreshCookieName, CookieOptions(expires: null));
 
     // httpOnly: invisível para JavaScript (protege contra XSS). Path restrito: só vai para /api/auth.
-    // SameSite=Strict funciona em dev porque localhost:5173 e localhost:5080 são o mesmo "site";
-    // o deploy com domínios diferentes (Fase 17) vai exigir SameSite=None.
+    // SameSite=Strict funciona porque o frontend e a API são o mesmo "site": em dev, localhost:5173 e
+    // localhost:5080; em produção, a Vercel repassa /api/* para a API (docs/deployment.md).
     private static CookieOptions CookieOptions(DateTimeOffset? expires) => new()
     {
         HttpOnly = true,

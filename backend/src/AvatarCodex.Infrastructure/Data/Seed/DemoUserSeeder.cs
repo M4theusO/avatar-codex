@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AvatarCodex.Infrastructure.Data.Seed;
 
-/// <summary>Usuário de demonstração, criado apenas em Development (credenciais no README).</summary>
+/// <summary>Usuário de demonstração (credenciais no README). Desligável com Database:SeedDemoUser = false.</summary>
 public class DemoUserSeeder(AppDbContext db, IPasswordHasher passwordHasher)
 {
     public const string Email = "demo@avatarcodex.dev";
