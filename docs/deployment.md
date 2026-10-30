@@ -4,6 +4,11 @@
 
 Tudo em planos gratuitos, com deploy automático a cada push na `main`.
 
+| | URL |
+|---|---|
+| Aplicação | https://avatar-codex.vercel.app |
+| API (direto no Render) | https://avatar-codex-api.onrender.com/api/health |
+
 ```text
 navegador ──HTTPS──► Vercel ── arquivos do build (React + imagens)
                         │

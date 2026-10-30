@@ -41,7 +41,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 14 | Testes | — | Completar unit, integração, frontend e E2E (ver abaixo) | Regras de negócio cobertas; E2E verde ✅ (2026-10-28) |
 | 15 | Refinamento visual | — | Espaçamento, tipografia, responsividade, acessibilidade, animações, loading/empty/error, microinterações | Aparência de produto final ✅ (2026-10-28) |
 | 16 | Documentação final | — | README, arquitetura, banco, API, instalação, testes, decisões técnicas | Outro dev executa o projeto só com a doc ✅ (2026-10-30) |
-| 17 | Deploy | — | Frontend (Vercel/Netlify), backend (Render/Azure/Railway), PostgreSQL gerenciado; sem serviços pagos | Aplicação pública; decisões documentadas |
+| 17 | Deploy | — | Frontend (Vercel/Netlify), backend (Render/Azure/Railway), PostgreSQL gerenciado; sem serviços pagos | Aplicação pública; decisões documentadas ✅ (2026-10-30) |
 
 > Os testes **não ficam todos para a Fase 14**: cada fase já entrega os testes relevantes dela. A Fase 14 completa a cobertura e os fluxos E2E.
 
@@ -376,3 +376,24 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 - [x] **Critério de aceite verificado:** clone limpo do repositório, seguindo só o README, com um banco que ainda não existia. A API sem `Jwt:Secret` falha com a mensagem que o README descreve; com as configurações, cria o banco, aplica migrations e seed, o health check responde `Healthy`, o usuário demo entra, e o frontend (`npm install` + `npm run dev`) lista os 37 personagens com os retratos. Banco e clone removidos depois.
 
 **Pendências:** imagens de 25 personagens (sem mudança de código, ver `database.md` §4). A próxima é a Fase 17 (deploy).
+
+## Fase 17 — Deploy (concluída)
+
+No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](deployment.md).
+
+- [x] **Arquitetura:** Vercel (frontend) → rewrite de `/api/*` → Render (API em Docker, plano free, Virginia) → Neon (PostgreSQL, AWS us-east-1, host direto). Frontend e API ficam na mesma origem para o navegador: o cookie de refresh continua `SameSite=Strict` e o CORS não é usado em produção.
+- [x] **API pronta para proxy:** `ReverseProxyExtensions` (lê `X-Forwarded-Proto`/`For`), sem `UseHttpsRedirection` (o health check do Render chama o container em HTTP), `appsettings.Production.json` com migrations + seed no startup e usuário demo (`Database:SeedDemoUser`, desligável), log de SQL do EF só com avisos em todos os ambientes.
+- [x] **Container:** `backend/Dockerfile` multi-stage (restore em camada própria, runtime `aspnet`, usuário sem privilégios, porta via `PORT`) e `render.yaml` (Blueprint com health check, `buildFilter` em `backend/**` e `Jwt__Secret` gerado pelo Render).
+- [x] **Frontend:** `vercel.json` com o rewrite da API, fallback da SPA, sem cache na CDN para `/api/*` e cache longo para `/assets`; `VITE_API_URL` opcional (vazio em produção = chamadas relativas).
+- [x] **Validado antes de publicar:** publish Release em modo Production localmente; os 7 E2E verdes com o build sem `VITE_API_URL` atrás de um proxy `/api` (simulando a Vercel); a API rodou daqui contra o Neon (7 migrations, seed, login, refresh rotacionado, descoberta idempotente, favoritos).
+- [x] **Validado em produção:** health `Healthy` pela Vercel e direto no Render; Swagger desligado; erros no formato padrão; link direto (`/characters/9`) e imagens servidos; cookie `secure; samesite=strict; httponly` no domínio da Vercel; bundle sem `localhost`; **os 7 E2E (9 fluxos) verdes contra https://avatar-codex.vercel.app no Chrome**; nenhuma rolagem horizontal a 390px em 5 páginas.
+
+**Encontrado no caminho:**
+- **Connection string com caracteres a mais** no Render (`Format of the initialization string does not conform to specification starting at index 174`): o valor foi colado com algo depois do último `;`. Corrigido no painel; o `deployment.md` §4.1 já pede o formato exato.
+- **Primeiro deploy da Vercel não disparou** na importação (domínio laranja, nenhum deployment). Um push na `main` disparou o build, o que também confirmou o deploy automático.
+- **O Chrome headless não renderiza janelas estreitas** (largura mínima maior que 390px) e recorta o resultado, parecendo um layout quebrado. A medida certa foi com o viewport do Cypress.
+- O roteiro de onboarding do Neon (`neon init`/`neon deploy`, que gera `neon.ts`) não foi usado: o banco já estava ligado pelo EF Core + Npgsql e por variável de ambiente.
+
+**Dados de teste em produção:** os E2E criaram usuários `e2e_*@example.com` no banco do Neon, e o usuário demo tem 20 XP de testes (descoberta do Zuko + "Primeiro passo").
+
+**Pendências:** CI no GitHub Actions (decidido deixar para depois); restringir a API ao tráfego da Vercel e domínio próprio (opcionais, `deployment.md` §7); imagens de 25 personagens.
