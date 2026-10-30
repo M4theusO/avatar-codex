@@ -142,7 +142,7 @@ O `RewardResult` volta na resposta do endpoint que originou o evento, e o fronte
 - CORS restrito à origem do frontend, com `AllowCredentials` por causa do cookie.
 - **Implementação:** `AuthService` (Application) concentra cadastro, login, refresh, logout e "me"; `JwtTokenService` e `PasswordHasher` (Infrastructure/Security) ficam atrás de `ITokenService`/`IPasswordHasher`. O refresh token é um valor aleatório de 512 bits; no banco fica só o SHA-256 dele. O access token leva apenas `sub`, `unique_name` e `jti`.
 - **Frontend:** `services/api.ts` guarda o access token em memória, injeta o header e, ao receber 401, faz **um** refresh e repete a requisição. Refreshes simultâneos compartilham a mesma promessa, porque cada refresh token só vale uma vez (isso também evita a corrida do StrictMode ao recuperar a sessão). Se o refresh falha, a sessão local é encerrada.
-- **Cookie em produção:** `SameSite=Strict` funciona em dev porque `localhost:5173` e `localhost:5080` são o mesmo site. Com frontend e API em domínios diferentes (Fase 17), será preciso `SameSite=None` (ou servir a API sob o mesmo domínio).
+- **Cookie em produção:** `SameSite=Strict` funciona em dev porque `localhost:5173` e `localhost:5080` são o mesmo site, e em produção porque a Vercel serve a API sob o mesmo domínio do frontend (proxy de `/api/*`, ver §7).
 - **Fora do escopo por enquanto:** detecção de reuso de refresh token (revogar todas as sessões ao reapresentar um token já rotacionado) e limite de tentativas de login. Ficam registrados como melhorias de segurança.
 
 > **Decisão D2:** existe uma alternativa mais simples, com JWT único no `localStorage`. Ela é mais vulnerável a XSS e contraria a regra de não guardar informação sensível no frontend.
@@ -212,11 +212,12 @@ src/
 
 - `docker-compose.yml`: só o **PostgreSQL 18** (porta `5433` no host), com volume persistente e healthcheck. API e frontend rodam fora do Docker em desenvolvimento.
 - Docker é opcional: com um PostgreSQL instalado na máquina, basta apontar a connection string para ele.
-- Migrations, seed e usuário demo são aplicados no startup da API quando `Database:MigrateAndSeedOnStartup = true`, que só está ligado em `appsettings.Development.json`. Em outros ambientes, as migrations são aplicadas de forma explícita (Fase 17).
+- Migrations, seed e usuário demo são aplicados no startup da API quando `Database:MigrateAndSeedOnStartup = true` (ligado em `appsettings.Development.json` e `appsettings.Production.json`; os testes de integração ligam pela fixture). O usuário demo pode ser desligado com `Database:SeedDemoUser = false`.
+- `backend/Dockerfile` gera a imagem da API usada no deploy (§7).
 
-## 7. Deploy (Fase 17)
+## 7. Deploy
 
-Proposta sem custo: frontend na **Vercel**, backend no **Render** (container Docker) e PostgreSQL gerenciado (**Neon** ou Render). A decisão final será documentada na fase.
+Frontend na **Vercel**, API no **Render** (container Docker, `backend/Dockerfile` + `render.yaml`) e PostgreSQL no **Neon**, todos em planos gratuitos. A Vercel repassa `/api/*` para o Render, então em produção frontend e API têm a mesma origem: o cookie de refresh continua `SameSite=Strict` e o CORS não é usado. A API lê os cabeçalhos `X-Forwarded-*` dos proxies, aplica migrations e seed no startup (instância única) e não redireciona para HTTPS (o TLS termina nos proxies). Decisões, passo a passo e limitações: [deployment.md](deployment.md).
 
 ## 8. Estratégia de testes
 
@@ -276,5 +277,5 @@ Hoje: 285 testes no backend (185 unitários + 100 de integração), 139 no front
 | Complexidade do refresh token + CORS com cookies | Implementar e testar na Fase 5 com testes de integração; documentar a configuração. |
 | Fuso horário dos desafios diários | Tudo em UTC via `TimeProvider`; UI informa o horário do reset. |
 | E2E instável | Banco dedicado com seed, um usuário novo por teste, seletores acessíveis (Testing Library), sem esperas fixas; roda no build e no Chrome (o Electron do Cypress, depreciado, travava navegações de forma intermitente). |
-| Migrations no Docker | Aplicar no startup só em Development; script/documentação para os demais ambientes. |
-| Cold start no deploy gratuito (Render) | Documentar a limitação; loading amigável no frontend. |
+| Migrations em produção | Aplicadas no startup, com uma única instância da API; seed idempotente. Com várias réplicas, passariam para um passo separado do deploy. |
+| Cold start no deploy gratuito (Render) | Documentado em `deployment.md` §6; skeletons no frontend e proxy da Vercel com tempo de espera maior que o cold start. |
