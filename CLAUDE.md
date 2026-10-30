@@ -13,9 +13,9 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 ## Status atual
 
-**Fase 16 — Documentação final** (próxima, ainda não iniciada). Fases 0 a 15 concluídas (`docs/development-phases.md`).
+**Fase 17 — Deploy** (próxima, ainda não iniciada). Fases 0 a 16 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-28):** Fase 15 concluída, commitada e publicada no GitHub (`main` = `origin/main`).
+**Onde paramos (2026-10-30):** Fase 16 concluída (documentação revisada contra o código + novo `docs/testing.md` + teste num clone limpo seguindo só o README), commitada localmente; push pendente (só quando o usuário pedir).
 - **Imagens dos personagens (2026-10-30):** 12 de 37 com imagem real (Aang, Bolin, Iroh, Jinora, Korra, Lin Beifong, Mako, Ozai, Pakku, Sokka, Toph Beifong, Zuko). Ficam em `frontend/avatar-codex-web/public/images/characters/<nome-em-kebab>.jpg`, recortadas em retrato quadrado 320×320 (cabeça e ombros); os originais de corpo inteiro estão fora do repo, em `C:\Users\Matheus\Pictures\avatar-codex-originais`. Cada uma é referenciada em `characters.json` (`"image": { "url": "/images/characters/...", "sourceUrl": null, "credit": "Nickelodeon" }`) e o seeder sincroniza ao subir a API. Os outros 25 continuam com o placeholder (DA-04). A Avatar Wiki (Fandom) bloqueia hotlink, então as imagens precisam ser servidas pelo próprio projeto.
 - **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas, 4 quizzes × 10 perguntas), API com busca/filtros/paginação, tratamento global de erros.
 - **Frontend base:** layout, navbar (completa a partir de 1280px), rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, 404.
@@ -30,10 +30,10 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 - **Comparação:** `ComparisonAttribute` + `CharacterAttributeValue` (seed: 5 atributos × 37 personagens, CHECK 0–100), `ComparisonService` (ordem pedida, `leaderId` decidido no backend), `GET /api/characters/compare?ids=1,2`, `/compare?a=&b=` com seletores com busca, radar + barras (cores pela posição: 1º Água, 2º Fogo), tabela lado a lado e aviso fixo de não canonicidade (RN-11). Entradas pelo detalhe do personagem ("Comparar") e pela Home.
 - **Testes de integração:** a fixture principal da API desativa os desafios diários (o sorteio depende da data); os testes de desafios usam `ChallengesApiFixture`, com outro banco.
 - **Refinamento visual:** `CharacterAvatar` recebe o elemento e mostra iniciais sobre o símbolo do elemento (fallback para as iniciais se a imagem falhar); 5 Avatares numa linha na Home, nações 3 + 2 centralizadas, detalhe do personagem em 2 colunas (≥ 1024px), estatísticas do perfil em 2 colunas no celular, "vs" alinhado; transição entre páginas e "pop" ao favoritar.
-- **Testes:** backend 285 (185 unitários + 100 integração), frontend 139 (`npm run test:coverage` mede a cobertura), E2E Cypress com os 9 fluxos (7 testes, no Chrome, contra o build + banco `avatar_codex_e2e`; passo a passo no README). Lint, format e build passando.
+- **Testes:** backend 285 (185 unitários + 100 integração), frontend 139 (`npm run test:coverage` mede a cobertura), E2E Cypress com os 9 fluxos (7 testes, no Chrome, contra o build + banco `avatar_codex_e2e`; passo a passo em `docs/testing.md`). Lint, format e build passando.
 - **Line endings:** neste PC `core.autocrlf=true`; o Prettier reescreve os arquivos em LF e o `git status` lista todos como modificados, mas sem diferença de conteúdo (`git diff --ignore-cr-at-eol`). Commitar só os arquivos alterados de verdade.
 
-**Próximo passo — Fase 16 (Documentação final):** README, arquitetura, banco, API, instalação, testes e decisões técnicas, para outro dev executar o projeto só com a doc.
+**Próximo passo — Fase 17 (Deploy):** frontend (Vercel/Netlify), backend (Render/Azure/Railway) e PostgreSQL gerenciado, sem serviços pagos. Pontos já mapeados: cookie de refresh precisa de `SameSite=None` com domínios diferentes (`AuthController`), migrations fora do startup (`Database:MigrateAndSeedOnStartup` só em Development), CORS com a origem de produção, cold start do plano gratuito.
 - **Não iniciar uma nova fase sem confirmação explícita do usuário.**
 
 **Fluxo de trabalho combinado:** ao fim de cada fase → testes + lint + build + teste num Chrome real (CDP) → docs → commits pequenos → **push só quando o usuário pedir**. O usuário costuma pedir "rode o projeto para eu testar" (subir API + Vite em background) e depois "pare de rodar".
@@ -46,7 +46,7 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 - **DA-01** — Descoberta de nação: +10 XP só na 1ª vez por usuário, registrada depois que o conteúdo principal foi exibido, com idempotência garantida no backend.
 - **DA-02** — Paleta dark: fundo `#101820`, superfície `#1B2835`; acentos Água `#3186B5`, Fogo `#B86B35`, Terra `#638B58`, Ar `#D5C7A2`. Elementos são acentos, nunca dominantes; Água/Fogo/Terra não podem ser usadas como texto pequeno (contraste).
 - **DA-03** — Tipografia: Cinzel em títulos e destaques narrativos (com moderação); Inter em todo o resto.
-- **DA-04** — Imagens de personagens: placeholders próprios (iniciais + símbolo e cor do elemento) até o usuário fornecer as imagens reais (pendência registrada na Fase 15).
+- **DA-04** — Imagens de personagens: retratos quadrados servidos pelo próprio app (`public/images/characters`); placeholder próprio (iniciais + símbolo e cor do elemento) para quem não tem imagem e como fallback.
 
 ## Stack
 
@@ -129,9 +129,10 @@ Connection string via `dotnet user-secrets` no projeto `AvatarCodex.Api` (ver RE
 
 | Documento | Conteúdo |
 |---|---|
-| [docs/requirements.md](docs/requirements.md) | Requisitos funcionais, regras de negócio, requisitos não funcionais |
+| [docs/requirements.md](docs/requirements.md) | Requisitos funcionais, regras de negócio, requisitos não funcionais, status de implementação |
 | [docs/architecture.md](docs/architecture.md) | Arquitetura, estrutura de pastas, fluxos, decisões técnicas, riscos |
 | [docs/database.md](docs/database.md) | Entidades, relacionamentos, constraints, diagrama ER, seed |
 | [docs/api.md](docs/api.md) | Endpoints, payloads, autenticação, erros, paginação |
 | [docs/ui-ux.md](docs/ui-ux.md) | Identidade visual, rotas e páginas, componentes, estados, acessibilidade |
+| [docs/testing.md](docs/testing.md) | Suítes de teste, como rodar, fixtures, E2E passo a passo |
 | [docs/development-phases.md](docs/development-phases.md) | Fases 0–17, prioridades P0–P3, checklist da Fase 1 |
