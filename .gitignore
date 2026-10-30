@@ -35,3 +35,7 @@ Thumbs.db
 cypress/screenshots/
 cypress/videos/
 cypress/downloads/
+
+# Skills de agentes (instaladas localmente, ex.: npx neon skills)
+.agents/
+skills-lock.json
