@@ -1,6 +1,7 @@
 [
   {
     "name": "Aang",
+    "image": { "url": "/images/characters/aang.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Avatar Aang"],
     "description": "O último dobrador de ar e o Avatar que encerrou a Guerra dos Cem Anos.",
     "biography": "Monge dos Nômades do Ar, Aang fugiu do Templo do Ar do Sul ao descobrir que era o Avatar e ficou congelado em um iceberg por cem anos. Despertado por Katara e Sokka, dominou os quatro elementos e derrotou o Senhor do Fogo Ozai sem tirar sua vida, retirando sua dobra. Depois da guerra, fundou a República Unida ao lado de Zuko.",
@@ -48,6 +49,7 @@
   },
   {
     "name": "Sokka",
+    "image": { "url": "/images/characters/sokka.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Guerreiro e estrategista da Tribo da Água do Sul.",
     "biography": "Irmão mais velho de Katara, compensava a falta de dobra com engenhosidade, humor e planos criativos. Treinou com espadas sob o Mestre Piandao e forjou sua própria espada a partir de um meteorito. Mais tarde, representou a Tribo da Água do Sul no Conselho de Cidade República.",
@@ -69,6 +71,7 @@
   },
   {
     "name": "Toph Beifong",
+    "image": { "url": "/images/characters/toph-beifong.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Bandida Cega"],
     "description": "Dobradora de terra cega e criadora da dobra de metal.",
     "biography": "Filha de uma família nobre de Gaoling, enxergava através das vibrações da terra. Tornou-se mestra de dobra de terra de Aang e criou a dobra de metal. Anos depois, fundou e chefiou a força policial de dobradores de metal de Cidade República.",
@@ -89,6 +92,7 @@
   },
   {
     "name": "Zuko",
+    "image": { "url": "/images/characters/zuko.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Príncipe Zuko", "Senhor do Fogo Zuko"],
     "description": "Príncipe exilado que se tornou Senhor do Fogo e aliado do Avatar.",
     "biography": "Banido e marcado com uma cicatriz pelo pai, Ozai, passou anos caçando o Avatar para recuperar sua honra. Guiado pelo tio Iroh, mudou de lado, tornou-se mestre de dobra de fogo de Aang e, após a guerra, assumiu o trono para conduzir a Nação do Fogo a uma era de paz.",
@@ -113,6 +117,7 @@
   },
   {
     "name": "Iroh",
+    "image": { "url": "/images/characters/iroh.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Dragão do Oeste", "General Iroh"],
     "description": "General lendário da Nação do Fogo e tio de Zuko.",
     "biography": "Herdeiro do trono, abandonou a guerra após perder o filho Lu Ten no cerco a Ba Sing Se. Acompanhou Zuko no exílio como mentor e amigo, criou a técnica de redirecionar relâmpagos e, depois da guerra, abriu a casa de chá Dragão de Jasmim em Ba Sing Se.",
@@ -153,6 +158,7 @@
   },
   {
     "name": "Ozai",
+    "image": { "url": "/images/characters/ozai.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Senhor do Fogo Ozai", "Rei Fênix"],
     "description": "Senhor do Fogo durante o fim da Guerra dos Cem Anos.",
     "biography": "Tentou usar o poder do Cometa de Sozin para destruir o Reino da Terra e se proclamou Rei Fênix. Foi derrotado por Aang, que retirou sua dobra com a dobra de energia em vez de tirar sua vida.",
@@ -313,6 +319,7 @@
   },
   {
     "name": "Pakku",
+    "image": { "url": "/images/characters/pakku.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Mestre Pakku"],
     "description": "Mestre de dobra de água da Tribo da Água do Norte.",
     "biography": "Rígido e tradicionalista, recusou-se no início a ensinar Katara por ela ser mulher. Mudou de ideia ao descobrir que ela era neta de Kanna, sua antiga noiva, com quem mais tarde se casou no Polo Sul.",
@@ -401,6 +408,7 @@
   },
   {
     "name": "Korra",
+    "image": { "url": "/images/characters/korra.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Avatar Korra"],
     "description": "Avatar sucessora de Aang, nascida na Tribo da Água do Sul.",
     "biography": "Impulsiva e corajosa, dominava três elementos ainda criança. Em Cidade República, aprendeu dobra de ar com Tenzin, enfrentou Amon, Unalaq, a Lótus Vermelha e Kuvira, e manteve abertos os portais espirituais, unindo o mundo humano e o mundo espiritual.",
@@ -426,6 +434,7 @@
   },
   {
     "name": "Mako",
+    "image": { "url": "/images/characters/mako.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Dobrador de fogo e detetive da polícia de Cidade República.",
     "biography": "Órfão criado nas ruas com o irmão Bolin, competiu no pro-bending pelo time Furões de Fogo. Mais tarde, tornou-se detetive da polícia e guarda-costas do príncipe Wu.",
@@ -445,6 +454,7 @@
   },
   {
     "name": "Bolin",
+    "image": { "url": "/images/characters/bolin.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Dobrador de terra bem-humorado e irmão de Mako.",
     "biography": "Integrante dos Furões de Fogo, também tentou carreira como astro de cinema. Depois de servir no exército de Kuvira e perceber seus métodos, rompeu com ela e descobriu a dobra de lava.",
@@ -504,6 +514,7 @@
   },
   {
     "name": "Lin Beifong",
+    "image": { "url": "/images/characters/lin-beifong.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Chefe Beifong"],
     "description": "Chefe da polícia de dobradores de metal de Cidade República.",
     "biography": "Filha de Toph, herdou o rigor da mãe e o comando da polícia. Perdeu a dobra para Amon ao proteger a fuga de Tenzin e de sua família, e a recuperou com a ajuda de Korra.",
@@ -635,6 +646,7 @@
   },
   {
     "name": "Jinora",
+    "image": { "url": "/images/characters/jinora.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Filha mais velha de Tenzin e mestra de dobra de ar.",
     "biography": "Estudiosa e com forte conexão espiritual, guiou Korra no mundo espiritual. Tornou-se mestra de dobra de ar e recebeu as tatuagens dos Nômades do Ar ainda jovem.",
