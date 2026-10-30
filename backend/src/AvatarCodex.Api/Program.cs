@@ -11,24 +11,24 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddFrontendCors(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddReverseProxySupport();
 
 var app = builder.Build();
 
 if (app.Configuration.GetValue<bool>("Database:MigrateAndSeedOnStartup"))
 {
-    await app.Services.InitializeDatabaseAsync();
+    await app.Services.InitializeDatabaseAsync(app.Configuration.GetValue("Database:SeedDemoUser", true));
 }
 
+app.UseForwardedHeaders();
 app.UseExceptionHandler();
 
+// Sem UseHttpsRedirection: em produção o HTTPS termina no proxy (Vercel/Render), e o health check
+// do Render chama o container direto em HTTP.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Avatar Codex API v1"));
-}
-else
-{
-    app.UseHttpsRedirection();
 }
 
 app.UseCors(CorsExtensions.FrontendPolicy);
