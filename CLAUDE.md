@@ -15,7 +15,7 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 **Fase 17 — Deploy** (próxima, ainda não iniciada). Fases 0 a 16 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-30):** Fase 16 concluída (documentação revisada contra o código + novo `docs/testing.md` + teste num clone limpo seguindo só o README), commitada localmente; push pendente (só quando o usuário pedir).
+**Onde paramos (2026-10-30):** Fase 16 concluída (documentação revisada contra o código + novo `docs/testing.md` + teste num clone limpo seguindo só o README), commitada e publicada no GitHub (`main` = `origin/main`).
 - **Imagens dos personagens (2026-10-30):** 12 de 37 com imagem real (Aang, Bolin, Iroh, Jinora, Korra, Lin Beifong, Mako, Ozai, Pakku, Sokka, Toph Beifong, Zuko). Ficam em `frontend/avatar-codex-web/public/images/characters/<nome-em-kebab>.jpg`, recortadas em retrato quadrado 320×320 (cabeça e ombros); os originais de corpo inteiro estão fora do repo, em `C:\Users\Matheus\Pictures\avatar-codex-originais`. Cada uma é referenciada em `characters.json` (`"image": { "url": "/images/characters/...", "sourceUrl": null, "credit": "Nickelodeon" }`) e o seeder sincroniza ao subir a API. Os outros 25 continuam com o placeholder (DA-04). A Avatar Wiki (Fandom) bloqueia hotlink, então as imagens precisam ser servidas pelo próprio projeto.
 - **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas, 4 quizzes × 10 perguntas), API com busca/filtros/paginação, tratamento global de erros.
 - **Frontend base:** layout, navbar (completa a partir de 1280px), rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, 404.
