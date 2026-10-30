@@ -4,7 +4,9 @@ Enciclopédia interativa + plataforma de exploração + sistema de evolução do
 
 O usuário explora personagens, nações, a linha do tempo e comparações entre personagens, e constrói sua própria jornada: descobertas, favoritos, quizzes, XP, níveis, conquistas e desafios diários. Toda regra de progresso é decidida pelo backend.
 
-> **Status:** v1 concluída (Fases 0–16). Próxima etapa: deploy (Fase 17). Plano completo em [docs/development-phases.md](docs/development-phases.md).
+> **No ar:** https://avatar-codex.vercel.app (entre com o usuário demo, abaixo). A primeira requisição depois de um tempo sem uso pode levar cerca de 1 minuto: a API fica no plano gratuito do Render, que dorme quando está ociosa.
+>
+> **Status:** v1 concluída e publicada (Fases 0–17). Plano completo em [docs/development-phases.md](docs/development-phases.md).
 
 ## Funcionalidades
 
@@ -127,7 +129,7 @@ Abra **http://localhost:5173** (use `localhost`, não `127.0.0.1`: só essa orig
 
 ### Usuário de demonstração
 
-Criado só em Development:
+Criado em Development e também em produção (desligável com `Database:SeedDemoUser=false`):
 
 | Email | Senha |
 |---|---|
