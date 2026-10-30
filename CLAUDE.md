@@ -13,9 +13,12 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 ## Status atual
 
-**Fase 17 — Deploy** (próxima, ainda não iniciada). Fases 0 a 16 concluídas (`docs/development-phases.md`).
+**Fase 17 — Deploy** (em andamento). Fases 0 a 16 concluídas (`docs/development-phases.md`).
 
-**Onde paramos (2026-10-30):** Fase 16 concluída (documentação revisada contra o código + novo `docs/testing.md` + teste num clone limpo seguindo só o README), commitada e publicada no GitHub (`main` = `origin/main`).
+**Onde paramos (2026-10-30):** código da Fase 17 pronto e commitado localmente; falta push (o usuário autoriza) e criar os serviços (contas do usuário), seguindo `docs/deployment.md` §4.
+- **Decisões da Fase 17 (aprovadas):** Vercel (frontend) + Render (API em Docker, `render.yaml`, região virginia) + Neon (banco, AWS us-east-1, host **sem** pooler); a Vercel faz proxy de `/api/*` (cookie segue `SameSite=Strict`, sem CORS em produção); migrations + seed no startup (`appsettings.Production.json`); usuário demo ligado em produção (`Database:SeedDemoUser`); CI no GitHub Actions fica para depois.
+- **Validado localmente:** publish Release em modo Production (porta via `PORT`, sem Swagger, sem redirect HTTPS, cookie `secure; samesite=strict`), e os 7 E2E verdes com o build sem `VITE_API_URL` atrás de um proxy `/api` (simulando a Vercel). Sem Docker neste PC: o `Dockerfile` só será exercitado no build do Render.
+- **Depois do deploy:** conferir `docs/deployment.md` §4.4 num Chrome real, colocar a URL pública no README e registrar a fase em `development-phases.md`. Se a URL do Render não for `avatar-codex-api.onrender.com`, ajustar `frontend/avatar-codex-web/vercel.json`.
 - **Imagens dos personagens (2026-10-30):** 12 de 37 com imagem real (Aang, Bolin, Iroh, Jinora, Korra, Lin Beifong, Mako, Ozai, Pakku, Sokka, Toph Beifong, Zuko). Ficam em `frontend/avatar-codex-web/public/images/characters/<nome-em-kebab>.jpg`, recortadas em retrato quadrado 320×320 (cabeça e ombros); os originais de corpo inteiro estão fora do repo, em `C:\Users\Matheus\Pictures\avatar-codex-originais`. Cada uma é referenciada em `characters.json` (`"image": { "url": "/images/characters/...", "sourceUrl": null, "credit": "Nickelodeon" }`) e o seeder sincroniza ao subir a API. Os outros 25 continuam com o placeholder (DA-04). A Avatar Wiki (Fandom) bloqueia hotlink, então as imagens precisam ser servidas pelo próprio projeto.
 - **Conteúdo:** entidades, seed (37 personagens, 5 nações, 4 elementos, 6 conquistas, 4 quizzes × 10 perguntas), API com busca/filtros/paginação, tratamento global de erros.
 - **Frontend base:** layout, navbar (completa a partir de 1280px), rotas lazy, Home, Characters (estado na URL), CharacterDetails, Nations, NationDetails, 404.

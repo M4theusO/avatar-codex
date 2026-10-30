@@ -24,7 +24,7 @@ O usuário explora personagens, nações, a linha do tempo e comparações entre
 | Backend | .NET 10, ASP.NET Core Web API, Entity Framework Core, JWT, FluentValidation |
 | Banco | PostgreSQL (schema por migrations do EF Core) |
 | Testes | xUnit, Vitest + React Testing Library, Cypress |
-| Infra | Docker Compose (PostgreSQL), opcional |
+| Infra | Docker Compose (PostgreSQL local, opcional) · Deploy: Vercel + Render (Docker) + Neon |
 
 ## Arquitetura em resumo
 
@@ -43,6 +43,7 @@ avatar-codex/
 ├── tests/                     # testes .NET (unitários e de integração)
 ├── docs/                      # requisitos, arquitetura, banco, API, UI/UX, testes, fases
 ├── docker-compose.yml         # PostgreSQL (opcional)
+├── render.yaml                # Blueprint do Render (API em produção)
 └── .env.example               # variáveis do docker-compose
 ```
 
@@ -189,6 +190,7 @@ Nenhum secret é versionado; os arquivos `.env.example` servem de modelo.
 | [API](docs/api.md) | Endpoints, payloads, autenticação, erros, paginação |
 | [UI/UX](docs/ui-ux.md) | Identidade visual, rotas, páginas, componentes, estados, acessibilidade |
 | [Testes](docs/testing.md) | Como rodar cada suíte, organização, cobertura e E2E |
+| [Deploy](docs/deployment.md) | Vercel + Render + Neon: decisões, passo a passo, limitações do plano gratuito |
 | [Fases](docs/development-phases.md) | Fases 0–17 e o que foi entregue em cada uma |
 
 ## Aviso legal
