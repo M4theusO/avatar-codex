@@ -146,7 +146,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 
 **CharacterAbility** — PK (`CharacterId`, `AbilityId`)
 
-✅ Fase 13 (migration `AddCharacterComparison`).
+Migration `AddCharacterComparison`.
 
 **ComparisonAttribute** (Domínio elemental, Combate, Agilidade, Estratégia, Liderança)
 | Campo | Tipo | Restrições |
@@ -158,7 +158,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 
 **CharacterAttributeValue** — PK (`CharacterId`, `ComparisonAttributeId`), `Value` int com CHECK 0–100 (`ck_character_attribute_values_value_range`); tabela `character_attribute_values`, CASCADE pelo personagem e pelo atributo.
 
-✅ Fase 12 (migration `AddTimeline`). `Order` vem da posição no JSON; ao reordenar, o seed grava valores negativos temporários antes dos definitivos, para não violar a unicidade.
+Migration `AddTimeline`. `Order` vem da posição no JSON; ao reordenar, o seed grava valores negativos temporários antes dos definitivos, para não violar a unicidade.
 
 **Era**
 | Campo | Tipo | Restrições |
@@ -209,7 +209,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 
 ### 3.3 Exploração e favoritos
 
-> ✅ Fase 6. Tabelas: `character_discoveries`, `nation_discoveries`, `favorite_characters`. FK do usuário em CASCADE; FK do conteúdo em RESTRICT.
+> Migration `AddFavoritesDiscoveriesAndExperience`. Tabelas: `character_discoveries`, `nation_discoveries`, `favorite_characters`. FK do usuário em CASCADE; FK do conteúdo em RESTRICT.
 
 **UserCharacterDiscovery** — PK (`UserId`, `CharacterId`), `DiscoveredAt`; índice (`UserId`, `DiscoveredAt DESC`).
 
@@ -245,9 +245,9 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 | RequirementValue | int | |
 | ExperienceReward | int | > 0 (todo desbloqueio gera uma `ExperienceTransaction`) |
 
-**UserAchievement** — PK (`UserId`, `AchievementId`), `UnlockedAt`; índice (`UserId`, `UnlockedAt` desc). A PK garante o desbloqueio único (RN-05). ✅ Fase 8 (migration `AddAchievements`)
+**UserAchievement** — PK (`UserId`, `AchievementId`), `UnlockedAt`; índice (`UserId`, `UnlockedAt` desc). A PK garante o desbloqueio único (RN-05). Migration `AddAchievements`.
 
-✅ Fase 11 (migration `AddDailyChallenges`).
+Migration `AddDailyChallenges`.
 
 **ChallengeTemplate** (pool definido no seed, D8)
 | Campo | Tipo | Restrições |
@@ -281,7 +281,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 
 ### 3.5 Quiz
 
-✅ Fase 9 (migration `AddQuizTables`). `Quiz.Title` é único (chave do seed); `Question` e `QuestionOption` têm `Order` único dentro do pai; `UserQuizAttempt` tem CHECK `0 ≤ score ≤ total_questions` e `experience_earned ≥ 0`; o quiz é `RESTRICT` para as tentativas e as respostas apontam para pergunta e opção com `RESTRICT` (o seed nunca remove perguntas nem opções).
+Migration `AddQuizTables` (tabelas `quizzes`, `questions`, `question_options`, `quiz_attempts`, `quiz_answers`). `Quiz.Title` é único (chave do seed); `Question` e `QuestionOption` têm `Order` único dentro do pai; `UserQuizAttempt` tem CHECK `0 ≤ score ≤ total_questions` e `experience_earned ≥ 0`; o quiz é `RESTRICT` para as tentativas e as respostas apontam para pergunta e opção com `RESTRICT` (o seed nunca remove perguntas nem opções).
 
 **Quiz**
 | Campo | Tipo | Restrições |
@@ -337,10 +337,10 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 - O seeder é **idempotente**: faz upsert pela chave natural (nome; `Code` para séries), sincroniza as N:N e as relações, e **não remove** conteúdo que não esteja nos JSON. Rodar duas vezes não altera nenhuma linha.
 - Antes de gravar, `ContentSeedData.Validate()` verifica nomes duplicados e referências inexistentes entre os arquivos. Um seed inválido impede o startup.
 - Referências entre arquivos são feitas por nome (ex.: `"nation": "Nação do Fogo"`).
-- Imagens ainda não fazem parte do seed: os campos `ImageInfo` ficam nulos. O seed de personagens já aceita `image` (`url`, `sourceUrl`, `credit`) em `characters.json`; as imagens reais são uma pendência da Fase 15.
+- **Imagens (DA-04):** `characters.json` aceita `image` (`url`, `sourceUrl`, `credit`), sincronizado no `ImageInfo` a cada subida. 12 dos 37 personagens têm retrato; os demais ficam com `image` nulo e aparecem com o placeholder. Os arquivos ficam no frontend, em `public/images/characters/<nome-em-kebab>.jpg` (retrato quadrado de 320×320, cabeça e ombros), e a `url` é relativa (`/images/characters/aang.jpg`). Para adicionar uma imagem: coloque o arquivo na pasta, preencha `image` no personagem e reinicie a API. Nações, habilidades, quizzes e eventos da timeline ainda não têm imagens.
 - Conteúdo mínimo para demonstração:
 
-| Tabela | Quantidade alvo | Atual (Fase 2) |
+| Tabela | Quantidade alvo | Atual |
 |---|---|---|
 | Element | 4 | 4 |
 | BendingSubtype | ~8 | 9 |
@@ -355,7 +355,7 @@ Usado em `Character`, `Nation`, `Ability`, `Quiz`, `TimelineEvent`. Vira colunas
 | Achievement | ~12 | 6 (`achievements.json`, upsert por `Code`) |
 | ChallengeTemplate | ~8 | 8 (`challenges.json`, upsert por `Code`) |
 
-- Usuário de demonstração apenas em Development (`DemoUserSeeder`, credenciais no README): criado no startup se ainda não existir, com a senha em hash PBKDF2. ✅ Fase 5
+- Usuário de demonstração apenas em Development (`DemoUserSeeder`, credenciais no README): criado no startup se ainda não existir, com a senha em hash PBKDF2.
 
 ## 5. Migrations
 
@@ -370,6 +370,8 @@ Uma migration por mudança coesa de esquema, com nome descritivo (ex.: `AddQuizT
 |---|---|
 | `InitialContentSchema` | Extensão `citext`; `elements`, `bending_subtypes`, `nations`, `series`, `abilities`, `characters`, `character_relationships`, `character_abilities`, `character_bending_subtypes`, `character_series`, `users`, `refresh_tokens` |
 | `AddFavoritesDiscoveriesAndExperience` | `character_discoveries` (UserCharacterDiscovery), `nation_discoveries` (UserNationDiscovery), `favorite_characters` (UserFavoriteCharacter), `experience_transactions` com unique (`user_id`, `type`, `source_id`) e `CHECK amount > 0`. `type` gravado como texto. |
+| `AddAchievements` | `achievements` (`code` único, `CHECK experience_reward > 0`), `user_achievements` com PK (`user_id`, `achievement_id`) |
+| `AddQuizTables` | `quizzes` (`title` único), `questions` e `question_options` (`order` único dentro do pai; no máximo uma opção correta por pergunta, índice único parcial), `quiz_attempts` (CHECKs de pontuação e XP), `quiz_answers` |
 | `AddDailyChallenges` | `challenge_templates` (`code` único, CHECKs de meta e XP), `daily_challenges` com unique (`challenge_template_id`, `date`), `user_daily_challenges` com PK (`user_id`, `daily_challenge_id`) |
 | `AddTimeline` | `eras` (`name` e `order` únicos), `timeline_events` (`title` e `order` únicos, imagem owned, FK `era_id` RESTRICT), `timeline_event_characters` |
 | `AddCharacterComparison` | `comparison_attributes` (`name` único, `order`), `character_attribute_values` (PK composta, `CHECK value` 0–100) |
