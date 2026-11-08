@@ -460,3 +460,22 @@ No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](d
 
 **Observação:** a suíte do Vitest às vezes estoura o tempo (5s) em testes de páginas lazy quando a máquina está carregada; isolados, eles passam. Na execução final, 164 de 164.
 
+## Fase 22 — Editar perfil: nome de usuário e foto (concluída)
+
+- [x] `PATCH /api/users/me` (🔒) troca o nome de usuário com as mesmas regras do cadastro (regra `ValidUsername` compartilhada). Mudar só maiúsculas/minúsculas do próprio nome é permitido; nome de outra pessoa → 409. O login continua pelo email
+- [x] `PUT /api/users/me/avatar` (🔒, multipart, campo `file`) e `DELETE /api/users/me/avatar`; `GET /api/avatars/{publicId}` serve a imagem com cache longo e `nosniff`
+- [x] **Uma foto por usuário:** tabela `user_avatars` com PK = `UserId` (migration `AddUserAvatars`); enviar outra sobrescreve a mesma linha com um novo `PublicId`, então a URL antiga dá 404 e o cache não mostra a foto velha. Excluir a conta apaga a foto (CASCADE)
+- [x] `AvatarRules`: tipo pelos bytes (JPEG, PNG, WebP; SVG e GIF recusados), 512 KB no máximo, URL pública. `AvatarService` valida, protege a conta demo (422) e grava foto + `User.AvatarUrl` num só `SaveChanges`
+- [x] `IUserRepository.GetForUpdateAsync`: o `GetByIdAsync` lê sem rastreamento, e a primeira versão salvava nada (o teste de integração pegou)
+- [x] `GlobalExceptionHandler` trata `BadHttpRequestException` (corpo acima do limite → 413, em vez de 500)
+- [x] Frontend: seção "Editar perfil" no `/profile` (`EditProfile`), hooks `useUpdateUsername`/`useUploadAvatar`/`useRemoveAvatar` (atualizam o usuário em memória e invalidam os dados do usuário), `utils/userAvatar` (recorte central + 256×256 em JPEG no canvas; URL relativa à API). A foto aparece no perfil, na navbar e no ranking (`avatarUrl` no `RankingEntryDto`)
+- [x] Testes: backend 345 (219 unitários + 126 de integração: troca de nome, conflito, validação, demo; foto enviada e servida, segunda foto substituindo a primeira com uma linha só, tipo pelos bytes, sem arquivo, grande demais, remoção, exclusão da conta levando a foto, demo e anônimo); frontend 172; E2E 12 (+ nome e foto pelo perfil, conferindo 256×256 no Chrome)
+- [x] Validado no Chrome (Cypress, prints a 1280px e 390px): perfil, seção de edição e ranking com a foto
+
+**Decisões:**
+- **Foto no banco, não em disco:** o Render (free) perde o disco a cada deploy, e um serviço de arquivos externo seria mais um segredo e mais uma conta. Com 256×256 em JPEG cada foto tem dezenas de KB.
+- **Redução no navegador, conferência no backend:** evita uma biblioteca de imagem no backend (e as dependências nativas no Docker). O backend não confia no cliente: confere tipo pelos bytes e tamanho, e serve com `nosniff` e o tipo detectado.
+- **Conta demo protegida** também aqui: ela é compartilhada e aparece no ranking.
+
+**Observação:** com a máquina carregada, a suíte do Vitest no paralelismo padrão estoura 5s em alguns testes de páginas lazy; com `--maxWorkers=4`, 172 de 172.
+

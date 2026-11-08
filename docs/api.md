@@ -159,6 +159,9 @@ Os dados do próprio usuário (nível, XP e progresso já calculados) vêm em `U
 
 | Método | Rota | | Descrição |
 |---|---|---|---|
+| PATCH | `/api/users/me` | 🔒 | Edita o perfil: `{ "username": "..." }` (mesmas regras do cadastro; só mudar maiúsculas/minúsculas do próprio nome é permitido). Devolve o `UserDto` atualizado. Inválido → 400 (campo `username`); nome de outra pessoa → 409; conta de demonstração → 422. O login continua pelo email |
+| PUT | `/api/users/me/avatar` | 🔒 | Foto de perfil em `multipart/form-data`, campo `file`: JPEG, PNG ou WebP (tipo conferido pelos bytes, não pela extensão), até 512 KB. **Substitui a anterior** (uma foto por usuário). Devolve o `UserDto` com o novo `avatarUrl`. Sem arquivo, tipo errado ou grande demais → 400 (campo `file`); corpo acima do limite → 413; conta de demonstração → 422 |
+| DELETE | `/api/users/me/avatar` | 🔒 | Remove a foto (volta para as iniciais) e devolve o `UserDto` com `avatarUrl: null` |
 | DELETE | `/api/users/me` | 🔒 | Exclui a conta e todos os dados dela (`{ "password": "..." }` para confirmar). 204 e apaga o cookie de refresh; senha vazia ou errada → 400 com erro no campo `password` (não 401: a sessão continua válida); conta de demonstração → 422 |
 | GET | `/api/users/me/statistics` | 🔒 | Estatísticas do perfil: `discoveredCharacters`, `totalCharacters`, `discoveredNations`, `totalNations`, `favorites`, `unlockedAchievements`, `totalAchievements`, `completedQuizzes`, `totalQuizzes`, `quizAttempts`, `accuracyPercent` (acertos / respostas de todas as tentativas; `null` sem tentativas) |
 | GET | `/api/users/me/dashboard` | 🔒 | Agregado do dashboard numa chamada (`DashboardDto`, ver abaixo) |
@@ -213,13 +216,21 @@ Resposta:
 
 Validações: todas as perguntas do quiz respondidas uma única vez, e cada opção deve pertencer à sua pergunta (senão 400, com as mensagens no campo `answers`). `experienceEarned` é o XP do quiz nesta tentativa (sem o das conquistas e dos desafios concluídos no mesmo evento); `reward` é `null` quando a tentativa não rendeu XP nem conquista.
 
+#### Fotos de perfil
+
+| Método | Rota | | Descrição | Respostas |
+|---|---|---|---|---|
+| GET | `/api/avatars/{publicId}` | | A imagem da foto de perfil, com o `Content-Type` detectado no envio, `Cache-Control: public, max-age=31536000, immutable` e `X-Content-Type-Options: nosniff`. O `publicId` é aleatório (não é o id do usuário) e muda a cada envio, então a URL antiga passa a dar 404 | 200, 404 |
+
+O `avatarUrl` do usuário já vem pronto (`/api/avatars/{publicId}`), relativo à API.
+
 #### Ranking (RF-RANK-01)
 
 | Método | Rota | | Descrição | Respostas |
 |---|---|---|---|---|
 | GET | `/api/ranking` | 🔒 | Ranking por XP. `period` = `all` (XP total, padrão) ou `month` (XP ganho no mês corrente, UTC); `elementId` opcional (elemento do perfil, vindo do teste); `page`/`pageSize` (1–50, padrão 20) | 200, 400, 401 |
 
-Resposta: `period`, `periodStart`/`periodEnd` (mês em UTC no mensal; `null` no geral), `elementId`, `entries` (`PagedResult` de `position`, `username`, `level`, `experience` (XP do período), `element`, `isCurrentUser`) e `currentUser` (`position`, `experience`; `null` quando quem consulta não entra neste ranking). Só entra quem tem XP > 0 no período. **Empatados dividem a posição** (1, 2, 2, 4), exibidos pelo nome (`RankingRules`). Nenhum email ou id de usuário é exposto.
+Resposta: `period`, `periodStart`/`periodEnd` (mês em UTC no mensal; `null` no geral), `elementId`, `entries` (`PagedResult` de `position`, `username`, `avatarUrl`, `level`, `experience` (XP do período), `element`, `isCurrentUser`) e `currentUser` (`position`, `experience`; `null` quando quem consulta não entra neste ranking). Só entra quem tem XP > 0 no período. **Empatados dividem a posição** (1, 2, 2, 4), exibidos pelo nome (`RankingRules`). Nenhum email ou id de usuário é exposto.
 
 #### Teste de elemento (RF-ELTEST-01)
 

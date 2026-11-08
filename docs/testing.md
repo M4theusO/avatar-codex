@@ -4,10 +4,10 @@
 
 | Suíte | Ferramenta | Quantidade | Onde | Precisa de |
 |---|---|---|---|---|
-| Unitários backend | xUnit | 204 | `tests/AvatarCodex.UnitTests` | só o .NET SDK |
-| Integração backend | xUnit + `WebApplicationFactory` + PostgreSQL real | 114 | `tests/AvatarCodex.IntegrationTests` | PostgreSQL + `AVATARCODEX_TEST_DB` |
-| Frontend | Vitest + React Testing Library | 164 | `frontend/avatar-codex-web/src/**/*.test.ts(x)` | só o Node |
-| E2E | Cypress + Testing Library, no Chrome | 11 testes (9 fluxos + habilidades, exclusão de conta, teste de elemento e ranking) | `frontend/avatar-codex-web/cypress/e2e` | API + build do frontend + PostgreSQL + Chrome |
+| Unitários backend | xUnit | 219 | `tests/AvatarCodex.UnitTests` | só o .NET SDK |
+| Integração backend | xUnit + `WebApplicationFactory` + PostgreSQL real | 126 | `tests/AvatarCodex.IntegrationTests` | PostgreSQL + `AVATARCODEX_TEST_DB` |
+| Frontend | Vitest + React Testing Library | 172 | `frontend/avatar-codex-web/src/**/*.test.ts(x)` | só o Node |
+| E2E | Cypress + Testing Library, no Chrome | 12 testes (9 fluxos + habilidades, exclusão de conta, teste de elemento, ranking e edição do perfil) | `frontend/avatar-codex-web/cypress/e2e` | API + build do frontend + PostgreSQL + Chrome |
 
 Antes de considerar uma mudança pronta: `dotnet test` (com o banco), `npm run test`, `npm run lint`, `npm run format:check` e `npm run build`. O E2E roda ao fim de cada fase ou quando um fluxo principal muda.
 
@@ -85,11 +85,11 @@ npm run test:coverage  # cobertura v8: resumo no terminal e relatório HTML em c
 
 ### 4.1 O que cobre
 
-Os 9 fluxos principais e mais quatro cenários (habilidades, exclusão de conta, teste de elemento e ranking), em 3 arquivos:
+Os 9 fluxos principais e mais cinco cenários (habilidades, exclusão de conta, teste de elemento, ranking e edição do perfil), em 3 arquivos:
 
 | Arquivo | Fluxos |
 |---|---|
-| `auth.cy.ts` | Cria conta pelo formulário (cai no painel com "Primeiro passo"); entra, mantém a sessão ao recarregar e sai; senha errada não entra; exclui a conta pelo perfil (senha errada primeiro, depois a certa) |
+| `auth.cy.ts` | Cria conta pelo formulário (cai no painel com "Primeiro passo"); entra, mantém a sessão ao recarregar e sai; senha errada não entra; edita o nome e a foto no perfil (a foto chega com 256×256, a segunda substitui a primeira e a URL antiga dá 404, depois remove); exclui a conta pelo perfil (senha errada primeiro, depois a certa) |
 | `explore.cy.ts` | Pesquisa, abre o personagem, ganha +10 XP pela descoberta e favorita (aparece em `/favorites`); a segunda visita não dá XP; do personagem para a habilidade e quem a domina (sem rolagem lateral com a navbar logada a 1280px) |
 | `progress.cy.ts` | Faz um quiz (correção no backend, XP na 1ª conclusão, histórico); descobre as 5 nações, desbloqueia "Historiador" e confere em `/achievements` e no perfil; faz o teste de elemento (+30 XP) e vê o elemento no perfil; abre o ranking pela navbar e vê a própria posição no geral e no do mês |
 

@@ -228,7 +228,7 @@ Frontend na **Vercel**, API no **Render** (container Docker, `backend/Dockerfile
 | Frontend | Vitest + React Testing Library, com os `services` mockados (`vi.mock`) e o app inteiro renderizado (providers, layout e rotas reais) | Login, cadastro, listagem/filtros/busca, detalhe, favoritos, perfil, quiz e feedback. Cobertura com `npm run test:coverage` (v8). |
 | E2E | Cypress + Testing Library (`@testing-library/cypress`) no Chrome | 9 fluxos de `development-phases.md` (Fase 14), contra o build (`vite preview` na 5173) + API com o banco `avatar_codex_e2e` (migrations + seed). Cada teste cria o próprio usuário e o exclui no fim (`DELETE /api/users/me` no `afterEach`); seletores por papel e texto acessível, sem `data-testid` e sem esperas fixas. |
 
-Hoje: 318 testes no backend (204 unitários + 114 de integração), 164 no frontend e 11 testes E2E cobrindo os 9 fluxos, as habilidades, a exclusão de conta, o teste de elemento e o ranking. Como rodar cada suíte e o que cada pasta cobre: [testing.md](testing.md).
+Hoje: 345 testes no backend (219 unitários + 126 de integração), 172 no frontend e 12 testes E2E cobrindo os 9 fluxos, as habilidades, a exclusão de conta, o teste de elemento, o ranking e a edição do perfil. Como rodar cada suíte e o que cada pasta cobre: [testing.md](testing.md).
 
 ## 9. Decisões do projeto
 
@@ -264,6 +264,7 @@ Hoje: 318 testes no backend (204 unitários + 114 de integração), 164 no front
 | D12 | IDs | `int` para conteúdo; `Guid` para `User` | URLs legíveis; evita enumeração de usuários |
 | D13 | Paginação de personagens | Paginação numérica sincronizada com a URL (query string) | Links compartilháveis, acessível e fácil de testar |
 | D14 | Metadados de imagem | Tipo owned `ImageInfo` (Url, SourceUrl, Credit) | Imagens substituíveis e com crédito (direitos autorais) |
+| D15 | Foto de perfil | No banco (`user_avatars`, PK = `UserId`), reduzida a 256×256 no navegador; o backend confere tipo pelos bytes e tamanho, e serve por um id público que muda a cada envio | O disco do Render não persiste; uma linha por usuário impede acumular fotos; sem biblioteca de imagem no backend; URL nova a cada envio permite cache longo |
 
 ## 10. Riscos técnicos
 

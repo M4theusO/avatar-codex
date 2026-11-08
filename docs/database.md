@@ -190,7 +190,7 @@ Migration `AddTimeline`. `Order` vem da posição no JSON; ao reordenar, o seed 
 | Username | varchar(30) | único (case-insensitive) |
 | Email | varchar(254) | único (case-insensitive) |
 | PasswordHash | text | nunca exposto |
-| AvatarUrl | varchar(500) | |
+| AvatarUrl | varchar(500) | URL da foto (`/api/avatars/{publicId}`) ou null; gravada junto com `UserAvatar` |
 | ElementId | int? | FK → Element |
 | ExperiencePoints | int | default 0, CHECK ≥ 0 (total desnormalizado, D5) |
 | CreatedAt / UpdatedAt | timestamptz | |
@@ -206,6 +206,17 @@ Migration `AddTimeline`. `Order` vem da posição no JSON; ao reordenar, o seed 
 | ExpiresAt | timestamptz | |
 | CreatedAt | timestamptz | |
 | RevokedAt | timestamptz? | |
+
+**UserAvatar** (Fase 22)
+| Campo | Tipo | Restrições |
+|---|---|---|
+| UserId | uuid | **PK** e FK → User, CASCADE: no máximo uma foto por usuário |
+| PublicId | uuid | único; vai na URL e muda a cada envio |
+| ContentType | varchar(20) | `image/jpeg`, `image/png` ou `image/webp` |
+| Data | bytea | até 512 KB (o frontend envia 256×256 em JPEG, ~10–30 KB) |
+| CreatedAt / UpdatedAt | timestamptz | |
+
+> A foto fica no banco, e não em disco, porque o disco do Render é apagado a cada deploy. Enviar outra **sobrescreve a mesma linha** (a PK é o `UserId`), então não se acumulam fotos antigas.
 
 ### 3.3 Exploração e favoritos
 
@@ -381,6 +392,7 @@ Uma migration por mudança coesa de esquema, com nome descritivo (ex.: `AddQuizT
 | `AddTimeline` | `eras` (`name` e `order` únicos), `timeline_events` (`title` e `order` únicos, imagem owned, FK `era_id` RESTRICT), `timeline_event_characters` |
 | `AddCharacterComparison` | `comparison_attributes` (`name` único, `order`), `character_attribute_values` (PK composta, `CHECK value` 0–100) |
 | `AddElementTest` | `element_test_questions` (`order` único), `element_test_options` (unique (`question_id`, `order`) e (`question_id`, `element_id`): uma opção por elemento em cada pergunta; FK do elemento RESTRICT) |
+| `AddUserAvatars` | `user_avatars` (PK `user_id` com FK CASCADE, `public_id` único, `data` bytea) |
 
 ## 6. Testes de banco
 

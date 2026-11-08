@@ -178,7 +178,6 @@ Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personage
 - Painel administrativo de conteúdo.
 - Ranking e funcionalidades sociais (P3).
 - Recuperação de senha por email.
-- Upload de avatar (v1 usa URL ou avatares pré-definidos).
 - Internacionalização (UI em português).
 
 ## 9. Status de implementação (v1)
@@ -188,6 +187,6 @@ Todos os requisitos P0, P1 e P2 estão implementados, com as exceções e ajuste
 | Requisito | Situação |
 |---|---|
 | RF-ELEM-01 (elementos e subtipos) | Disponível na API (`GET /api/elements`) e usado na Home, nos filtros e nos badges; não há uma página só de elementos. |
-| RF-PROF-01 (avatar e elemento no perfil) | O elemento vem do teste de elemento (Fase 20) e aparece no perfil, no avatar e na barra de XP. Não há edição de perfil: `avatarUrl` continua nulo. |
+| RF-PROF-01 (avatar e elemento no perfil) | O elemento vem do teste de elemento (Fase 20) e aparece no perfil, no avatar e na barra de XP. Desde a Fase 22 o usuário edita o nome de usuário e envia uma foto de perfil (uma por usuário, substituída a cada envio), mostrada no perfil, na navbar e no ranking. |
 | RF-CHAL-01 ("Explore uma nação") | Coberto pelo tipo de desafio `DiscoverNations`. |
 | `POST /api/challenges/{id}/complete` da especificação | Removido de propósito (D9): a conclusão é automática no backend. |

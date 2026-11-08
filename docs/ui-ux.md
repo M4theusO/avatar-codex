@@ -183,6 +183,8 @@ Conquistas               14 / 30
 ```
 Inclui abas/seções para descobertas, favoritos, conquistas e histórico de XP.
 
+**Editar perfil (Fase 22):** seção antes de "Excluir conta", num cartão com duas partes (lado a lado a partir de 1024px). **Foto:** prévia grande no anel do elemento, "Enviar foto"/"Trocar foto" (abre o seletor de arquivos; JPEG, PNG ou WebP) e "Remover foto" quando há foto. O navegador recorta o centro e reduz para 256×256 antes de enviar; erros (tipo, tamanho, conta demo) aparecem logo abaixo (`role="alert"`). **Nome de usuário:** campo com a regra na dica ("Você continua entrando pelo email") e "Salvar nome", desativado enquanto nada mudou; erro da API no próprio campo. Sucesso vira toast ("Foto atualizada.", "Foto removida.", "Nome de usuário atualizado.") e a mudança aparece na hora no topo do perfil, na navbar e no ranking.
+
 **Excluir conta (Fase 19):** última seção do perfil, com borda no tom de perigo e botão `danger` (vermelho só na borda e no texto). Abre um modal (`<dialog>`, foco no campo) que pede a senha; "Excluir definitivamente" fica desabilitado até digitar. Senha errada aparece no próprio campo; outros erros (ex.: conta demo) num alerta. Ao concluir, volta para a Home com o toast "Sua conta foi excluída."
 
 ### Conquistas
