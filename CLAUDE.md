@@ -47,7 +47,7 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 - **Dicas de shell:** heredocs com aspas e `\d` em regex já quebraram scripts várias vezes; para edições grandes, gravar um `.js` no scratchpad e rodar com `node`, ou usar o Edit. Prints do Cypress em larguras acima da janela headless saem cortados: medir com `getBoundingClientRect`, não pelo print.
 - **Line endings:** nos dois PCs `core.autocrlf=true`; o Prettier reescreve os arquivos em LF e o `git status` lista todos como modificados, mas sem diferença de conteúdo (`git diff --ignore-cr-at-eol`). Commitar só os arquivos alterados de verdade.
 
-**Próximo passo:** nada pendente no código. Candidatos a combinar: CI no GitHub Actions, opcionais de `docs/deployment.md` §7, limpeza dos `e2e_*` em produção (§8), funcionalidades sociais (P3).
+**Próximo passo:** nada pendente no código. Candidatos a combinar: conquistas/desafios diários que contem habilidades descobertas, CI no GitHub Actions, opcionais de `docs/deployment.md` §7, limpeza dos `e2e_*` em produção (§8), funcionalidades sociais (P3).
 - **Não iniciar trabalho novo sem confirmação explícita do usuário.**
 
 **Fluxo de trabalho combinado:** ao fim de cada fase → testes + lint + build + teste num Chrome real (CDP) → docs → commits pequenos → **push só quando o usuário pedir**. O usuário costuma pedir "rode o projeto para eu testar" (subir API + Vite em background) e depois "pare de rodar".
