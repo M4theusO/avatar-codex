@@ -23,8 +23,11 @@ describe('AppLayout', () => {
 
     await user.click(screen.getByRole('link', { name: 'Nações' }))
     await waitFor(() => expect(router.state.location.pathname).toBe('/nations'))
+    // O link ativo só muda quando a página lazy termina de carregar (lento com a suíte em paralelo).
+    await waitFor(() =>
+      expect(screen.getByRole('link', { name: 'Nações' })).toHaveAttribute('aria-current', 'page'),
+    )
     expect(screen.getByRole('button', { name: 'Abrir menu' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Nações' })).toHaveAttribute('aria-current', 'page')
   })
 
   it('mostra a página 404 em rotas desconhecidas', async () => {
