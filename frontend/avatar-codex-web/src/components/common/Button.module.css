@@ -57,3 +57,15 @@
   background-color: var(--color-surface-raised);
   color: var(--color-text);
 }
+
+/* Ações destrutivas (excluir conta): o vermelho fica na borda e no texto, sobre a superfície. */
+.danger {
+  border-color: color-mix(in srgb, var(--color-danger) 60%, transparent);
+  background-color: transparent;
+  color: var(--color-danger);
+}
+
+.danger:hover:not(:disabled) {
+  border-color: var(--color-danger);
+  background-color: color-mix(in srgb, var(--color-danger) 12%, transparent);
+}

@@ -3,6 +3,7 @@ import { ElementBadge } from '../../components/common/Badge'
 import { Button } from '../../components/common/Button'
 import CharacterAvatar from '../../components/common/CharacterAvatar'
 import Section from '../../components/common/Section'
+import DeleteAccount from '../../components/profile/DeleteAccount'
 import ExperienceHistory from '../../components/profile/ExperienceHistory'
 import ExplorationStats from '../../components/profile/ExplorationStats'
 import XpBar from '../../components/progress/XpBar'
@@ -68,6 +69,10 @@ export default function ProfilePage() {
 
       <Section title="Histórico de XP">
         <ExperienceHistory />
+      </Section>
+
+      <Section title="Excluir conta">
+        <DeleteAccount />
       </Section>
     </div>
   )

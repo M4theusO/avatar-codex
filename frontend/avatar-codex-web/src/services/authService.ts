@@ -29,3 +29,8 @@ export async function logout() {
     setAccessToken(null)
   }
 }
+
+/** Exclui a conta (confirmando a senha). A sessão local termina com o logout logo depois. */
+export async function deleteAccount(password: string) {
+  await api.delete('/api/users/me', { data: { password } })
+}
