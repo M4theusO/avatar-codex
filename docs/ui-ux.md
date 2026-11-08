@@ -114,6 +114,7 @@ As telas são desenhadas primeiro para mobile e expandidas. Não vale fazer o de
 | `/achievements` | Conquistas | 🔒 |
 | `/challenges` | Desafios diários e histórico | 🔒 |
 | `/element-test` | Teste de elemento (Fase 20) | 🔒 |
+| `/ranking` | Ranking por XP (`?period=month&element=3&page=2`) | 🔒 |
 | `*` | NotFound | público |
 
 Rotas 🔒 redirecionam para `/login?redirect=<rota>` e voltam após o login.
@@ -191,6 +192,9 @@ Grid com conquistas desbloqueadas (coloridas, com data) e bloqueadas (esmaecidas
 
 ### Teste de elemento (Fase 20)
 Introdução com o anel dos quatro elementos e o aviso de XP (ou o elemento atual, para quem vai refazer) → uma pergunta por vez, reaproveitando o `QuizQuestionStep` (rádios estilizados, foco no enunciado) → resultado vindo do backend: símbolo e nome do elemento em Cinzel sobre um brilho na cor dele, a descrição do elemento e as respostas por elemento em barras. "Refazer o teste" volta à primeira pergunta; "Ver meu perfil" leva ao perfil, que mostra o elemento com o link "Refazer o teste" (ou "Descobrir meu elemento"). O painel convida para o teste enquanto o usuário não tem elemento. Ao descobrir, o elemento passa a colorir o avatar e a barra de XP.
+
+### Ranking (Fase 21)
+Período em botões segmentados ("Geral" / "Este mês") e elemento em chips ("Todos" + os quatro, com o ícone e a cor só na borda e no fundo), tudo na URL. Para o mês, a linha "novembro de 2026 · recomeça em 1 de dezembro". Cartão "Sua posição: 3º de 57 · 240 XP" ou o motivo de não aparecer (sem elemento → link para o teste; outro elemento; sem XP no mês). Lista ordenada (`<ol aria-label="Ranking">`): posição (top 3 em Cinzel com o acento do Ar, coroa no 1º, "lugar" só para leitores de tela), avatar com o elemento, nome, nível e XP; a linha de quem consulta tem borda clara, selo "Você" e `aria-current`. Entrada: ícone de medalha na área do usuário da navbar (ao lado de favoritos, desafios e conquistas).
 
 ### Desafios
 Cards dos desafios do dia com progresso, recompensa e horário do próximo reset (UTC convertido para o horário local).

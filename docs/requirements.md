@@ -183,7 +183,7 @@ Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personage
 
 ## 9. Status de implementação (v1)
 
-Todos os requisitos P0, P1 e P2 estão implementados, com as exceções e ajustes abaixo. Dos P3 (§4.12), o teste de elemento (RF-ELTEST-01) foi implementado na Fase 20; o ranking (RF-RANK-01) entra na Fase 21; as funcionalidades sociais não foram iniciadas.
+Todos os requisitos P0, P1 e P2 estão implementados, com as exceções e ajustes abaixo. Dos P3 (§4.12), o teste de elemento (RF-ELTEST-01, Fase 20) e o ranking (RF-RANK-01, Fase 21) foram implementados; o ranking é só para quem está logado, porque mostra os nomes de usuário. As funcionalidades sociais não foram iniciadas.
 
 | Requisito | Situação |
 |---|---|

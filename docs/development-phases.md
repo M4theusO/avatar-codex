@@ -16,7 +16,7 @@
 | **P0** | Arquitetura, banco, personagens, autenticação, frontend, perfil, favoritos |
 | **P1** | Descoberta, XP, níveis, conquistas, quiz |
 | **P2** | Desafios, timeline, comparação |
-| **P3** | Ranking, teste de elemento, funcionalidades sociais |
+| **P3** | Ranking, teste de elemento (Fases 20–21), funcionalidades sociais (não iniciadas) |
 
 Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 
@@ -45,7 +45,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 18 | Habilidades | P2 | Página de habilidades por elemento e detalhe com quem as domina (RF-ABIL-01) | Habilidades navegáveis a partir da navbar e do detalhe do personagem ✅ (2026-11-08) |
 | 19 | Excluir conta | — | `DELETE /api/users/me` com senha, botão no perfil, E2E apagando os próprios usuários | Nenhum usuário de teste sobra no banco depois dos E2E ✅ (2026-11-08) |
 | 20 | Teste de elemento | P3 | Perguntas com pontuação por elemento no banco, resultado no perfil, XP na 1ª vez (RF-ELTEST-01) | Resultado decidido no backend e salvo em `User.ElementId` ✅ (2026-11-08) |
-| 21 | Ranking | P3 | Ranking por XP global, do mês e por elemento, só para logados (RF-RANK-01) | Posição do usuário destacada; ordenação e desempate no backend |
+| 21 | Ranking | P3 | Ranking por XP global, do mês e por elemento, só para logados (RF-RANK-01) | Posição do usuário destacada; ordenação e desempate no backend ✅ (2026-11-08) |
 
 > Os testes **não ficam todos para a Fase 14**: cada fase já entrega os testes relevantes dela. A Fase 14 completa a cobertura e os fluxos E2E.
 
@@ -442,4 +442,21 @@ No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](d
 **Encontrado no caminho:**
 - **Navbar com login estourava a largura** depois da sexta seção ("Habilidades"): a 1280px a área do usuário ficava cortada e havia rolagem lateral. O teste da Fase 19 media a altura (continuava numa linha só), não a largura. Como a barra tem a largura máxima do conteúdo (1200px), o espaço não cresce em telas maiores. **Correção:** no desktop os links ficam só com o texto (ícones continuam no menu recolhido) e a regra que alargava os espaçamentos a partir de 1440px saiu. O E2E agora confere `scrollWidth <= clientWidth` com login a 1280px; 1366, 1440 e 1600 conferidos à parte.
 - `cypress/screenshots` e `cypress/videos` foram para o `.gitignore`.
+
+## Fase 21 — Ranking (concluída)
+
+- [x] `GET /api/ranking` (🔒): `period` = `all` (XP total) ou `month` (soma das `ExperienceTransactions` do mês corrente em UTC), `elementId` opcional (elemento do perfil), paginação. Só entra quem tem XP > 0 no período
+- [x] `RankingRules` (funções puras): posições por competição (1, 2, 2, 4) com empate dividindo a posição, inclusive entre páginas; limites do mês em UTC; período válido
+- [x] `RankingService` monta posições e o `currentUser` (posição de quem consulta ou `null`); `RankingRepository` projeta com setters (para o EF filtrar e ordenar depois da projeção) e soma o XP do mês com `GROUP BY`
+- [x] Privacidade: só nome de usuário, nível, XP e elemento (nada de email ou id), e só para quem está logado (decisão do usuário)
+- [x] `/ranking` (🔒): período e elemento na URL, cartão "Sua posição" ou o motivo de não aparecer, lista com top 3 destacado e a linha do usuário com "Você"; atalho de medalha na área do usuário da navbar
+- [x] Testes: backend 318 (204 unitários + 114 de integração: posições com empate e entre páginas, mês em UTC, validação; ordem, empate e `currentUser` com XP gravado direto no banco, mês só com o XP do mês, filtro por elemento, sem email/id na resposta, 401 e 400); frontend 164; E2E 11 (+ ranking pela navbar, geral e do mês)
+- [x] Validado no Chrome (Cypress): ranking a 1280px e 390px; navbar com o atalho novo medida a 1280px (o último botão termina em 1211px, dentro da barra de 1200px)
+
+**Decisões:**
+- **Empate sem critério arbitrário:** quem tem o mesmo XP divide a posição; a ordem de exibição entre eles é pelo nome. Explicável e estável.
+- **Mês em UTC**, como os desafios diários: o mesmo instante vale para todos os usuários.
+- **Ranking como atalho na área do usuário** (e não como sétima seção da navbar): só existe para quem está logado e a barra já está no limite de largura.
+
+**Observação:** a suíte do Vitest às vezes estoura o tempo (5s) em testes de páginas lazy quando a máquina está carregada; isolados, eles passam. Na execução final, 164 de 164.
 

@@ -2,21 +2,21 @@
 
 Enciclopédia interativa + plataforma de exploração + sistema de evolução do usuário, inspirada em *Avatar: The Last Airbender* e *The Legend of Korra*.
 
-O usuário explora personagens, nações, a linha do tempo e comparações entre personagens, e constrói sua própria jornada: descobertas, favoritos, quizzes, XP, níveis, conquistas e desafios diários. Toda regra de progresso é decidida pelo backend.
+O usuário explora personagens, nações, a linha do tempo e comparações entre personagens, e constrói sua própria jornada: descobertas, favoritos, quizzes, XP, níveis, conquistas, desafios diários, o teste de elemento e o ranking. Toda regra de progresso é decidida pelo backend.
 
 > **No ar:** https://avatar-codex.vercel.app (entre com o usuário demo, abaixo). A primeira requisição depois de um tempo sem uso pode levar cerca de 1 minuto: a API fica no plano gratuito do Render, que dorme quando está ociosa.
 >
-> **Status:** v1 concluída e publicada (Fases 0–17). Plano completo em [docs/development-phases.md](docs/development-phases.md).
+> **Status:** v1 concluída e publicada (Fases 0–17); habilidades, exclusão de conta, teste de elemento e ranking nas Fases 18–21. Plano completo em [docs/development-phases.md](docs/development-phases.md).
 
 ## Funcionalidades
 
 | Área | O que tem |
 |---|---|
-| Conteúdo | 37 personagens com busca, filtros, ordenação e paginação (estado na URL); detalhe com habilidades e relações; 5 nações; linha do tempo com 4 eras e 17 eventos; comparação de dois personagens (radar, barras e tabela) |
-| Conta | Cadastro, login, logout e sessão recuperada ao recarregar (JWT em memória + refresh token em cookie httpOnly) |
+| Conteúdo | 37 personagens com busca, filtros, ordenação e paginação (estado na URL); detalhe com habilidades e relações; página de habilidades (23, por elemento) com quem domina cada uma; 5 nações; linha do tempo com 4 eras e 17 eventos; comparação de dois personagens (radar, barras e tabela) |
+| Conta | Cadastro, login, logout, sessão recuperada ao recarregar (JWT em memória + refresh token em cookie httpOnly) e exclusão da conta com confirmação de senha |
 | Exploração | Descoberta de personagens e nações (+10 XP na primeira vez), favoritos, histórico de descobertas |
-| Gamificação | XP e níveis, 6 conquistas, 4 quizzes com correção no backend, 3 desafios diários, painel personalizado e perfil com estatísticas |
-| Qualidade | Mobile-first, acessível (WCAG AA, teclado, `prefers-reduced-motion`), loading/empty/error em todas as telas; 304 testes no backend, 157 no frontend e E2E no Cypress |
+| Gamificação | XP e níveis, 6 conquistas, 4 quizzes com correção no backend, 3 desafios diários, teste de elemento (resultado no perfil), ranking por XP (geral, do mês e por elemento), painel personalizado e perfil com estatísticas |
+| Qualidade | Mobile-first, acessível (WCAG AA, teclado, `prefers-reduced-motion`), loading/empty/error em todas as telas; 318 testes no backend, 164 no frontend e E2E no Cypress |
 
 ## Stack
 
@@ -193,7 +193,7 @@ Nenhum secret é versionado; os arquivos `.env.example` servem de modelo.
 | [UI/UX](docs/ui-ux.md) | Identidade visual, rotas, páginas, componentes, estados, acessibilidade |
 | [Testes](docs/testing.md) | Como rodar cada suíte, organização, cobertura e E2E |
 | [Deploy](docs/deployment.md) | Vercel + Render + Neon: decisões, passo a passo, limitações do plano gratuito |
-| [Fases](docs/development-phases.md) | Fases 0–17 e o que foi entregue em cada uma |
+| [Fases](docs/development-phases.md) | Fases 0–21 e o que foi entregue em cada uma |
 
 ## Aviso legal
 

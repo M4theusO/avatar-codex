@@ -213,6 +213,14 @@ Resposta:
 
 Validações: todas as perguntas do quiz respondidas uma única vez, e cada opção deve pertencer à sua pergunta (senão 400, com as mensagens no campo `answers`). `experienceEarned` é o XP do quiz nesta tentativa (sem o das conquistas e dos desafios concluídos no mesmo evento); `reward` é `null` quando a tentativa não rendeu XP nem conquista.
 
+#### Ranking (RF-RANK-01)
+
+| Método | Rota | | Descrição | Respostas |
+|---|---|---|---|---|
+| GET | `/api/ranking` | 🔒 | Ranking por XP. `period` = `all` (XP total, padrão) ou `month` (XP ganho no mês corrente, UTC); `elementId` opcional (elemento do perfil, vindo do teste); `page`/`pageSize` (1–50, padrão 20) | 200, 400, 401 |
+
+Resposta: `period`, `periodStart`/`periodEnd` (mês em UTC no mensal; `null` no geral), `elementId`, `entries` (`PagedResult` de `position`, `username`, `level`, `experience` (XP do período), `element`, `isCurrentUser`) e `currentUser` (`position`, `experience`; `null` quando quem consulta não entra neste ranking). Só entra quem tem XP > 0 no período. **Empatados dividem a posição** (1, 2, 2, 4), exibidos pelo nome (`RankingRules`). Nenhum email ou id de usuário é exposto.
+
 #### Teste de elemento (RF-ELTEST-01)
 
 | Método | Rota | | Descrição | Respostas |
