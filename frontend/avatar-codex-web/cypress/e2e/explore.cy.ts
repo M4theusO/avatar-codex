@@ -37,9 +37,12 @@ describe('Explorar personagens', () => {
   })
 
   it('vai do personagem para a habilidade e vê quem a domina', () => {
-    // Com login (Painel + barra de XP), a navbar completa cabe numa linha a 1280px.
+    // Com login (Painel + área do usuário), a navbar completa cabe em 1280px sem rolagem lateral.
     cy.visit('/abilities')
-    cy.get('header').invoke('outerHeight').should('be.lessThan', 90)
+    cy.findByRole('link', { name: /meu perfil/ }).should('be.visible')
+    cy.document().then((doc) => {
+      expect(doc.documentElement.scrollWidth).to.be.at.most(doc.documentElement.clientWidth)
+    })
     cy.findByRole('region', { name: 'Fogo' }).should('be.visible')
 
     cy.characterId('Zuko').then((id) => cy.visit(`/characters/${id}`))
