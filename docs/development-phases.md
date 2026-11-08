@@ -42,6 +42,10 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 15 | Refinamento visual | — | Espaçamento, tipografia, responsividade, acessibilidade, animações, loading/empty/error, microinterações | Aparência de produto final ✅ (2026-10-28) |
 | 16 | Documentação final | — | README, arquitetura, banco, API, instalação, testes, decisões técnicas | Outro dev executa o projeto só com a doc ✅ (2026-10-30) |
 | 17 | Deploy | — | Frontend (Vercel/Netlify), backend (Render/Azure/Railway), PostgreSQL gerenciado; sem serviços pagos | Aplicação pública; decisões documentadas ✅ (2026-10-30) |
+| 18 | Habilidades | P2 | Página de habilidades por elemento e detalhe com quem as domina (RF-ABIL-01) | Habilidades navegáveis a partir da navbar e do detalhe do personagem ✅ (2026-11-08) |
+| 19 | Excluir conta | — | `DELETE /api/users/me` com senha, botão no perfil, E2E apagando os próprios usuários | Nenhum usuário de teste sobra no banco depois dos E2E |
+| 20 | Teste de elemento | P3 | Perguntas com pontuação por elemento no banco, resultado no perfil, XP na 1ª vez (RF-ELTEST-01) | Resultado decidido no backend e salvo em `User.ElementId` |
+| 21 | Ranking | P3 | Ranking por XP global, do mês e por elemento, só para logados (RF-RANK-01) | Posição do usuário destacada; ordenação e desempate no backend |
 
 > Os testes **não ficam todos para a Fase 14**: cada fase já entrega os testes relevantes dela. A Fase 14 completa a cobertura e os fluxos E2E.
 
@@ -397,3 +401,18 @@ No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](d
 **Dados de teste em produção:** os E2E criaram usuários `e2e_*@example.com` no banco do Neon, e o usuário demo tem 20 XP de testes (descoberta do Zuko + "Primeiro passo").
 
 **Pendências:** CI no GitHub Actions (decidido deixar para depois); restringir a API ao tráfego da Vercel e domínio próprio (opcionais, `deployment.md` §7). As imagens dos 25 personagens restantes foram adicionadas em 2026-11-08 (37/37 com retrato, sem mudança de código).
+
+## Fase 18 — Habilidades (concluída)
+
+- [x] `GET /api/abilities` passa a devolver `characterCount` e a ordenar como as nações (Água, Terra, Fogo, Ar; sem elemento por último; depois por nome)
+- [x] `GET /api/abilities/{id}` (público, token opcional preenche `isFavorite`/`isDiscovered`): habilidade + personagens que a possuem; 404 para inexistente
+- [x] `/abilities`: seções por elemento (título em Cinzel com o ícone do elemento) e cards com descrição e quantidade de personagens; `/abilities/:id`: cabeçalho no tom do elemento e grade de personagens ("Quem domina")
+- [x] Entradas: item "Habilidades" na navbar e cards de habilidade clicáveis no detalhe do personagem
+- [x] `DetailHero` extraído do detalhe da nação e reaproveitado no da habilidade
+- [x] Testes: backend +3 de integração (ordem e contagem, detalhe, 404); frontend +7 (agrupamento, lista, vazio, erro, detalhe, 404, id inválido) e o link no detalhe do personagem
+- [x] Validado no Chrome: lista com os 5 grupos (23 habilidades) e detalhe do "Redirecionamento de relâmpago" com Aang, Iroh e Zuko
+
+**Decisões:**
+- O agrupamento por elemento é feito no frontend (é apresentação); a ordem vem do backend.
+- A navbar ganhou uma sexta seção. Sem login ela cabe em 1280px; com login (Painel + barra de XP) a medida é feita na Fase 19.
+

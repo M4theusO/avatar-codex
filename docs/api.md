@@ -110,7 +110,8 @@ Exemplo de resposta de login:
 | GET | `/api/nations` | 🔓 | Nações com elemento e `characterCount`, na ordem dos elementos (Água, Terra, Fogo, Ar) e sem elemento por último |
 | GET | `/api/nations/{id}` | 🔓* | Detalhe + personagens. 404 se não existir. |
 | GET | `/api/elements` | 🔓 | Elementos (com cor e ícone) e seus subtipos de dobra |
-| GET | `/api/abilities` | 🔓 | Lista ordenada por nome (filtro opcional `elementId`) |
+| GET | `/api/abilities` | 🔓 | Habilidades (`AbilityListItemDto[]`: `id`, `name`, `description`, `element`, `image`, `characterCount`) na ordem dos elementos (sem elemento por último) e por nome; filtro opcional `elementId` |
+| GET | `/api/abilities/{id}` | 🔓* | Detalhe (`AbilityDetailsDto`) com os personagens que a possuem (`characters`, ordenados por nome). 404 se não existir. |
 | GET | `/api/timeline` | 🔓 | Eventos em ordem cronológica **agrupados por era** (`TimelineEraDto[]`: `id`, `name`, `description`, `events[]` com `id`, `title`, `description`, `dateLabel`, `image`, `characters` resumidos e ordenados por nome). Filtros opcionais e combináveis: `eraId`, `characterId`; eras sem eventos no filtro ficam de fora, filtro sem resultado → `[]`, id ≤ 0 ou não numérico → 400 |
 | GET | `/api/eras` | 🔓 | Eras em ordem cronológica (`EraDto[]`: `id`, `name`, `description`, `eventCount`) |
 | GET | `/api/series` | 🔓 | Séries (para filtro) |

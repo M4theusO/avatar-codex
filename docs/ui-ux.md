@@ -102,6 +102,8 @@ As telas são desenhadas primeiro para mobile e expandidas. Não vale fazer o de
 | `/characters/:id` | Detalhe do personagem | público (descoberta/favorito se logado) |
 | `/nations` | Nações | público |
 | `/nations/:id` | Detalhe da nação | público |
+| `/abilities` | Habilidades agrupadas por elemento | público |
+| `/abilities/:id` | Detalhe da habilidade e quem a domina | público |
 | `/timeline` | Linha do tempo | público |
 | `/compare` | Comparação (`?a=1&b=2`) | público |
 | `/quizzes` | Lista de quizzes | público |

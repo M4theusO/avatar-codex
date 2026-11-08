@@ -187,7 +187,6 @@ Todos os requisitos P0, P1 e P2 estão implementados, com as exceções e ajuste
 | Requisito | Situação |
 |---|---|
 | RF-ELEM-01 (elementos e subtipos) | Disponível na API (`GET /api/elements`) e usado na Home, nos filtros e nos badges; não há uma página só de elementos. |
-| RF-ABIL-01 (habilidades e quem as possui) | Disponível na API (`GET /api/abilities`, `GET /api/characters/{id}/abilities`); na interface, as habilidades aparecem no detalhe e na comparação de personagens. Não há página de habilidades com a lista de quem as possui. |
 | RF-PROF-01 (avatar e elemento no perfil) | O perfil mostra avatar e elemento quando existem, mas não há edição de perfil na v1 (`avatarUrl` e `elementId` ficam nulos). A escolha do elemento fica para o teste de elemento (RF-ELTEST-01, P3). |
 | RF-CHAL-01 ("Explore uma nação") | Coberto pelo tipo de desafio `DiscoverNations`. |
 | `POST /api/challenges/{id}/complete` da especificação | Removido de propósito (D9): a conclusão é automática no backend. |
