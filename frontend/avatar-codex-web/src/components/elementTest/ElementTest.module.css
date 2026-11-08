@@ -1,0 +1,162 @@
+.intro {
+  --element-color: var(--color-air);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(
+      ellipse at 0% 0%,
+      color-mix(in srgb, var(--element-color) 16%, transparent),
+      transparent 60%
+    ),
+    var(--color-surface);
+}
+
+.introText {
+  max-width: 40rem;
+  color: var(--color-text-muted);
+}
+
+.ring {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  /* Os quatro elementos, como a marca do app, sem favorecer nenhum. */
+  background: conic-gradient(
+    var(--color-air) 0 25%,
+    var(--color-water) 0 50%,
+    var(--color-earth) 0 75%,
+    var(--color-fire) 0
+  );
+  mask: radial-gradient(circle, transparent 42%, #000 44%);
+}
+
+.current {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.result {
+  --element-color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.reveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-5);
+  border: 1px solid color-mix(in srgb, var(--element-color) 50%, var(--color-border));
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      color-mix(in srgb, var(--element-color) 28%, transparent),
+      transparent 65%
+    ),
+    var(--color-surface);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  animation: reveal 600ms ease both;
+}
+
+.symbol {
+  display: grid;
+  place-items: center;
+  width: 6rem;
+  height: 6rem;
+  border: 2px solid var(--element-color);
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--element-color) 18%, transparent);
+  color: var(--element-color);
+}
+
+.eyebrow {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.elementName {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+}
+
+.elementName:focus {
+  outline: none;
+}
+
+.description {
+  max-width: 40rem;
+  color: var(--color-text-muted);
+}
+
+.scores {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.scoresTitle {
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.scoreList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scoreList li {
+  --element-color: var(--color-text-muted);
+  display: grid;
+  grid-template-columns: 6.5rem 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.scoreName {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 500;
+}
+
+.scoreIcon {
+  color: var(--element-color);
+}
+
+.scorePoints {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}

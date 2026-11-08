@@ -1,4 +1,5 @@
 import { LogOut } from 'lucide-react'
+import { Link } from 'react-router'
 import { ElementBadge } from '../../components/common/Badge'
 import { Button } from '../../components/common/Button'
 import CharacterAvatar from '../../components/common/CharacterAvatar'
@@ -43,8 +44,22 @@ export default function ProfilePage() {
           <dl className={styles.stats}>
             <div>
               <dt>Elemento</dt>
-              <dd>
-                {user.element ? <ElementBadge element={user.element} /> : 'Ainda não definido'}
+              <dd className={styles.element}>
+                {user.element ? (
+                  <>
+                    <ElementBadge element={user.element} />
+                    <Link to="/element-test" className={styles.elementLink}>
+                      Refazer o teste
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    Ainda não definido
+                    <Link to="/element-test" className={styles.elementLink}>
+                      Descobrir meu elemento
+                    </Link>
+                  </>
+                )}
               </dd>
             </div>
             <div>

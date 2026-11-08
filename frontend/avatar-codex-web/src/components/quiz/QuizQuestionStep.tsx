@@ -1,14 +1,15 @@
 import { useEffect, useRef } from 'react'
-import type { QuizQuestion } from '../../types/quiz'
 import ProgressBar from '../common/ProgressBar'
 import styles from './QuizPlay.module.css'
 
 interface QuizQuestionStepProps {
-  question: QuizQuestion
+  /** Pergunta do quiz ou do teste de elemento: só o enunciado e as opções importam aqui. */
+  question: { id: number; text: string; options: { id: number; text: string }[] }
   index: number
   total: number
   selectedOptionId: number | undefined
   onSelect: (optionId: number) => void
+  progressLabel?: string
 }
 
 const letters = ['A', 'B', 'C', 'D', 'E', 'F']
@@ -20,6 +21,7 @@ export default function QuizQuestionStep({
   total,
   selectedOptionId,
   onSelect,
+  progressLabel = 'Progresso do quiz',
 }: QuizQuestionStepProps) {
   const headingRef = useRef<HTMLHeadingElement>(null)
   const isFirstRender = useRef(true)
@@ -39,7 +41,7 @@ export default function QuizQuestionStep({
         <span className={styles.counter}>
           Pergunta {index + 1} de {total}
         </span>
-        <ProgressBar value={index + 1} max={total} label="Progresso do quiz" />
+        <ProgressBar value={index + 1} max={total} label={progressLabel} />
       </div>
 
       {/* O enunciado é o nome do grupo de opções (no lugar de um <legend>, para poder receber foco). */}

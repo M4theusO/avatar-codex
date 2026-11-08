@@ -39,6 +39,11 @@
   color: var(--color-text-muted);
 }
 
+.heroLink {
+  color: var(--color-air);
+  font-weight: 500;
+}
+
 .heroXp {
   width: 100%;
   max-width: 32rem;

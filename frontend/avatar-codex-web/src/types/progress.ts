@@ -53,6 +53,7 @@ export type ExperienceType =
   | 'QuizPerfect'
   | 'ChallengeCompleted'
   | 'AchievementUnlocked'
+  | 'ElementTestCompleted'
 
 export interface ExperienceTransaction {
   id: number

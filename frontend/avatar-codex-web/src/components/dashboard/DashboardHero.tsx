@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import type { User } from '../../types/auth'
 import { elementStyle } from '../../utils/labels'
 import XpBar from '../progress/XpBar'
@@ -10,7 +11,17 @@ export default function DashboardHero({ user }: { user: User }) {
       <div>
         <p className={styles.eyebrow}>Sua jornada</p>
         <h1 className={styles.greeting}>Olá, {user.username}</h1>
-        <p className={styles.subtitle}>Continue de onde parou.</p>
+        <p className={styles.subtitle}>
+          Continue de onde parou.
+          {!user.element && (
+            <>
+              {' '}
+              <Link to="/element-test" className={styles.heroLink}>
+                Descubra seu elemento
+              </Link>
+            </>
+          )}
+        </p>
       </div>
       <div className={styles.heroXp}>
         <XpBar user={user} />
