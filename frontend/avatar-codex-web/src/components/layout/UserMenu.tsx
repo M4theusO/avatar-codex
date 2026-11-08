@@ -1,4 +1,4 @@
-import { LogOut, Star, Target, Trophy } from 'lucide-react'
+import { LogOut, Medal, Star, Target, Trophy } from 'lucide-react'
 import { Link, NavLink } from 'react-router'
 import { useAuth } from '../../hooks/useAuth'
 import { useLogout } from '../../hooks/useLogout'
@@ -66,6 +66,14 @@ export default function UserMenu({ onNavigate }: { onNavigate: () => void }) {
         aria-label="Conquistas"
       >
         <Trophy size={18} aria-hidden="true" />
+      </NavLink>
+      <NavLink
+        to="/ranking"
+        className={({ isActive }) => `${styles.iconButton} ${isActive ? styles.iconActive : ''}`}
+        onClick={onNavigate}
+        aria-label="Ranking"
+      >
+        <Medal size={18} aria-hidden="true" />
       </NavLink>
       <button
         type="button"

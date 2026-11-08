@@ -53,6 +53,7 @@ export const routes: RouteObject[] = [
           },
           { path: 'dashboard', lazy: page(() => import('./pages/Dashboard/DashboardPage')) },
           { path: 'profile', lazy: page(() => import('./pages/Profile/ProfilePage')) },
+          { path: 'ranking', lazy: page(() => import('./pages/Ranking/RankingPage')) },
           {
             path: 'element-test',
             lazy: page(() => import('./pages/ElementTest/ElementTestPage')),
