@@ -13,9 +13,6 @@ namespace AvatarCodex.Api.Controllers;
 [Produces("application/json")]
 public class AuthController(AuthService auth) : ControllerBase
 {
-    public const string RefreshCookieName = "refresh_token";
-    private const string RefreshCookiePath = "/api/auth";
-
     /// <summary>Cria a conta e já inicia a sessão.</summary>
     [HttpPost("register")]
     [ProducesResponseType<AuthResponse>(StatusCodes.Status201Created)]
@@ -24,7 +21,7 @@ public class AuthController(AuthService auth) : ControllerBase
     public async Task<ActionResult<AuthResponse>> Register(RegisterRequest request, CancellationToken cancellationToken)
     {
         var result = await auth.RegisterAsync(request, cancellationToken);
-        SetRefreshCookie(result);
+        Response.SetRefreshCookie(result);
         return CreatedAtAction(nameof(Me), result.Response);
     }
 
@@ -35,7 +32,7 @@ public class AuthController(AuthService auth) : ControllerBase
     public async Task<ActionResult<AuthResponse>> Login(LoginRequest request, CancellationToken cancellationToken)
     {
         var result = await auth.LoginAsync(request, cancellationToken);
-        SetRefreshCookie(result);
+        Response.SetRefreshCookie(result);
         return Ok(result.Response);
     }
 
@@ -47,14 +44,14 @@ public class AuthController(AuthService auth) : ControllerBase
     {
         try
         {
-            var result = await auth.RefreshAsync(Request.Cookies[RefreshCookieName], cancellationToken);
-            SetRefreshCookie(result);
+            var result = await auth.RefreshAsync(Request.GetRefreshToken(), cancellationToken);
+            Response.SetRefreshCookie(result);
             return Ok(result.Response);
         }
         catch (UnauthorizedException ex)
         {
             // Responde aqui (e não pelo handler global, que limpa os headers) para apagar o cookie inválido.
-            ClearRefreshCookie();
+            Response.ClearRefreshCookie();
             return Unauthorized(new ErrorResponse(StatusCodes.Status401Unauthorized, ex.Message, []));
         }
     }
@@ -64,8 +61,8 @@ public class AuthController(AuthService auth) : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
-        await auth.LogoutAsync(Request.Cookies[RefreshCookieName], cancellationToken);
-        ClearRefreshCookie();
+        await auth.LogoutAsync(Request.GetRefreshToken(), cancellationToken);
+        Response.ClearRefreshCookie();
         return NoContent();
     }
 
@@ -75,23 +72,4 @@ public class AuthController(AuthService auth) : ControllerBase
     [ProducesResponseType<ErrorResponse>(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<UserDto>> Me(CancellationToken cancellationToken) =>
         Ok(await auth.GetCurrentUserAsync(User.GetUserId(), cancellationToken));
-
-    private void SetRefreshCookie(AuthResult result) =>
-        Response.Cookies.Append(RefreshCookieName, result.RefreshToken, CookieOptions(result.RefreshTokenExpiresAt));
-
-    private void ClearRefreshCookie() =>
-        Response.Cookies.Delete(RefreshCookieName, CookieOptions(expires: null));
-
-    // httpOnly: invisível para JavaScript (protege contra XSS). Path restrito: só vai para /api/auth.
-    // SameSite=Strict funciona porque o frontend e a API são o mesmo "site": em dev, localhost:5173 e
-    // localhost:5080; em produção, a Vercel repassa /api/* para a API (docs/deployment.md).
-    private static CookieOptions CookieOptions(DateTimeOffset? expires) => new()
-    {
-        HttpOnly = true,
-        Secure = true,
-        SameSite = SameSiteMode.Strict,
-        Path = RefreshCookiePath,
-        Expires = expires,
-        IsEssential = true
-    };
 }

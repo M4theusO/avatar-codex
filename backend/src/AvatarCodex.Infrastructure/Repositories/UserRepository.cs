@@ -31,6 +31,9 @@ public class UserRepository(AppDbContext db) : IUserRepository
 
     public void AddRefreshToken(RefreshToken token) => db.RefreshTokens.Add(token);
 
+    public Task DeleteAsync(Guid id, CancellationToken cancellationToken) =>
+        db.Users.Where(u => u.Id == id).ExecuteDeleteAsync(cancellationToken);
+
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         try

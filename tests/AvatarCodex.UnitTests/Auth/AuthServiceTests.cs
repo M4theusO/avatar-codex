@@ -200,6 +200,57 @@ public class AuthServiceTests
         await Assert.ThrowsAsync<UnauthorizedException>(() => _service.GetCurrentUserAsync(Guid.NewGuid()));
     }
 
+    private AccountService Account() =>
+        new(_users, new FakePasswordHasher(), new DeleteAccountRequestValidator());
+
+    [Fact]
+    public async Task DeleteAccount_RightPassword_RemovesUserAndSessions()
+    {
+        var registered = await _service.RegisterAsync(ValidRegistration);
+
+        await Account().DeleteAsync(registered.Response.User.Id, new DeleteAccountRequest("Senha123"));
+
+        Assert.Empty(_users.Users);
+        Assert.Empty(_users.Tokens);
+    }
+
+    [Theory]
+    [InlineData("", "Informe sua senha para confirmar.")]
+    [InlineData("Errada123", AccountService.WrongPasswordMessage)]
+    public async Task DeleteAccount_MissingOrWrongPassword_IsAValidationErrorAndKeepsTheUser(
+        string password, string message)
+    {
+        var registered = await _service.RegisterAsync(ValidRegistration);
+
+        var error = await Assert.ThrowsAsync<ValidationException>(() =>
+            Account().DeleteAsync(registered.Response.User.Id, new DeleteAccountRequest(password)));
+
+        var failure = Assert.Single(error.Errors);
+        Assert.Equal("Password", failure.PropertyName);
+        Assert.Equal(message, failure.ErrorMessage);
+        Assert.Single(_users.Users);
+    }
+
+    [Fact]
+    public async Task DeleteAccount_DemoAccount_IsRefused()
+    {
+        var registered = await _service.RegisterAsync(
+            new RegisterRequest(DemoAccount.Username, DemoAccount.Email, DemoAccount.Password, DemoAccount.Password));
+
+        var error = await Assert.ThrowsAsync<BusinessRuleException>(() =>
+            Account().DeleteAsync(registered.Response.User.Id, new DeleteAccountRequest(DemoAccount.Password)));
+
+        Assert.Equal(AccountService.DemoAccountMessage, error.Message);
+        Assert.Single(_users.Users);
+    }
+
+    [Fact]
+    public async Task DeleteAccount_UserAlreadyGone_ThrowsUnauthorized()
+    {
+        await Assert.ThrowsAsync<UnauthorizedException>(() =>
+            Account().DeleteAsync(Guid.NewGuid(), new DeleteAccountRequest("Senha123")));
+    }
+
     private sealed class FakeUserRepository : IUserRepository
     {
         public List<User> Users { get; } = [];
@@ -229,6 +280,13 @@ public class AuthServiceTests
         }
 
         public Task SaveChangesAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+
+        public Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            Users.RemoveAll(u => u.Id == id);
+            Tokens.RemoveAll(t => t.UserId == id);
+            return Task.CompletedTask;
+        }
     }
 
     private sealed class FakePasswordHasher : IPasswordHasher

@@ -32,3 +32,6 @@ public record AuthResponse(string AccessToken, int ExpiresIn, UserDto User, Rewa
 /// nunca para o corpo da resposta.
 /// </summary>
 public record AuthResult(AuthResponse Response, string RefreshToken, DateTimeOffset RefreshTokenExpiresAt);
+
+/// <summary>Confirmação da exclusão da conta: a senha atual, mesmo com a sessão válida.</summary>
+public record DeleteAccountRequest(string Password);

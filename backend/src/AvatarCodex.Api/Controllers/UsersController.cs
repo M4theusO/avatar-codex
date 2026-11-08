@@ -20,8 +20,24 @@ public class UsersController(
     AchievementService achievements,
     QuizService quizzes,
     DashboardService dashboard,
-    DailyChallengeService challenges) : ControllerBase
+    DailyChallengeService challenges,
+    AccountService account) : ControllerBase
 {
+    /// <summary>
+    /// Exclui a conta e todos os dados dela, confirmando a senha. Senha errada → 400 (campo password);
+    /// conta de demonstração → 422. Apaga também o cookie de refresh.
+    /// </summary>
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<IActionResult> Delete(DeleteAccountRequest request, CancellationToken cancellationToken)
+    {
+        await account.DeleteAsync(User.GetUserId(), request, cancellationToken);
+        Response.ClearRefreshCookie();
+        return NoContent();
+    }
+
     /// <summary>
     /// Página inicial do usuário numa chamada: progresso, estatísticas, desafios do dia, conquistas,
     /// descobertas, recomendações, quiz em destaque e favoritos.

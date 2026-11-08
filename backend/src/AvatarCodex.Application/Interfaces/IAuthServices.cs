@@ -22,6 +22,9 @@ public interface IUserRepository
 
     void AddRefreshToken(RefreshToken token);
 
+    /// <summary>Exclui o usuário direto no banco; as tabelas dele saem junto (ON DELETE CASCADE).</summary>
+    Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+
     /// <summary>Salva as alterações. Violação de email/username únicos vira ConflictException.</summary>
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }

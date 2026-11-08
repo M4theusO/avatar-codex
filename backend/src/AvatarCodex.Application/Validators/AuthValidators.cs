@@ -49,3 +49,11 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
         RuleFor(r => r.Password).NotEmpty().WithMessage("Informe sua senha.");
     }
 }
+
+public class DeleteAccountRequestValidator : AbstractValidator<DeleteAccountRequest>
+{
+    public DeleteAccountRequestValidator()
+    {
+        RuleFor(r => r.Password).NotEmpty().WithMessage("Informe sua senha para confirmar.");
+    }
+}
