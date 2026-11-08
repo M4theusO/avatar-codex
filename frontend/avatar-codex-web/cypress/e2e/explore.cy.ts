@@ -40,6 +40,8 @@ describe('Explorar personagens', () => {
     // Com login (Painel + área do usuário), a navbar completa cabe em 1280px sem rolagem lateral.
     cy.visit('/abilities')
     cy.findByRole('link', { name: /meu perfil/ }).should('be.visible')
+    // Mede com as fontes web carregadas: com a fonte de fallback a barra é mais estreita.
+    cy.document().then((doc) => doc.fonts.ready)
     cy.document().then((doc) => {
       expect(doc.documentElement.scrollWidth).to.be.at.most(doc.documentElement.clientWidth)
     })

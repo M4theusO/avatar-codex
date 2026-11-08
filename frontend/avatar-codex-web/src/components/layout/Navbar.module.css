@@ -116,16 +116,19 @@
  * Desktop (docs/ui-ux.md §5): navbar completa com a área de sessão à direita, a partir de 1280px; abaixo
  * disso o menu continua recolhido. A barra tem a largura máxima do conteúdo (1200px), então o espaço não
  * cresce em telas maiores: com seis seções e a área do usuário logado, os links ficam só com o texto
- * (os ícones aparecem no menu recolhido). O E2E confere que não há rolagem lateral.
+ * (os ícones aparecem no menu recolhido) e os espaçamentos ficam mais justos. Medido com as fontes web
+ * carregadas (Inter e Cinzel são mais largas que a fonte de fallback): o E2E espera document.fonts.ready
+ * antes de conferir que não há rolagem lateral.
  */
 @media (min-width: 1280px) {
   .bar {
     flex-wrap: nowrap;
     gap: var(--space-4);
+    padding: 0 var(--space-4);
   }
 
   .link {
-    padding: var(--space-2);
+    padding: var(--space-2) 0.375rem;
   }
 
   .link svg {

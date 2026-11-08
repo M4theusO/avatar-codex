@@ -1,4 +1,4 @@
-import { LogOut, Medal, Star, Target, Trophy } from 'lucide-react'
+import { LogOut, Medal, Star, Target, Trophy, type LucideIcon } from 'lucide-react'
 import { Link, NavLink } from 'react-router'
 import { useAuth } from '../../hooks/useAuth'
 import { useLogout } from '../../hooks/useLogout'
@@ -49,41 +49,13 @@ export default function UserMenu({ onNavigate }: { onNavigate: () => void }) {
           </span>
         </span>
       </Link>
-      <NavLink
-        to="/favorites"
-        className={({ isActive }) => `${styles.iconButton} ${isActive ? styles.iconActive : ''}`}
-        onClick={onNavigate}
-        aria-label="Favoritos"
-      >
-        <Star size={18} aria-hidden="true" />
-      </NavLink>
-      <NavLink
-        to="/challenges"
-        className={({ isActive }) => `${styles.iconButton} ${isActive ? styles.iconActive : ''}`}
-        onClick={onNavigate}
-        aria-label="Desafios diários"
-      >
-        <Target size={18} aria-hidden="true" />
-      </NavLink>
-      <NavLink
-        to="/achievements"
-        className={({ isActive }) => `${styles.iconButton} ${isActive ? styles.iconActive : ''}`}
-        onClick={onNavigate}
-        aria-label="Conquistas"
-      >
-        <Trophy size={18} aria-hidden="true" />
-      </NavLink>
-      <NavLink
-        to="/ranking"
-        className={({ isActive }) => `${styles.iconButton} ${isActive ? styles.iconActive : ''}`}
-        onClick={onNavigate}
-        aria-label="Ranking"
-      >
-        <Medal size={18} aria-hidden="true" />
-      </NavLink>
+      <IconLink to="/favorites" label="Favoritos" icon={Star} onNavigate={onNavigate} />
+      <IconLink to="/challenges" label="Desafios diários" icon={Target} onNavigate={onNavigate} />
+      <IconLink to="/achievements" label="Conquistas" icon={Trophy} onNavigate={onNavigate} />
+      <IconLink to="/ranking" label="Ranking" icon={Medal} onNavigate={onNavigate} />
       <button
         type="button"
-        className={styles.iconButton}
+        className={`${styles.iconButton} ${styles.alignEnd}`}
         onClick={() => {
           onNavigate()
           void logout()
@@ -91,7 +63,41 @@ export default function UserMenu({ onNavigate }: { onNavigate: () => void }) {
         aria-label="Sair"
       >
         <LogOut size={18} aria-hidden="true" />
+        <Tooltip label="Sair" />
       </button>
     </div>
+  )
+}
+
+/**
+ * Dica visual com o nome do atalho, no hover e no foco pelo teclado. Para leitores de tela o nome
+ * já vem do aria-label, então a dica fica escondida deles (aria-hidden).
+ */
+function Tooltip({ label }: { label: string }) {
+  return (
+    <span className={styles.tooltip} aria-hidden="true">
+      {label}
+    </span>
+  )
+}
+
+interface IconLinkProps {
+  to: string
+  label: string
+  icon: LucideIcon
+  onNavigate: () => void
+}
+
+function IconLink({ to, label, icon: Icon, onNavigate }: IconLinkProps) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) => `${styles.iconButton} ${isActive ? styles.iconActive : ''}`}
+      onClick={onNavigate}
+      aria-label={label}
+    >
+      <Icon size={18} aria-hidden="true" />
+      <Tooltip label={label} />
+    </NavLink>
   )
 }

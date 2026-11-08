@@ -50,6 +50,7 @@
 }
 
 .iconButton {
+  position: relative;
   display: grid;
   flex-shrink: 0;
   place-items: center;
@@ -69,6 +70,73 @@
 .iconActive {
   border-color: var(--color-text-muted);
   color: var(--color-text);
+}
+
+/* Dica abaixo do ícone (a navbar fica no topo). Centralizada; a do último ícone alinha à direita
+   para não passar da borda da barra. */
+.tooltip {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  left: 50%;
+  z-index: 10;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-md);
+  color: var(--color-text);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -0.25rem);
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast),
+    visibility var(--transition-fast);
+}
+
+.alignEnd .tooltip {
+  right: 0;
+  left: auto;
+  transform: translateY(-0.25rem);
+}
+
+.iconButton:focus-visible .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+.alignEnd:focus-visible .tooltip {
+  transform: translateY(0);
+}
+
+/* Só em telas com mouse: no toque, o hover "grudaria" depois do clique. */
+@media (hover: hover) {
+  .iconButton:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
+
+  .alignEnd:hover .tooltip {
+    transform: translateY(0);
+  }
+}
+
+/* Na navbar completa (≥ 1280px) o espaço é justo: nome e ícones um pouco menores. */
+@media (min-width: 1280px) {
+  .identity {
+    width: 7rem;
+  }
+
+  .iconButton {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
 }
 
 @media (min-width: 768px) {
