@@ -30,6 +30,18 @@ public class UserNationDiscoveryConfiguration : IEntityTypeConfiguration<UserNat
     }
 }
 
+public class UserAbilityDiscoveryConfiguration : IEntityTypeConfiguration<UserAbilityDiscovery>
+{
+    public void Configure(EntityTypeBuilder<UserAbilityDiscovery> builder)
+    {
+        builder.HasKey(d => new { d.UserId, d.AbilityId });
+        builder.HasIndex(d => new { d.UserId, d.DiscoveredAt }).IsDescending(false, true);
+
+        builder.HasOne<User>().WithMany().HasForeignKey(d => d.UserId).OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(d => d.Ability).WithMany().HasForeignKey(d => d.AbilityId).OnDelete(DeleteBehavior.Restrict);
+    }
+}
+
 public class UserFavoriteCharacterConfiguration : IEntityTypeConfiguration<UserFavoriteCharacter>
 {
     public void Configure(EntityTypeBuilder<UserFavoriteCharacter> builder)

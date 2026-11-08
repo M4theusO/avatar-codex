@@ -68,5 +68,8 @@ public interface ICatalogRepository
     /// <summary>Habilidade com Element e personagens (com Nation e Element) carregados, ou null.</summary>
     Task<Ability?> GetAbilityDetailsAsync(int id, CancellationToken cancellationToken);
 
+    /// <summary>Nome da habilidade, ou null se não existir.</summary>
+    Task<string?> GetAbilityNameAsync(int id, CancellationToken cancellationToken);
+
     Task<IReadOnlyList<Series>> GetSeriesAsync(CancellationToken cancellationToken);
 }

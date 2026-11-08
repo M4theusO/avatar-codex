@@ -32,7 +32,8 @@ public record DiscoveryResultDto(bool IsNew, RewardResult? Reward);
 public enum DiscoveryKind
 {
     Character,
-    Nation
+    Nation,
+    Ability
 }
 
 public record DiscoveryDto(
@@ -48,6 +49,8 @@ public record UserStatisticsDto(
     int TotalCharacters,
     int DiscoveredNations,
     int TotalNations,
+    int DiscoveredAbilities,
+    int TotalAbilities,
     int Favorites,
     int UnlockedAchievements,
     int TotalAchievements,

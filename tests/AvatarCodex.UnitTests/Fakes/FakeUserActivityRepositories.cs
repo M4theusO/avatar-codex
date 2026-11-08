@@ -41,7 +41,7 @@ public sealed class FakeUserCollectionRepository : IUserCollectionRepository
         Task.FromResult<(IReadOnlyList<DiscoveryEntry>, int)>(([], 0));
 
     public Task<UserStatisticsDto> GetStatisticsAsync(Guid userId, CancellationToken cancellationToken) =>
-        Task.FromResult(new UserStatisticsDto(0, 0, 0, 0, Favorites.Count(f => f.UserId == userId), 0, 0, 0, 0, 0, null));
+        Task.FromResult(new UserStatisticsDto(0, 0, 0, 0, 0, 0, Favorites.Count(f => f.UserId == userId), 0, 0, 0, 0, 0, null));
 
     public List<ExperienceTransaction> Experience { get; } = [];
 

@@ -8,5 +8,6 @@ public enum ExperienceType
     QuizPerfect,
     ChallengeCompleted,
     AchievementUnlocked,
-    ElementTestCompleted
+    ElementTestCompleted,
+    AbilityDiscovered
 }

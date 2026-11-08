@@ -78,7 +78,7 @@ public class UserCollectionRepository(AppDbContext db) : IUserCollectionReposito
     public async Task<(IReadOnlyList<DiscoveryEntry> Items, int TotalItems)> GetDiscoveriesAsync(
         Guid userId, int page, int pageSize, CancellationToken cancellationToken)
     {
-        // O conteúdo é pequeno (dezenas de itens por usuário): juntar as duas listas em memória
+        // O conteúdo é pequeno (dezenas de itens por usuário): juntar as três listas em memória
         // é mais simples que um UNION com projeção de tipos owned.
         var characters = await db.CharacterDiscoveries
             .AsNoTracking()
@@ -94,7 +94,14 @@ public class UserCollectionRepository(AppDbContext db) : IUserCollectionReposito
                 DiscoveryKind.Nation, d.NationId, d.Nation.Name, d.Nation.SymbolImage, d.Nation.Element, d.DiscoveredAt))
             .ToListAsync(cancellationToken);
 
-        var all = characters.Concat(nations)
+        var abilities = await db.AbilityDiscoveries
+            .AsNoTracking()
+            .Where(d => d.UserId == userId)
+            .Select(d => new DiscoveryEntry(
+                DiscoveryKind.Ability, d.AbilityId, d.Ability.Name, d.Ability.Image, d.Ability.Element, d.DiscoveredAt))
+            .ToListAsync(cancellationToken);
+
+        var all = characters.Concat(nations).Concat(abilities)
             .OrderByDescending(d => d.DiscoveredAt)
             .ThenBy(d => d.Kind)
             .ThenBy(d => d.Id)
@@ -130,6 +137,8 @@ public class UserCollectionRepository(AppDbContext db) : IUserCollectionReposito
             TotalCharacters: await db.Characters.CountAsync(cancellationToken),
             DiscoveredNations: await db.NationDiscoveries.CountAsync(d => d.UserId == userId, cancellationToken),
             TotalNations: await db.Nations.CountAsync(cancellationToken),
+            DiscoveredAbilities: await db.AbilityDiscoveries.CountAsync(d => d.UserId == userId, cancellationToken),
+            TotalAbilities: await db.Abilities.CountAsync(cancellationToken),
             Favorites: await db.FavoriteCharacters.CountAsync(f => f.UserId == userId, cancellationToken),
             UnlockedAchievements: await db.UserAchievements.CountAsync(a => a.UserId == userId, cancellationToken),
             TotalAchievements: await db.Achievements.CountAsync(cancellationToken),

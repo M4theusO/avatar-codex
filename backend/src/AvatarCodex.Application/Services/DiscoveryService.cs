@@ -8,10 +8,11 @@ using FluentValidation;
 
 namespace AvatarCodex.Application.Services;
 
-/// <summary>Descoberta de personagens e nações (RF-DISC, RN-12, DA-01).</summary>
+/// <summary>Descoberta de personagens, nações e habilidades (RF-DISC, RN-12, DA-01).</summary>
 public class DiscoveryService(
     ICharacterRepository characters,
     INationRepository nations,
+    ICatalogRepository catalog,
     IUserCollectionRepository collection,
     ProgressionService progression,
     TimeProvider timeProvider,
@@ -54,6 +55,28 @@ public class DiscoveryService(
             {
                 UserId = userId,
                 NationId = nationId,
+                DiscoveredAt = timeProvider.GetUtcNow()
+            },
+            cancellationToken);
+
+        return new DiscoveryResultDto(reward is not null, reward);
+    }
+
+    public async Task<DiscoveryResultDto> DiscoverAbilityAsync(
+        Guid userId, int abilityId, CancellationToken cancellationToken = default)
+    {
+        var name = await catalog.GetAbilityNameAsync(abilityId, cancellationToken)
+            ?? throw NotFoundException.For("Habilidade", abilityId);
+
+        var reward = await progression.GrantAsync(
+            userId,
+            ExperienceType.AbilityDiscovered,
+            abilityId,
+            $"Descobriu {name}",
+            new UserAbilityDiscovery
+            {
+                UserId = userId,
+                AbilityId = abilityId,
                 DiscoveredAt = timeProvider.GetUtcNow()
             },
             cancellationToken);

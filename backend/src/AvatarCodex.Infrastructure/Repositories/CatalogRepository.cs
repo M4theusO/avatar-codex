@@ -42,6 +42,9 @@ public class CatalogRepository(AppDbContext db) : ICatalogRepository
             .Include(a => a.Characters).ThenInclude(c => c.Element)
             .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
 
+    public Task<string?> GetAbilityNameAsync(int id, CancellationToken cancellationToken) =>
+        db.Abilities.Where(a => a.Id == id).Select(a => a.Name).FirstOrDefaultAsync(cancellationToken);
+
     public async Task<IReadOnlyList<Series>> GetSeriesAsync(CancellationToken cancellationToken) =>
         await db.Series.AsNoTracking().OrderBy(s => s.Id).ToListAsync(cancellationToken);
 }

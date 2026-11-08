@@ -23,7 +23,7 @@ public class ProgressServicesTests
     public ProgressServicesTests()
     {
         _progression = TestProgression.Create(_progressionRepository, new FakeAchievementRepository(_progressionRepository), TimeProvider.System);
-        _discoveries = new DiscoveryService(_content, _content, _collection, _progression, TimeProvider.System, new PageQueryParametersValidator());
+        _discoveries = new DiscoveryService(_content, _content, _content, _collection, _progression, TimeProvider.System, new PageQueryParametersValidator());
         _favorites = new FavoriteService(_content, _collection, TimeProvider.System, new PageQueryParametersValidator());
     }
 
@@ -97,10 +97,26 @@ public class ProgressServicesTests
     }
 
     [Fact]
+    public async Task DiscoverAbility_GrantsTenXpOnce()
+    {
+        var first = await _discoveries.DiscoverAbilityAsync(UserId, FakeContentRepository.LightningId);
+        var second = await _discoveries.DiscoverAbilityAsync(UserId, FakeContentRepository.LightningId);
+
+        Assert.True(first.IsNew);
+        Assert.Equal(10, first.Reward!.XpGained);
+        Assert.False(second.IsNew);
+        var transaction = Assert.Single(_progressionRepository.Transactions);
+        Assert.Equal((ExperienceType.AbilityDiscovered, "Descobriu Dobra de relâmpago"), (transaction.Type, transaction.Description));
+        var record = Assert.IsType<UserAbilityDiscovery>(_progressionRepository.Records.Single());
+        Assert.Equal((UserId, FakeContentRepository.LightningId), (record.UserId, record.AbilityId));
+    }
+
+    [Fact]
     public async Task Discover_UnknownContent_ThrowsNotFoundWithoutXp()
     {
         await Assert.ThrowsAsync<NotFoundException>(() => _discoveries.DiscoverCharacterAsync(UserId, 999));
         await Assert.ThrowsAsync<NotFoundException>(() => _discoveries.DiscoverNationAsync(UserId, 999));
+        await Assert.ThrowsAsync<NotFoundException>(() => _discoveries.DiscoverAbilityAsync(UserId, 999));
 
         Assert.Empty(_progressionRepository.Transactions);
     }
@@ -130,10 +146,27 @@ public class ProgressServicesTests
             _favorites.GetPagedAsync(UserId, new PageQueryParameters { PageSize = 51 }));
     }
 
-    private sealed class FakeContentRepository : ICharacterRepository, INationRepository
+    private sealed class FakeContentRepository : ICharacterRepository, INationRepository, ICatalogRepository
     {
         public const int ZukoId = 13;
         public const int FireNationId = 4;
+        public const int LightningId = 7;
+
+        public Task<string?> GetAbilityNameAsync(int id, CancellationToken cancellationToken) =>
+            Task.FromResult(id == LightningId ? "Dobra de relâmpago" : null);
+
+        public Task<IReadOnlyList<Element>> GetElementsAsync(CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        Task<IReadOnlyList<(Ability Ability, int CharacterCount)>> ICatalogRepository.GetAbilitiesAsync(
+            int? elementId, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<Ability?> GetAbilityDetailsAsync(int id, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<IReadOnlyList<Series>> GetSeriesAsync(CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
 
         Task<string?> ICharacterRepository.GetNameAsync(int id, CancellationToken cancellationToken) =>
             Task.FromResult(id == ZukoId ? "Zuko" : null);

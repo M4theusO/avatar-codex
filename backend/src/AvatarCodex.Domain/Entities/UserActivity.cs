@@ -18,6 +18,14 @@ public class UserNationDiscovery
     public DateTimeOffset DiscoveredAt { get; set; }
 }
 
+public class UserAbilityDiscovery
+{
+    public Guid UserId { get; set; }
+    public int AbilityId { get; set; }
+    public Ability Ability { get; set; } = null!;
+    public DateTimeOffset DiscoveredAt { get; set; }
+}
+
 public class UserFavoriteCharacter
 {
     public Guid UserId { get; set; }

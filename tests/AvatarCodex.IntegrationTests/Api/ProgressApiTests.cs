@@ -34,6 +34,12 @@ public class ProgressApiTests(ContentApiFixture api)
         return nations.Single(n => n.Name == name).Id;
     }
 
+    private async Task<int> AbilityIdAsync()
+    {
+        var abilities = await api.GetJsonAsync<List<AbilityListItemDto>>("/api/abilities");
+        return abilities.First().Id;
+    }
+
     private static async Task<T> ReadAsync<T>(HttpResponseMessage response)
     {
         response.EnsureSuccessStatusCode();
@@ -124,9 +130,33 @@ public class ProgressApiTests(ContentApiFixture api)
         Assert.Equal(fireNation, transaction.SourceId);
     }
 
+    [SkippableFact]
+    public async Task AbilityDiscovery_GrantsTenXpOnce()
+    {
+        api.Database.SkipIfUnavailable();
+        var (client, auth) = await NewUserClientAsync();
+        var ability = await AbilityIdAsync();
+
+        var first = await ReadAsync<DiscoveryResultDto>(await client.PostAsync($"/api/abilities/{ability}/discovery", null));
+        var second = await ReadAsync<DiscoveryResultDto>(await client.PostAsync($"/api/abilities/{ability}/discovery", null));
+
+        Assert.True(first.IsNew);
+        Assert.Equal(10, first.Reward!.XpGained);
+        Assert.False(second.IsNew);
+        Assert.Null(second.Reward);
+
+        await using var db = api.Database.CreateContext();
+        var transaction = await db.ExperienceTransactions.SingleAsync(t =>
+            t.UserId == auth.User.Id && t.Type != ExperienceType.AchievementUnlocked);
+        Assert.Equal(ExperienceType.AbilityDiscovered, transaction.Type);
+        Assert.Equal(ability, transaction.SourceId);
+        Assert.Equal(1, await db.AbilityDiscoveries.CountAsync(d => d.UserId == auth.User.Id));
+    }
+
     [SkippableTheory]
     [InlineData("/api/characters/999999/discovery")]
     [InlineData("/api/nations/999999/discovery")]
+    [InlineData("/api/abilities/999999/discovery")]
     public async Task Discovery_UnknownResource_ReturnsNotFound(string url)
     {
         api.Database.SkipIfUnavailable();
@@ -138,6 +168,7 @@ public class ProgressApiTests(ContentApiFixture api)
     [SkippableTheory]
     [InlineData("POST", "/api/characters/1/discovery")]
     [InlineData("POST", "/api/nations/1/discovery")]
+    [InlineData("POST", "/api/abilities/1/discovery")]
     [InlineData("POST", "/api/characters/1/favorite")]
     [InlineData("DELETE", "/api/characters/1/favorite")]
     [InlineData("GET", "/api/users/me/favorites")]
@@ -250,18 +281,23 @@ public class ProgressApiTests(ContentApiFixture api)
         var fireNation = await NationIdAsync("Nação do Fogo");
         await client.PostAsync($"/api/characters/{zuko}/discovery", null);
         await client.PostAsync($"/api/nations/{fireNation}/discovery", null);
+        var ability = await AbilityIdAsync();
+        await client.PostAsync($"/api/abilities/{ability}/discovery", null);
         await client.PostAsync($"/api/characters/{zuko}/favorite", null);
 
         var history = await client.GetFromJsonAsync<PagedResult<DiscoveryDto>>("/api/users/me/discoveries", ContentApiFixture.JsonOptions);
-        Assert.Equal(2, history!.TotalItems);
-        Assert.Equal((DiscoveryKind.Nation, "Nação do Fogo"), (history.Items[0].Kind, history.Items[0].Name));
-        Assert.Equal((DiscoveryKind.Character, "Zuko"), (history.Items[1].Kind, history.Items[1].Name));
+        Assert.Equal(3, history!.TotalItems);
+        Assert.Equal((DiscoveryKind.Ability, ability), (history.Items[0].Kind, history.Items[0].Id));
+        Assert.Equal((DiscoveryKind.Nation, "Nação do Fogo"), (history.Items[1].Kind, history.Items[1].Name));
+        Assert.Equal((DiscoveryKind.Character, "Zuko"), (history.Items[2].Kind, history.Items[2].Name));
 
         var stats = await client.GetFromJsonAsync<UserStatisticsDto>("/api/users/me/statistics", ContentApiFixture.JsonOptions);
         Assert.Equal(1, stats!.DiscoveredCharacters);
         Assert.Equal(1, stats.DiscoveredNations);
         Assert.Equal(1, stats.Favorites);
         Assert.Equal(5, stats.TotalNations);
+        Assert.Equal(1, stats.DiscoveredAbilities);
+        Assert.True(stats.TotalAbilities >= 23);
         Assert.True(stats.TotalCharacters >= 37);
         Assert.Equal(1, stats.UnlockedAchievements);
         Assert.Equal(6, stats.TotalAchievements);

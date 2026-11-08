@@ -7,6 +7,7 @@ public static class ExperienceRewards
 {
     public const int CharacterDiscovered = 10;
     public const int NationDiscovered = 10;
+    public const int AbilityDiscovered = 10;
     public const int QuizCompleted = 20;
     public const int QuizPerfect = 50;
     public const int ElementTestCompleted = 30;
@@ -16,6 +17,7 @@ public static class ExperienceRewards
     {
         ExperienceType.CharacterDiscovered => CharacterDiscovered,
         ExperienceType.NationDiscovered => NationDiscovered,
+        ExperienceType.AbilityDiscovered => AbilityDiscovered,
         ExperienceType.QuizCompleted => QuizCompleted,
         ExperienceType.QuizPerfect => QuizPerfect,
         ExperienceType.ElementTestCompleted => ElementTestCompleted,

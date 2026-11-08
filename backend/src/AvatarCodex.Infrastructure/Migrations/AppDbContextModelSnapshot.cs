@@ -986,6 +986,33 @@ namespace AvatarCodex.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserAbilityDiscovery", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("AbilityId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ability_id");
+
+                    b.Property<DateTimeOffset>("DiscoveredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("discovered_at");
+
+                    b.HasKey("UserId", "AbilityId")
+                        .HasName("pk_ability_discoveries");
+
+                    b.HasIndex("AbilityId")
+                        .HasDatabaseName("ix_ability_discoveries_ability_id");
+
+                    b.HasIndex("UserId", "DiscoveredAt")
+                        .IsDescending(false, true)
+                        .HasDatabaseName("ix_ability_discoveries_user_id_discovered_at");
+
+                    b.ToTable("ability_discoveries", (string)null);
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.UserAchievement", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -1674,6 +1701,25 @@ namespace AvatarCodex.Infrastructure.Migrations
                         .HasConstraintName("fk_users_elements_element_id");
 
                     b.Navigation("Element");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserAbilityDiscovery", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.Ability", "Ability")
+                        .WithMany()
+                        .HasForeignKey("AbilityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_ability_discoveries_abilities_ability_id");
+
+                    b.HasOne("AvatarCodex.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_ability_discoveries_users_user_id");
+
+                    b.Navigation("Ability");
                 });
 
             modelBuilder.Entity("AvatarCodex.Domain.Entities.UserAchievement", b =>
