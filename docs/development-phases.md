@@ -396,4 +396,4 @@ No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](d
 
 **Dados de teste em produção:** os E2E criaram usuários `e2e_*@example.com` no banco do Neon, e o usuário demo tem 20 XP de testes (descoberta do Zuko + "Primeiro passo").
 
-**Pendências:** CI no GitHub Actions (decidido deixar para depois); restringir a API ao tráfego da Vercel e domínio próprio (opcionais, `deployment.md` §7); imagens de 25 personagens.
+**Pendências:** CI no GitHub Actions (decidido deixar para depois); restringir a API ao tráfego da Vercel e domínio próprio (opcionais, `deployment.md` §7). As imagens dos 25 personagens restantes foram adicionadas em 2026-11-08 (37/37 com retrato, sem mudança de código).
