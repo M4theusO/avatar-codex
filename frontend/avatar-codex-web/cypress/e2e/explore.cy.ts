@@ -35,4 +35,21 @@ describe('Explorar personagens', () => {
       cy.findByText(/Você descobriu Katara/).should('not.exist')
     })
   })
+
+  it('vai do personagem para a habilidade e vê quem a domina', () => {
+    // Com login (Painel + barra de XP), a navbar completa cabe numa linha a 1280px.
+    cy.visit('/abilities')
+    cy.get('header').invoke('outerHeight').should('be.lessThan', 90)
+    cy.findByRole('region', { name: 'Fogo' }).should('be.visible')
+
+    cy.characterId('Zuko').then((id) => cy.visit(`/characters/${id}`))
+    cy.dismissLevelUp()
+    cy.findByRole('link', { name: 'Redirecionamento de relâmpago' }).click()
+
+    cy.findByRole('heading', { level: 1, name: 'Redirecionamento de relâmpago' }).should(
+      'be.visible',
+    )
+    cy.findByRole('heading', { name: /Quem domina/ }).should('be.visible')
+    cy.findByRole('link', { name: /Iroh/ }).should('be.visible')
+  })
 })

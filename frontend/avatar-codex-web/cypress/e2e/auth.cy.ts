@@ -52,4 +52,32 @@ describe('Conta', () => {
       cy.location('pathname').should('eq', '/login')
     })
   })
+
+  it('exclui a conta pelo perfil, confirmando a senha', () => {
+    cy.newUser().then((user) => {
+      cy.registerViaApi(user)
+      cy.visit('/profile')
+
+      cy.findByRole('button', { name: 'Excluir conta' }).click()
+      cy.findByRole('dialog', { name: 'Excluir conta?' }).within(() => {
+        cy.findByLabelText('Senha').type('SenhaErrada1')
+        cy.findByRole('button', { name: 'Excluir definitivamente' }).click()
+        cy.findByText('Senha incorreta.').should('be.visible')
+
+        cy.findByLabelText('Senha').clear().type(user.password)
+        cy.findByRole('button', { name: 'Excluir definitivamente' }).click()
+      })
+
+      cy.location('pathname').should('eq', '/')
+      cy.findByText('Sua conta foi excluída.').should('be.visible')
+      cy.request({
+        method: 'POST',
+        url: `${Cypress.expose('apiUrl')}/api/auth/login`,
+        body: { email: user.email, password: user.password },
+        failOnStatusCode: false,
+      })
+        .its('status')
+        .should('eq', 401)
+    })
+  })
 })
