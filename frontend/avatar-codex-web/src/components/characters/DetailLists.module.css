@@ -37,6 +37,37 @@
   color: var(--element-color);
 }
 
+.ability {
+  position: relative;
+  transition: border-color var(--transition-fast);
+}
+
+.ability:hover,
+.ability:focus-within {
+  border-color: var(--element-color);
+}
+
+.ability:has(.abilityLink:focus-visible) {
+  outline: 2px solid var(--color-air);
+  outline-offset: 2px;
+}
+
+.abilityLink {
+  text-decoration: none;
+}
+
+/* O card inteiro leva à página da habilidade. */
+.abilityLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.abilityLink:focus-visible {
+  outline: none;
+}
+
 .relationship {
   display: flex;
   align-items: center;

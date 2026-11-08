@@ -1,4 +1,6 @@
 import type {
+  AbilityDetails,
+  AbilityListItem,
   CharacterComparison,
   CharacterDetails,
   CharacterListItem,
@@ -35,6 +37,16 @@ export async function getNations(): Promise<Nation[]> {
 
 export async function getNation(id: number): Promise<NationDetails> {
   const { data } = await api.get<NationDetails>(`/api/nations/${id}`)
+  return data
+}
+
+export async function getAbilities(): Promise<AbilityListItem[]> {
+  const { data } = await api.get<AbilityListItem[]>('/api/abilities')
+  return data
+}
+
+export async function getAbility(id: number): Promise<AbilityDetails> {
+  const { data } = await api.get<AbilityDetails>(`/api/abilities/${id}`)
   return data
 }
 

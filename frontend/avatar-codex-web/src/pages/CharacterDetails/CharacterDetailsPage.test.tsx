@@ -33,6 +33,10 @@ describe('CharacterDetailsPage', () => {
     expect(screen.getByText('Depois se tornou Senhor do Fogo.')).toBeInTheDocument()
     expect(screen.getByText('Dobra de relâmpago')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Redirecionar relâmpago' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Redirecionar relâmpago' })).toHaveAttribute(
+      'href',
+      '/abilities/1',
+    )
     expect(screen.getByRole('link', { name: /Iroh/ })).toHaveAttribute('href', '/characters/14')
     expect(screen.getByText('Avatar: A Lenda de Aang')).toBeInTheDocument()
   })

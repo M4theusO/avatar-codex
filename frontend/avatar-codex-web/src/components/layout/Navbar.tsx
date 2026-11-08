@@ -5,6 +5,7 @@ import {
   Landmark,
   LayoutDashboard,
   Menu,
+  Sparkles,
   Users,
   X,
 } from 'lucide-react'
@@ -21,6 +22,7 @@ const dashboardLink = { to: '/dashboard', label: 'Painel', icon: LayoutDashboard
 const sectionLinks = [
   { to: '/characters', label: 'Personagens', icon: Users, end: false },
   { to: '/nations', label: 'Nações', icon: Landmark, end: false },
+  { to: '/abilities', label: 'Habilidades', icon: Sparkles, end: false },
   { to: '/quizzes', label: 'Quizzes', icon: BookOpenCheck, end: false },
   { to: '/timeline', label: 'Linha do tempo', icon: Hourglass, end: false },
 ]

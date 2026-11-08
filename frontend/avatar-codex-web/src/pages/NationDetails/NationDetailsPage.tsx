@@ -3,7 +3,7 @@ import { useParams } from 'react-router'
 import { CharacterGrid, CharacterGridSkeleton } from '../../components/characters/CharacterGrid'
 import BackLink from '../../components/common/BackLink'
 import { ButtonLink } from '../../components/common/Button'
-import ElementIcon from '../../components/common/ElementIcon'
+import DetailHero from '../../components/common/DetailHero'
 import Section from '../../components/common/Section'
 import Skeleton from '../../components/common/Skeleton'
 import { EmptyState, ErrorState } from '../../components/common/StatusMessage'
@@ -11,7 +11,6 @@ import { useNation } from '../../hooks/useContent'
 import { useDiscovery } from '../../hooks/useDiscovery'
 import type { NationDetails } from '../../types/content'
 import { isNotFoundError } from '../../utils/apiError'
-import { elementStyle } from '../../utils/labels'
 import styles from './NationDetailsPage.module.css'
 
 export default function NationDetailsPage() {
@@ -52,19 +51,7 @@ function NationContent({ nation }: { nation: NationDetails }) {
   return (
     <article className={styles.content}>
       <title>{`${name} · Avatar Codex`}</title>
-      <header className={styles.hero} style={elementStyle(element?.color)}>
-        <div className={styles.symbol}>
-          {symbolImage ? (
-            <img src={symbolImage.url} alt="" />
-          ) : (
-            <ElementIcon icon={element?.icon} size={40} />
-          )}
-        </div>
-        <div className={styles.heroText}>
-          <h1 className={styles.name}>{name}</h1>
-          <p className={styles.description}>{description}</p>
-        </div>
-      </header>
+      <DetailHero title={name} description={description} element={element} image={symbolImage} />
 
       <Section title="Personagens">
         {characters.length > 0 ? (

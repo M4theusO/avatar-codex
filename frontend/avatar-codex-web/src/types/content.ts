@@ -67,6 +67,14 @@ export interface Ability {
   image: Image | null
 }
 
+export interface AbilityListItem extends Ability {
+  characterCount: number
+}
+
+export interface AbilityDetails extends Ability {
+  characters: CharacterListItem[]
+}
+
 export interface Series {
   id: number
   code: string

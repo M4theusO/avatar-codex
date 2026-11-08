@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import type { Ability } from '../../types/content'
 import { elementStyle } from '../../utils/labels'
 import ElementIcon from '../common/ElementIcon'
@@ -14,7 +15,9 @@ export default function AbilityList({ abilities }: { abilities: Ability[] }) {
         >
           <h3 className={styles.abilityName}>
             <ElementIcon icon={ability.element?.icon} size={18} className={styles.abilityIcon} />
-            {ability.name}
+            <Link to={`/abilities/${ability.id}`} className={styles.abilityLink}>
+              {ability.name}
+            </Link>
           </h3>
           <p className={styles.muted}>{ability.description}</p>
         </li>

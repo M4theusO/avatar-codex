@@ -1,6 +1,8 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import {
   compareCharacters,
+  getAbilities,
+  getAbility,
   getCharacter,
   getCharacters,
   getElements,
@@ -51,6 +53,19 @@ export function useNation(id: number) {
   return useQuery({
     queryKey: ['nations', viewer.key, id],
     queryFn: () => getNation(id),
+    enabled: viewer.ready && Number.isInteger(id) && id > 0,
+  })
+}
+
+export function useAbilities() {
+  return useQuery({ queryKey: ['abilities'], queryFn: getAbilities })
+}
+
+export function useAbility(id: number) {
+  const viewer = useViewer()
+  return useQuery({
+    queryKey: ['abilities', viewer.key, id],
+    queryFn: () => getAbility(id),
     enabled: viewer.ready && Number.isInteger(id) && id > 0,
   })
 }

@@ -29,6 +29,11 @@ export const routes: RouteObject[] = [
       },
       { path: 'nations', lazy: page(() => import('./pages/Nations/NationsPage')) },
       { path: 'nations/:id', lazy: page(() => import('./pages/NationDetails/NationDetailsPage')) },
+      { path: 'abilities', lazy: page(() => import('./pages/Abilities/AbilitiesPage')) },
+      {
+        path: 'abilities/:id',
+        lazy: page(() => import('./pages/AbilityDetails/AbilityDetailsPage')),
+      },
       { path: 'timeline', lazy: page(() => import('./pages/Timeline/TimelinePage')) },
       { path: 'compare', lazy: page(() => import('./pages/Compare/ComparePage')) },
       { path: 'quizzes', lazy: page(() => import('./pages/Quizzes/QuizzesPage')) },
