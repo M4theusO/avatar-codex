@@ -1,6 +1,7 @@
 import { Crown } from 'lucide-react'
 import type { RankingEntry } from '../../types/ranking'
 import { formatXp } from '../../utils/ranking'
+import { userAvatarImage } from '../../utils/userAvatar'
 import CharacterAvatar from '../common/CharacterAvatar'
 import styles from './Ranking.module.css'
 
@@ -18,7 +19,12 @@ export default function RankingList({ entries }: { entries: RankingEntry[] }) {
             {entry.position === 1 && <Crown size={14} aria-hidden="true" />}
             {entry.position}º<span className="visually-hidden"> lugar</span>
           </span>
-          <CharacterAvatar name={entry.username} image={null} element={entry.element} size="sm" />
+          <CharacterAvatar
+            name={entry.username}
+            image={userAvatarImage(entry.avatarUrl)}
+            element={entry.element}
+            size="sm"
+          />
           <span className={styles.player}>
             <span className={styles.username}>
               {entry.username}

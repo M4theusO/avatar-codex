@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router'
 import { useAuth } from '../../hooks/useAuth'
 import { useLogout } from '../../hooks/useLogout'
 import { ButtonLink } from '../common/Button'
+import { userAvatarImage } from '../../utils/userAvatar'
 import CharacterAvatar from '../common/CharacterAvatar'
 import XpBar from '../progress/XpBar'
 import styles from './UserMenu.module.css'
@@ -31,7 +32,12 @@ export default function UserMenu({ onNavigate }: { onNavigate: () => void }) {
   return (
     <div className={styles.menu}>
       <Link to="/profile" className={styles.profile} onClick={onNavigate}>
-        <CharacterAvatar name={user.username} image={null} element={user.element} size="sm" />
+        <CharacterAvatar
+          name={user.username}
+          image={userAvatarImage(user.avatarUrl)}
+          element={user.element}
+          size="sm"
+        />
         <span className={styles.identity}>
           <span className={styles.username}>
             {user.username}

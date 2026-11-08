@@ -13,6 +13,8 @@ export interface RankingQuery {
 export interface RankingEntry {
   position: number
   username: string
+  /** Foto de perfil (relativa à API), ou null. */
+  avatarUrl: string | null
   level: number
   experience: number
   element: ElementSummary | null

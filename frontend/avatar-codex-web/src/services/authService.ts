@@ -1,4 +1,4 @@
-import type { AuthResponse, LoginData, RegisterData, SessionResult } from '../types/auth'
+import type { AuthResponse, LoginData, RegisterData, SessionResult, User } from '../types/auth'
 import { api, refreshSession, setAccessToken } from './api'
 
 function startSession(data: AuthResponse): SessionResult {
@@ -33,4 +33,21 @@ export async function logout() {
 /** Exclui a conta (confirmando a senha). A sessão local termina com o logout logo depois. */
 export async function deleteAccount(password: string) {
   await api.delete('/api/users/me', { data: { password } })
+}
+
+/** Troca o nome de usuário. Devolve o usuário atualizado. */
+export async function updateProfile(username: string) {
+  return (await api.patch<User>('/api/users/me', { username })).data
+}
+
+/** Envia a foto de perfil (substitui a anterior). Devolve o usuário com o novo `avatarUrl`. */
+export async function uploadAvatar(image: Blob) {
+  const form = new FormData()
+  form.append('file', image, 'avatar.jpg')
+  return (await api.put<User>('/api/users/me/avatar', form)).data
+}
+
+/** Remove a foto de perfil (volta para as iniciais). */
+export async function removeAvatar() {
+  return (await api.delete<User>('/api/users/me/avatar')).data
 }

@@ -5,6 +5,7 @@ import { Button } from '../../components/common/Button'
 import CharacterAvatar from '../../components/common/CharacterAvatar'
 import Section from '../../components/common/Section'
 import DeleteAccount from '../../components/profile/DeleteAccount'
+import EditProfile from '../../components/profile/EditProfile'
 import ExperienceHistory from '../../components/profile/ExperienceHistory'
 import ExplorationStats from '../../components/profile/ExplorationStats'
 import XpBar from '../../components/progress/XpBar'
@@ -12,6 +13,7 @@ import RecentDiscoveries from '../../components/profile/RecentDiscoveries'
 import { useAuth } from '../../hooks/useAuth'
 import { useLogout } from '../../hooks/useLogout'
 import { elementStyle } from '../../utils/labels'
+import { userAvatarImage } from '../../utils/userAvatar'
 import styles from './ProfilePage.module.css'
 
 const dateFormat = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long' })
@@ -23,15 +25,13 @@ export default function ProfilePage() {
   // RequireAuth garante a sessão; o null só existe durante o logout.
   if (!user) return null
 
-  const avatarImage = user.avatarUrl ? { url: user.avatarUrl, sourceUrl: null, credit: null } : null
-
   return (
     <div className={styles.page}>
       <title>{`${user.username} · Avatar Codex`}</title>
       <header className={styles.hero} style={elementStyle(user.element?.color)}>
         <CharacterAvatar
           name={user.username}
-          image={avatarImage}
+          image={userAvatarImage(user.avatarUrl)}
           element={user.element}
           size="lg"
         />
@@ -84,6 +84,10 @@ export default function ProfilePage() {
 
       <Section title="Histórico de XP">
         <ExperienceHistory />
+      </Section>
+
+      <Section title="Editar perfil">
+        <EditProfile />
       </Section>
 
       <Section title="Excluir conta">

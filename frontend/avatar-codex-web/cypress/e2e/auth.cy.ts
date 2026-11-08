@@ -53,6 +53,48 @@ describe('Conta', () => {
     })
   })
 
+  it('edita o nome de usuário e a foto de perfil (a nova foto substitui a anterior)', () => {
+    cy.newUser().then((user) => {
+      cy.registerViaApi(user)
+      cy.visit('/profile')
+      const newName = `${user.username}_x`
+
+      cy.findByLabelText('Nome de usuário').clear().type(newName)
+      cy.findByRole('button', { name: 'Salvar nome' }).click()
+      cy.findByText('Nome de usuário atualizado.').should('be.visible')
+      cy.findByRole('heading', { level: 1, name: newName }).should('be.visible')
+      cy.get('header').first().should('contain.text', newName) // navbar
+
+      // PNG 600×400: o navegador recorta o centro e reduz para 256×256 antes de enviar.
+      cy.findByLabelText('Escolher foto de perfil').selectFile('cypress/fixtures/avatar.png', {
+        force: true,
+      })
+      cy.findByText('Foto atualizada.').should('be.visible')
+      cy.get('img[src*="/api/avatars/"]')
+        .should('have.length.at.least', 2) // perfil + navbar
+        .first()
+        .should(($img) => {
+          const img = $img[0] as HTMLImageElement
+          expect(img.complete && img.naturalWidth).to.eq(256)
+          expect(img.naturalHeight).to.eq(256)
+        })
+        .invoke('attr', 'src')
+        .then((firstSrc) => {
+          cy.findByLabelText('Escolher foto de perfil').selectFile(
+            'public/images/characters/aang.jpg',
+            { force: true },
+          )
+          cy.get('img[src*="/api/avatars/"]').first().should('not.have.attr', 'src', firstSrc)
+          // A URL antiga deixa de existir: só uma foto por usuário.
+          cy.request({ url: firstSrc!, failOnStatusCode: false }).its('status').should('eq', 404)
+        })
+
+      cy.findByRole('button', { name: 'Remover foto' }).click()
+      cy.findByText('Foto removida.').should('be.visible')
+      cy.get('img[src*="/api/avatars/"]').should('not.exist')
+    })
+  })
+
   it('exclui a conta pelo perfil, confirmando a senha', () => {
     cy.newUser().then((user) => {
       cy.registerViaApi(user)

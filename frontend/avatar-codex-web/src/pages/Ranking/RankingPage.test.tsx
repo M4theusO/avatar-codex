@@ -21,6 +21,7 @@ function entry(overrides: Partial<RankingEntry> = {}): RankingEntry {
   return {
     position: 1,
     username: 'katara',
+    avatarUrl: null,
     level: 7,
     experience: 1240,
     element: null,
