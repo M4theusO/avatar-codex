@@ -55,6 +55,14 @@ describe('DashboardPage', () => {
         recommendations: [character({ id: 7, name: 'Toph Beifong' })],
         recentDiscoveries: [
           {
+            kind: 'Ability',
+            id: 5,
+            name: 'Dobra de metal',
+            image: null,
+            element: null,
+            discoveredAt: '2026-10-27T11:00:00Z',
+          },
+          {
             kind: 'Character',
             id: 13,
             name: 'Zuko',
@@ -88,6 +96,15 @@ describe('DashboardPage', () => {
     expect(within(discoveries).getByRole('link', { name: /Zuko/ })).toHaveAttribute(
       'href',
       '/characters/13',
+    )
+    expect(within(discoveries).getByRole('link', { name: /Dobra de metal/ })).toHaveAttribute(
+      'href',
+      '/abilities/5',
+    )
+    const stats = screen.getByRole('list', { name: 'Seu progresso' })
+    expect(within(stats).getByRole('link', { name: /Habilidades/ })).toHaveAttribute(
+      'href',
+      '/abilities',
     )
     const favorites = screen.getByRole('region', { name: 'Favoritos' })
     expect(within(favorites).getByRole('link', { name: 'Iroh' })).toHaveAttribute(

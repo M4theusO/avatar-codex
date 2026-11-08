@@ -9,7 +9,6 @@ import EditProfile from '../../components/profile/EditProfile'
 import ExperienceHistory from '../../components/profile/ExperienceHistory'
 import ExplorationStats from '../../components/profile/ExplorationStats'
 import XpBar from '../../components/progress/XpBar'
-import RecentDiscoveries from '../../components/profile/RecentDiscoveries'
 import { useAuth } from '../../hooks/useAuth'
 import { useLogout } from '../../hooks/useLogout'
 import { elementStyle } from '../../utils/labels'
@@ -76,10 +75,6 @@ export default function ProfilePage() {
 
       <Section title="Exploração">
         <ExplorationStats />
-      </Section>
-
-      <Section title="Descobertas recentes">
-        <RecentDiscoveries />
       </Section>
 
       <Section title="Histórico de XP">

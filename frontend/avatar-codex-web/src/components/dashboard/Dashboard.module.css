@@ -50,6 +50,7 @@
 }
 
 /* Estatísticas */
+/* 5 indicadores: 2 colunas no celular (o 5º ocupa a linha inteira) e uma linha só a partir de 768px. */
 .stats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -57,6 +58,10 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.stats > :last-child:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 
 .stat {
@@ -93,6 +98,63 @@
   color: var(--color-text-muted);
   font-size: var(--text-sm);
   font-weight: 500;
+}
+
+/* Descobertas recentes */
+.discoveries {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.discovery {
+  --element-color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  text-decoration: none;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.discovery:hover {
+  border-color: var(--element-color);
+  background-color: var(--color-surface-raised);
+}
+
+.discoveryIcon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid var(--element-color);
+  border-radius: 50%;
+  color: var(--element-color);
+}
+
+.discoveryText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.discoveryName {
+  font-weight: 600;
+}
+
+.discoveryMeta {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
 }
 
 /* Grade de seções */
@@ -225,7 +287,11 @@
   }
 
   .stats {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .stats > :last-child:nth-child(odd) {
+    grid-column: auto;
   }
 }
 

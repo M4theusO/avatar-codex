@@ -3,7 +3,6 @@ import type {
   CompletedChallenge,
   DailyChallenges,
   Dashboard,
-  Discovery,
   DiscoveryResult,
   ExperienceTransaction,
   UserAchievement,
@@ -37,13 +36,6 @@ export async function removeFavorite(characterId: number): Promise<void> {
 export async function getFavorites(page: number): Promise<PagedResult<CharacterListItem>> {
   const { data } = await api.get<PagedResult<CharacterListItem>>('/api/users/me/favorites', {
     params: { page },
-  })
-  return data
-}
-
-export async function getDiscoveries(pageSize: number): Promise<PagedResult<Discovery>> {
-  const { data } = await api.get<PagedResult<Discovery>>('/api/users/me/discoveries', {
-    params: { pageSize },
   })
   return data
 }

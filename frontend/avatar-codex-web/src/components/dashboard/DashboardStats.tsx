@@ -22,6 +22,13 @@ export default function DashboardStats({ statistics }: { statistics: UserStatist
       progressLabel: 'Nações descobertas',
     },
     {
+      to: '/abilities',
+      label: 'Habilidades',
+      value: statistics.discoveredAbilities,
+      max: statistics.totalAbilities,
+      progressLabel: 'Habilidades descobertas',
+    },
+    {
       to: '/achievements',
       label: 'Conquistas',
       value: statistics.unlockedAchievements,
@@ -57,7 +64,7 @@ export default function DashboardStats({ statistics }: { statistics: UserStatist
 export function DashboardStatsSkeleton() {
   return (
     <div className={styles.stats} aria-hidden="true">
-      {Array.from({ length: 4 }, (_, index) => (
+      {Array.from({ length: 5 }, (_, index) => (
         <Skeleton key={index} height="6rem" />
       ))}
     </div>

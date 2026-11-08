@@ -9,8 +9,8 @@ import { ErrorState } from '../../components/common/StatusMessage'
 import AchievementsSummary from '../../components/dashboard/AchievementsSummary'
 import DashboardHero from '../../components/dashboard/DashboardHero'
 import DashboardStats, { DashboardStatsSkeleton } from '../../components/dashboard/DashboardStats'
+import DiscoveryList from '../../components/dashboard/DiscoveryList'
 import styles from '../../components/dashboard/Dashboard.module.css'
-import { DiscoveryList } from '../../components/profile/RecentDiscoveries'
 import QuizCard from '../../components/quiz/QuizCard'
 import { useAuth } from '../../hooks/useAuth'
 import { useDashboard } from '../../hooks/useUserData'
@@ -82,12 +82,12 @@ function DashboardContent({ dashboard }: { dashboard: Dashboard }) {
         )}
       </Section>
 
-      <Section title="Descobertas recentes" action={<SeeAll to="/profile">Ver perfil</SeeAll>}>
+      <Section title="Descobertas recentes">
         {recentDiscoveries.length > 0 ? (
           <DiscoveryList discoveries={recentDiscoveries} />
         ) : (
           <div className={styles.note}>
-            <p>Abra a página de um personagem ou de uma nação para descobri-lo e ganhar XP.</p>
+            <p>Abra a página de um personagem, nação ou habilidade para descobri-lo e ganhar XP.</p>
             <ButtonLink to="/nations">Conhecer as nações</ButtonLink>
           </div>
         )}

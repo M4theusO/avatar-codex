@@ -5,7 +5,6 @@ import {
   getChallengeHistory,
   getDailyChallenges,
   getDashboard,
-  getDiscoveries,
   getExperience,
   getFavorites,
   getStatistics,
@@ -26,15 +25,6 @@ export function useFavorites(page: number) {
     queryFn: () => getFavorites(page),
     enabled,
     placeholderData: keepPreviousData,
-  })
-}
-
-export function useRecentDiscoveries(pageSize = 6) {
-  const { userId, enabled } = useUserKey()
-  return useQuery({
-    queryKey: ['me', userId, 'discoveries', pageSize],
-    queryFn: () => getDiscoveries(pageSize),
-    enabled,
   })
 }
 

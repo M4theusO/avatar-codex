@@ -37,7 +37,6 @@ beforeEach(() => {
   vi.mocked(userService.addFavorite).mockResolvedValue()
   vi.mocked(userService.removeFavorite).mockResolvedValue()
   vi.mocked(userService.getFavorites).mockResolvedValue(emptyPage)
-  vi.mocked(userService.getDiscoveries).mockResolvedValue(emptyPage)
   vi.mocked(userService.getExperience).mockResolvedValue(emptyPage)
   vi.mocked(userService.getStatistics).mockResolvedValue({
     discoveredCharacters: 0,

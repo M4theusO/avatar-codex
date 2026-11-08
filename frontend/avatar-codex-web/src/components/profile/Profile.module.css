@@ -65,62 +65,6 @@
   color: var(--color-text);
 }
 
-.discoveries {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
-  gap: var(--space-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.discovery {
-  --element-color: var(--color-text-muted);
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  height: 100%;
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface);
-  text-decoration: none;
-  transition:
-    border-color var(--transition-fast),
-    background-color var(--transition-fast);
-}
-
-.discovery:hover {
-  border-color: var(--element-color);
-  background-color: var(--color-surface-raised);
-}
-
-.nationIcon {
-  display: grid;
-  flex-shrink: 0;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 2px solid var(--element-color);
-  border-radius: 50%;
-  color: var(--element-color);
-}
-
-.discoveryText {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.discoveryName {
-  font-weight: 600;
-}
-
-.discoveryMeta {
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-}
-
 .history {
   display: flex;
   flex-direction: column;

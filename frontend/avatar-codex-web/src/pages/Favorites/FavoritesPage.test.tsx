@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { getDiscoveries, getFavorites, getStatistics } from '../../services/userService'
+import { getFavorites, getStatistics } from '../../services/userService'
 import { character, mockSession } from '../../test/fixtures'
 import { renderRoute } from '../../test/renderWithProviders'
 
@@ -49,7 +49,7 @@ describe('FavoritesPage', () => {
 })
 
 describe('ProfilePage (exploração)', () => {
-  it('mostra estatísticas e descobertas recentes', async () => {
+  it('mostra as estatísticas (sem as descobertas recentes, que ficam no painel)', async () => {
     mockSession()
     vi.mocked(getStatistics).mockResolvedValue({
       discoveredCharacters: 3,
@@ -65,38 +65,6 @@ describe('ProfilePage (exploração)', () => {
       totalQuizzes: 4,
       quizAttempts: 3,
       accuracyPercent: 87,
-    })
-    vi.mocked(getDiscoveries).mockResolvedValue({
-      items: [
-        {
-          kind: 'Ability',
-          id: 7,
-          name: 'Dobra de metal',
-          image: null,
-          element: null,
-          discoveredAt: '2026-10-26T16:00:00Z',
-        },
-        {
-          kind: 'Nation',
-          id: 4,
-          name: 'Nação do Fogo',
-          image: null,
-          element: null,
-          discoveredAt: '2026-10-26T15:00:00Z',
-        },
-        {
-          kind: 'Character',
-          id: 13,
-          name: 'Zuko',
-          image: null,
-          element: null,
-          discoveredAt: '2026-10-26T14:00:00Z',
-        },
-      ],
-      page: 1,
-      pageSize: 6,
-      totalItems: 3,
-      totalPages: 1,
     })
     renderRoute('/profile')
 
@@ -129,11 +97,8 @@ describe('ProfilePage (exploração)', () => {
     )
     expect(screen.getByText('87%')).toBeInTheDocument()
     expect(screen.getByText('3 tentativas')).toBeInTheDocument()
-    expect(await screen.findByRole('link', { name: /Nação do Fogo/ })).toHaveAttribute(
-      'href',
-      '/nations/4',
-    )
-    expect(screen.getByRole('link', { name: /Zuko/ })).toHaveAttribute('href', '/characters/13')
+    // As descobertas recentes ficam só no painel.
+    expect(screen.queryByRole('heading', { name: 'Descobertas recentes' })).not.toBeInTheDocument()
   })
 
   it('favoritos exige login', async () => {
