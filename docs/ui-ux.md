@@ -61,6 +61,7 @@ Consequências:
 - Badges de elemento: fundo com a cor em baixa opacidade (~15–20%), borda na cor sólida e **texto em `--color-text`**, sempre acompanhado de ícone/nome do elemento (nunca só cor).
 - Texto branco sobre as cores sólidas também fica abaixo de 4,5:1 (≈ 3,9–4,0:1), por isso evitar botões com fundo sólido de elemento e texto pequeno.
 - Os componentes recebem a cor do elemento que vem da API (campo `color`) na variável `--element-color`. Cards, badges e bordas se adaptam sem lógica extra. Sem elemento (não dobradores), o acento é o neutro `--color-text-muted`.
+- **Ícone da guia (favicon):** os quatro elementos (`public/favicon-32.png`, `favicon-48.png` e `apple-touch-icon.png` 180×180), reduzidos de `elements.jpg` (original fora do repo, em `C:UsersMatheusDesktopavatar-images`). Substituiu o logo padrão do Vite.
 - **Imagens de personagem (DA-04):** os retratos são quadrados (cabeça e ombros, 320×320) e preenchem o círculo do `CharacterAvatar`. Para quem ainda não tem imagem, o componente mostra as iniciais sobre o símbolo do elemento em marca d'água, num círculo com borda, anel interno e brilho na cor do elemento (sem símbolo para não dobradores e no tamanho pequeno). Quando houver `image`, ela cobre as iniciais sem mudança nas páginas; se o link falhar, as iniciais voltam.
 
 ## 3. Tipografia (DA-03 — aprovada)
