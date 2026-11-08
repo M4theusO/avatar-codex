@@ -141,7 +141,7 @@ Zuko · Toph · Korra         [card]
 ```
 Também mostra recomendações (personagens ainda não descobertos) e favoritos.
 
-**Como ficou:** hero com saudação e XpBar; 4 indicadores clicáveis (personagens, nações, conquistas, quizzes); em ≥ 1024px, "Quiz em destaque" e "Conquistas" (recentes + próxima) lado a lado; depois "Continue explorando", "Descobertas recentes" e "Favoritos". Seções vazias usam uma mensagem curta com borda tracejada. Na navbar, o link "Início" vira "Painel" para quem está logado. Logo depois dos indicadores, a seção "Desafios de hoje".
+**Como ficou:** hero com saudação e XpBar; 5 indicadores clicáveis (personagens, nações, habilidades, conquistas, quizzes; numa linha a partir de 768px, 2 colunas no celular com o 5º na linha inteira); em ≥ 1024px, "Quiz em destaque" e "Conquistas" (recentes + próxima) lado a lado; depois "Continue explorando", "Descobertas recentes" (personagens, nações e habilidades; **só no painel**, o perfil não repete) e "Favoritos". Seções vazias usam uma mensagem curta com borda tracejada. Na navbar, o link "Início" vira "Painel" para quem está logado. Logo depois dos indicadores, a seção "Desafios de hoje".
 
 ### Listagem de personagens
 Grid de `CharacterCard` (imagem, nome, badge de elemento, nação, indicador "descoberto", botão de favorito). Busca com debounce, filtros (nação, elemento, tipo, status, série), ordenação e paginação numérica sincronizada com a URL. Em mobile/tablet, os filtros ficam num painel recolhível aberto pelo botão "Filtros" e os cards viram itens de lista; a partir de 1024px, os filtros ficam numa sidebar fixa.
@@ -182,7 +182,7 @@ Quizzes                  47
 Taxa de acerto           87%
 Conquistas               14 / 30
 ```
-Inclui abas/seções para descobertas, favoritos, conquistas e histórico de XP.
+Seções: exploração (7 indicadores), histórico de XP, editar perfil e excluir conta. As descobertas recentes ficam só no painel (`/dashboard`).
 
 **Editar perfil (Fase 22):** seção antes de "Excluir conta", num cartão com duas partes (lado a lado a partir de 1024px). **Foto:** prévia grande no anel do elemento, "Enviar foto"/"Trocar foto" (abre o seletor de arquivos; JPEG, PNG ou WebP) e "Remover foto" quando há foto. O navegador recorta o centro e reduz para 256×256 antes de enviar; erros (tipo, tamanho, conta demo) aparecem logo abaixo (`role="alert"`). **Nome de usuário:** campo com a regra na dica ("Você continua entrando pelo email") e "Salvar nome", desativado enquanto nada mudou; erro da API no próprio campo. Sucesso vira toast ("Foto atualizada.", "Foto removida.", "Nome de usuário atualizado.") e a mudança aparece na hora no topo do perfil, na navbar e no ranking.
 
