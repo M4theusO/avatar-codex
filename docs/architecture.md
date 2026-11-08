@@ -228,7 +228,7 @@ Frontend na **Vercel**, API no **Render** (container Docker, `backend/Dockerfile
 | Frontend | Vitest + React Testing Library, com os `services` mockados (`vi.mock`) e o app inteiro renderizado (providers, layout e rotas reais) | Login, cadastro, listagem/filtros/busca, detalhe, favoritos, perfil, quiz e feedback. Cobertura com `npm run test:coverage` (v8). |
 | E2E | Cypress + Testing Library (`@testing-library/cypress`) no Chrome | 9 fluxos de `development-phases.md` (Fase 14), contra o build (`vite preview` na 5173) + API com o banco `avatar_codex_e2e` (migrations + seed). Cada teste cria o próprio usuário e o exclui no fim (`DELETE /api/users/me` no `afterEach`); seletores por papel e texto acessível, sem `data-testid` e sem esperas fixas. |
 
-Hoje: 345 testes no backend (219 unitários + 126 de integração), 172 no frontend e 12 testes E2E cobrindo os 9 fluxos, as habilidades, a exclusão de conta, o teste de elemento, o ranking e a edição do perfil. Como rodar cada suíte e o que cada pasta cobre: [testing.md](testing.md).
+Hoje: 345 testes no backend (219 unitários + 126 de integração), 173 no frontend e 12 testes E2E cobrindo os 9 fluxos, as habilidades, a exclusão de conta, o teste de elemento, o ranking e a edição do perfil. Como rodar cada suíte e o que cada pasta cobre: [testing.md](testing.md).
 
 ## 9. Decisões do projeto
 

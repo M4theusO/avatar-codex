@@ -479,3 +479,9 @@ No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](d
 
 **Observação:** com a máquina carregada, a suíte do Vitest no paralelismo padrão estoura 5s em alguns testes de páginas lazy; com `--maxWorkers=4`, 172 de 172.
 
+**Depois da Fase 22 (mesmo dia):**
+- **Dicas nos ícones da navbar:** os atalhos só com ícone (favoritos, desafios, conquistas, ranking, sair) mostram o nome abaixo do ícone no hover (`@media (hover: hover)`) e no foco pelo teclado; a do "Sair" alinha à direita. A dica tem `aria-hidden` (o nome acessível continua no `aria-label`).
+- **Navbar estourava 2px a 1280px com login**, só depois de as fontes web carregarem (Inter e Cinzel são mais largas que o fallback, ~55px a mais na barra). O E2E media antes disso. **Correção:** espaçamentos mais justos só no desktop (respiro lateral da barra, padding dos links, bloco do nome 7rem, ícones 40px) e o E2E espera `document.fonts.ready`. Medido a 1280, 1366 e 1440px.
+- Usuários `e2e_*` antigos (de 2026-10-26, antes da limpeza automática da Fase 19) apagados do banco local; a limpeza atual foi conferida (nenhum `e2e_*` sobra depois dos testes).
+- Frontend: 173 testes.
+

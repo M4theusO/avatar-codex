@@ -6,7 +6,7 @@
 |---|---|---|---|---|
 | Unitários backend | xUnit | 219 | `tests/AvatarCodex.UnitTests` | só o .NET SDK |
 | Integração backend | xUnit + `WebApplicationFactory` + PostgreSQL real | 126 | `tests/AvatarCodex.IntegrationTests` | PostgreSQL + `AVATARCODEX_TEST_DB` |
-| Frontend | Vitest + React Testing Library | 172 | `frontend/avatar-codex-web/src/**/*.test.ts(x)` | só o Node |
+| Frontend | Vitest + React Testing Library | 173 | `frontend/avatar-codex-web/src/**/*.test.ts(x)` | só o Node |
 | E2E | Cypress + Testing Library, no Chrome | 12 testes (9 fluxos + habilidades, exclusão de conta, teste de elemento, ranking e edição do perfil) | `frontend/avatar-codex-web/cypress/e2e` | API + build do frontend + PostgreSQL + Chrome |
 
 Antes de considerar uma mudança pronta: `dotnet test` (com o banco), `npm run test`, `npm run lint`, `npm run format:check` e `npm run build`. O E2E roda ao fim de cada fase ou quando um fluxo principal muda.

@@ -86,7 +86,7 @@ Consequências:
 | `sm` | ≥ 640px | grid de 2–3 colunas |
 | `md` | ≥ 768px | tablet, grid de 3, filtros em drawer |
 | `lg` | ≥ 1024px | desktop, filtros em sidebar, grid de 4 |
-| `xl` | ≥ 1280px | navbar completa, só com o texto dos links (abaixo disso, menu recolhido, com ícones), conteúdo com largura máxima (~1200px) |
+| `xl` | ≥ 1280px | navbar completa, só com o texto dos links (abaixo disso, menu recolhido, com ícones), conteúdo com largura máxima (~1200px). Os atalhos só com ícone da área do usuário (favoritos, desafios, conquistas, ranking, sair) mostram o nome numa dica abaixo do ícone, no hover (só em telas com mouse) e no foco pelo teclado; a dica tem `aria-hidden`, porque o nome já vem do `aria-label` |
 
 As telas são desenhadas primeiro para mobile e expandidas. Não vale fazer o desktop e só "quebrar" para mobile.
 
