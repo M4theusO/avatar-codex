@@ -9,6 +9,7 @@ import Section from '../../components/common/Section'
 import Skeleton from '../../components/common/Skeleton'
 import { EmptyState, ErrorState } from '../../components/common/StatusMessage'
 import { useAbility } from '../../hooks/useContent'
+import { useDiscovery } from '../../hooks/useDiscovery'
 import type { AbilityDetails } from '../../types/content'
 import { characterCountLabel } from '../../utils/abilities'
 import { isNotFoundError } from '../../utils/apiError'
@@ -17,6 +18,7 @@ import styles from './AbilityDetailsPage.module.css'
 export default function AbilityDetailsPage() {
   const abilityId = Number(useParams().id)
   const { data, isPending, isError, error, refetch } = useAbility(abilityId)
+  useDiscovery('ability', abilityId, data?.name)
 
   const invalidId = !Number.isInteger(abilityId) || abilityId <= 0
 

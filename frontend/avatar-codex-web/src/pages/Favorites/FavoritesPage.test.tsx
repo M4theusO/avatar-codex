@@ -56,6 +56,8 @@ describe('ProfilePage (exploração)', () => {
       totalCharacters: 37,
       discoveredNations: 1,
       totalNations: 5,
+      discoveredAbilities: 2,
+      totalAbilities: 23,
       favorites: 2,
       unlockedAchievements: 1,
       totalAchievements: 6,
@@ -66,6 +68,14 @@ describe('ProfilePage (exploração)', () => {
     })
     vi.mocked(getDiscoveries).mockResolvedValue({
       items: [
+        {
+          kind: 'Ability',
+          id: 7,
+          name: 'Dobra de metal',
+          image: null,
+          element: null,
+          discoveredAt: '2026-10-26T16:00:00Z',
+        },
         {
           kind: 'Nation',
           id: 4,
@@ -85,7 +95,7 @@ describe('ProfilePage (exploração)', () => {
       ],
       page: 1,
       pageSize: 6,
-      totalItems: 2,
+      totalItems: 3,
       totalPages: 1,
     })
     renderRoute('/profile')
@@ -96,6 +106,14 @@ describe('ProfilePage (exploração)', () => {
     expect(screen.getByRole('progressbar', { name: 'Nações descobertas' })).toHaveAttribute(
       'aria-valuemax',
       '5',
+    )
+    expect(screen.getByRole('progressbar', { name: 'Habilidades descobertas' })).toHaveAttribute(
+      'aria-valuenow',
+      '2',
+    )
+    expect(screen.getByRole('link', { name: 'Ver habilidades' })).toHaveAttribute(
+      'href',
+      '/abilities',
     )
     expect(screen.getByRole('progressbar', { name: 'Conquistas desbloqueadas' })).toHaveAttribute(
       'aria-valuenow',

@@ -56,5 +56,9 @@ describe('Explorar personagens', () => {
     )
     cy.findByRole('heading', { name: /Quem domina/ }).should('be.visible')
     cy.findByRole('link', { name: /Iroh/ }).should('be.visible')
+    // Abrir a habilidade é uma descoberta: +10 XP só na primeira vez.
+    cy.findByText(
+      /Nova descoberta — Você descobriu Redirecionamento de relâmpago! \+10 XP/,
+    ).should('be.visible')
   })
 })

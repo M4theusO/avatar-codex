@@ -1,12 +1,12 @@
 import { useEffect, useEffectEvent, useRef } from 'react'
-import { discoverCharacter, discoverNation } from '../services/userService'
+import { discoverAbility, discoverCharacter, discoverNation } from '../services/userService'
 import type { Reward } from '../types/progress'
 import { eventXp } from '../utils/reward'
 import { useAuth } from './useAuth'
 import { useRewardFeedback } from './useRewardFeedback'
 import { useInvalidateUserContent } from './useUserData'
 
-const discover = { character: discoverCharacter, nation: discoverNation }
+const discover = { character: discoverCharacter, nation: discoverNation, ability: discoverAbility }
 
 /**
  * Registra a descoberta (RN-12) só para usuário logado e só quando `name` existe, isto é,
@@ -14,7 +14,7 @@ const discover = { character: discoverCharacter, nation: discoverNation }
  * Envia uma única vez por página, mesmo com o efeito duplo do StrictMode; a garantia contra
  * XP duplicado é do backend.
  */
-export function useDiscovery(kind: 'character' | 'nation', id: number, name: string | undefined) {
+export function useDiscovery(kind: keyof typeof discover, id: number, name: string | undefined) {
   const { status } = useAuth()
   const celebrate = useRewardFeedback()
   const invalidate = useInvalidateUserContent()

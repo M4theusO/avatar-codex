@@ -35,7 +35,7 @@ export interface DiscoveryResult {
   reward: Reward | null
 }
 
-export type DiscoveryKind = 'Character' | 'Nation'
+export type DiscoveryKind = 'Character' | 'Nation' | 'Ability'
 
 export interface Discovery {
   kind: DiscoveryKind
@@ -54,6 +54,7 @@ export type ExperienceType =
   | 'ChallengeCompleted'
   | 'AchievementUnlocked'
   | 'ElementTestCompleted'
+  | 'AbilityDiscovered'
 
 export interface ExperienceTransaction {
   id: number
@@ -68,6 +69,8 @@ export interface UserStatistics {
   totalCharacters: number
   discoveredNations: number
   totalNations: number
+  discoveredAbilities: number
+  totalAbilities: number
   favorites: number
   unlockedAchievements: number
   totalAchievements: number

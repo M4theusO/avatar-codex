@@ -1,4 +1,4 @@
-import { Eye, Landmark, Sparkles, Trophy, type LucideIcon } from 'lucide-react'
+import { Eye, Landmark, Sparkles, Trophy, Zap, type LucideIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useExperienceHistory } from '../../hooks/useUserData'
 import type { ExperienceType } from '../../types/progress'
@@ -10,6 +10,7 @@ import styles from './Profile.module.css'
 const icons: Partial<Record<ExperienceType, LucideIcon>> = {
   CharacterDiscovered: Eye,
   NationDiscovered: Landmark,
+  AbilityDiscovered: Zap,
   AchievementUnlocked: Trophy,
 }
 
@@ -31,7 +32,7 @@ export default function ExperienceHistory() {
       <EmptyState
         icon={Sparkles}
         title="Nenhum XP ainda"
-        description="Descobrir personagens e nações rende XP. Ele aparece aqui."
+        description="Descobrir personagens, nações e habilidades rende XP. Ele aparece aqui."
       />
     )
   }

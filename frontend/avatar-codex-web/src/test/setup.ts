@@ -33,6 +33,7 @@ beforeEach(() => {
   vi.mocked(restoreSession).mockRejectedValue(new Error('Sem sessão'))
   vi.mocked(userService.discoverCharacter).mockResolvedValue({ isNew: false, reward: null })
   vi.mocked(userService.discoverNation).mockResolvedValue({ isNew: false, reward: null })
+  vi.mocked(userService.discoverAbility).mockResolvedValue({ isNew: false, reward: null })
   vi.mocked(userService.addFavorite).mockResolvedValue()
   vi.mocked(userService.removeFavorite).mockResolvedValue()
   vi.mocked(userService.getFavorites).mockResolvedValue(emptyPage)
@@ -43,6 +44,8 @@ beforeEach(() => {
     totalCharacters: 37,
     discoveredNations: 0,
     totalNations: 5,
+    discoveredAbilities: 0,
+    totalAbilities: 23,
     favorites: 0,
     unlockedAchievements: 0,
     totalAchievements: 6,

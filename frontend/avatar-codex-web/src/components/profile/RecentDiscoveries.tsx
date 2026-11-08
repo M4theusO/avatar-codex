@@ -1,7 +1,7 @@
 import { Compass } from 'lucide-react'
 import { Link } from 'react-router'
 import { useRecentDiscoveries } from '../../hooks/useUserData'
-import type { Discovery } from '../../types/progress'
+import type { Discovery, DiscoveryKind } from '../../types/progress'
 import { elementStyle } from '../../utils/labels'
 import { ButtonLink } from '../common/Button'
 import CharacterAvatar from '../common/CharacterAvatar'
@@ -11,6 +11,12 @@ import { EmptyState, ErrorState } from '../common/StatusMessage'
 import styles from './Profile.module.css'
 
 const dateFormat = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short' })
+
+const kinds: Record<DiscoveryKind, { path: string; label: string }> = {
+  Character: { path: 'characters', label: 'Personagem' },
+  Nation: { path: 'nations', label: 'Nação' },
+  Ability: { path: 'abilities', label: 'Habilidade' },
+}
 
 export default function RecentDiscoveries() {
   const { data, isPending, isError, refetch } = useRecentDiscoveries()
@@ -26,7 +32,7 @@ export default function RecentDiscoveries() {
       <EmptyState
         icon={Compass}
         title="Sua jornada está começando"
-        description="Abra a página de um personagem ou de uma nação para descobri-lo e ganhar XP."
+        description="Abra a página de um personagem, nação ou habilidade para descobri-lo e ganhar XP."
         action={<ButtonLink to="/characters">Explorar personagens</ButtonLink>}
       />
     )
@@ -41,10 +47,11 @@ export function DiscoveryList({ discoveries }: { discoveries: Discovery[] }) {
     <ul className={styles.discoveries}>
       {discoveries.map((discovery) => {
         const isCharacter = discovery.kind === 'Character'
+        const kind = kinds[discovery.kind]
         return (
           <li key={`${discovery.kind}-${discovery.id}`}>
             <Link
-              to={`/${isCharacter ? 'characters' : 'nations'}/${discovery.id}`}
+              to={`/${kind.path}/${discovery.id}`}
               className={styles.discovery}
               style={elementStyle(discovery.element?.color)}
             >
@@ -63,8 +70,7 @@ export function DiscoveryList({ discoveries }: { discoveries: Discovery[] }) {
               <span className={styles.discoveryText}>
                 <span className={styles.discoveryName}>{discovery.name}</span>
                 <span className={styles.discoveryMeta}>
-                  {isCharacter ? 'Personagem' : 'Nação'} ·{' '}
-                  {dateFormat.format(new Date(discovery.discoveredAt))}
+                  {kind.label} · {dateFormat.format(new Date(discovery.discoveredAt))}
                 </span>
               </span>
             </Link>

@@ -1,8 +1,13 @@
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { getCharacter, getNation } from '../../services/contentService'
-import { addFavorite, discoverCharacter, discoverNation } from '../../services/userService'
+import { getAbility, getCharacter, getNation } from '../../services/contentService'
+import {
+  addFavorite,
+  discoverAbility,
+  discoverCharacter,
+  discoverNation,
+} from '../../services/userService'
 import { apiError, character, characterDetails, mockSession } from '../../test/fixtures'
 import { renderRoute } from '../../test/renderWithProviders'
 
@@ -93,6 +98,29 @@ describe('descoberta (RN-12)', () => {
       await screen.findByText('✨ Nova descoberta — Você descobriu Nação do Fogo! +10 XP'),
     ).toBeInTheDocument()
     expect(discoverNation).toHaveBeenCalledWith(4)
+  })
+
+  it('registra a descoberta da habilidade', async () => {
+    mockSession()
+    vi.mocked(getAbility).mockResolvedValue({
+      id: 7,
+      name: 'Dobra de metal',
+      description: 'Dobra o metal impuro.',
+      element: null,
+      image: null,
+      characters: [character()],
+    })
+    vi.mocked(discoverAbility).mockResolvedValue({
+      isNew: true,
+      reward: { ...reward, leveledUp: false },
+    })
+    renderRoute('/abilities/7')
+
+    expect(
+      await screen.findByText('✨ Nova descoberta — Você descobriu Dobra de metal! +10 XP'),
+    ).toBeInTheDocument()
+    expect(discoverAbility).toHaveBeenCalledTimes(1)
+    expect(discoverAbility).toHaveBeenCalledWith(7)
   })
 
   it('anuncia a conquista desbloqueada separada do XP da descoberta', async () => {

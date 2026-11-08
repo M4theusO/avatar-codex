@@ -139,6 +139,8 @@ export function dashboard(overrides: Partial<Dashboard> = {}): Dashboard {
       totalCharacters: 37,
       discoveredNations: 0,
       totalNations: 5,
+      discoveredAbilities: 0,
+      totalAbilities: 23,
       favorites: 0,
       unlockedAchievements: 0,
       totalAchievements: 6,

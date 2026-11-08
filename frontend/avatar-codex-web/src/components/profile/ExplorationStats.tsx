@@ -11,7 +11,7 @@ export default function ExplorationStats() {
   if (isPending) {
     return (
       <div className={styles.stats} aria-busy="true">
-        {Array.from({ length: 6 }, (_, index) => (
+        {Array.from({ length: 7 }, (_, index) => (
           <Skeleton key={index} height="6.5rem" />
         ))}
       </div>
@@ -46,6 +46,20 @@ export default function ExplorationStats() {
           max={data.totalNations}
           label="Nações descobertas"
         />
+      </li>
+      <li className={styles.stat}>
+        <span className={styles.statLabel}>Habilidades descobertas</span>
+        <span className={styles.statValue}>
+          {data.discoveredAbilities} <small>/ {data.totalAbilities}</small>
+        </span>
+        <ProgressBar
+          value={data.discoveredAbilities}
+          max={data.totalAbilities}
+          label="Habilidades descobertas"
+        />
+        <Link to="/abilities" className={styles.statLink}>
+          Ver habilidades
+        </Link>
       </li>
       <li className={styles.stat}>
         <span className={styles.statLabel}>Favoritos</span>

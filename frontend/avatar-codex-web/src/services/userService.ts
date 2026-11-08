@@ -21,6 +21,11 @@ export async function discoverNation(id: number): Promise<DiscoveryResult> {
   return data
 }
 
+export async function discoverAbility(id: number): Promise<DiscoveryResult> {
+  const { data } = await api.post<DiscoveryResult>(`/api/abilities/${id}/discovery`)
+  return data
+}
+
 export async function addFavorite(characterId: number): Promise<void> {
   await api.post(`/api/characters/${characterId}/favorite`)
 }
