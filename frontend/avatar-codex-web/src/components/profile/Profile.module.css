@@ -1,5 +1,4 @@
-/* 7 indicadores: 2 colunas no celular e 3 no desktop. O último, se ficar sozinho na linha,
-   ocupa a linha inteira (em vez de deixar um buraco ao lado). */
+/* 6 indicadores: 2 colunas no celular e 3 + 3 no desktop. Os favoritos ficam no atalho da navbar. */
 .stats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -9,22 +8,10 @@
   list-style: none;
 }
 
-.stats > :last-child:nth-child(odd) {
-  grid-column: 1 / -1;
-}
-
 @media (min-width: 1024px) {
   .stats {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-4);
-  }
-
-  .stats > :last-child:nth-child(odd) {
-    grid-column: auto;
-  }
-
-  .stats > :last-child:nth-child(3n + 1) {
-    grid-column: 1 / -1;
   }
 }
 

@@ -97,6 +97,8 @@ describe('ProfilePage (exploração)', () => {
     )
     expect(screen.getByText('87%')).toBeInTheDocument()
     expect(screen.getByText('3 tentativas')).toBeInTheDocument()
+    // Favoritos têm atalho na navbar; não há card no perfil.
+    expect(screen.queryByRole('link', { name: 'Ver favoritos' })).not.toBeInTheDocument()
     // As descobertas recentes ficam só no painel.
     expect(screen.queryByRole('heading', { name: 'Descobertas recentes' })).not.toBeInTheDocument()
   })
