@@ -182,6 +182,8 @@ Conquistas               14 / 30
 ```
 Inclui abas/seções para descobertas, favoritos, conquistas e histórico de XP.
 
+**Excluir conta (Fase 19):** última seção do perfil, com borda no tom de perigo e botão `danger` (vermelho só na borda e no texto). Abre um modal (`<dialog>`, foco no campo) que pede a senha; "Excluir definitivamente" fica desabilitado até digitar. Senha errada aparece no próprio campo; outros erros (ex.: conta demo) num alerta. Ao concluir, volta para a Home com o toast "Sua conta foi excluída."
+
 ### Conquistas
 Grid com conquistas desbloqueadas (coloridas, com data) e bloqueadas (esmaecidas, com barra de progresso).
 

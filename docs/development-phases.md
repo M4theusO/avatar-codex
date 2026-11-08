@@ -43,7 +43,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 16 | Documentação final | — | README, arquitetura, banco, API, instalação, testes, decisões técnicas | Outro dev executa o projeto só com a doc ✅ (2026-10-30) |
 | 17 | Deploy | — | Frontend (Vercel/Netlify), backend (Render/Azure/Railway), PostgreSQL gerenciado; sem serviços pagos | Aplicação pública; decisões documentadas ✅ (2026-10-30) |
 | 18 | Habilidades | P2 | Página de habilidades por elemento e detalhe com quem as domina (RF-ABIL-01) | Habilidades navegáveis a partir da navbar e do detalhe do personagem ✅ (2026-11-08) |
-| 19 | Excluir conta | — | `DELETE /api/users/me` com senha, botão no perfil, E2E apagando os próprios usuários | Nenhum usuário de teste sobra no banco depois dos E2E |
+| 19 | Excluir conta | — | `DELETE /api/users/me` com senha, botão no perfil, E2E apagando os próprios usuários | Nenhum usuário de teste sobra no banco depois dos E2E ✅ (2026-11-08) |
 | 20 | Teste de elemento | P3 | Perguntas com pontuação por elemento no banco, resultado no perfil, XP na 1ª vez (RF-ELTEST-01) | Resultado decidido no backend e salvo em `User.ElementId` |
 | 21 | Ranking | P3 | Ranking por XP global, do mês e por elemento, só para logados (RF-RANK-01) | Posição do usuário destacada; ordenação e desempate no backend |
 
@@ -415,4 +415,17 @@ No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](d
 **Decisões:**
 - O agrupamento por elemento é feito no frontend (é apresentação); a ordem vem do backend.
 - A navbar ganhou uma sexta seção. Sem login ela cabe em 1280px; com login (Painel + barra de XP) a medida é feita na Fase 19.
+
+## Fase 19 — Excluir conta e limpeza dos E2E (concluída)
+
+- [x] `DELETE /api/users/me` (🔒) com `{ password }`: `AccountService` confere a senha e exclui com `ExecuteDelete`; as tabelas do usuário (sessões, descobertas, favoritos, XP, conquistas, quizzes, desafios) saem pelo `ON DELETE CASCADE` que já existia. Responde 204 e apaga o cookie de refresh
+- [x] Senha vazia ou errada → **400 no campo `password`**, não 401: o interceptor do frontend trataria 401 como sessão expirada
+- [x] **Conta demo protegida** (422): é compartilhada pelos visitantes do portfólio. O email dela agora vem de `DemoAccount` (Application), usado também pelo `DemoUserSeeder`
+- [x] Cookie de refresh extraído para `RefreshCookieExtensions` (usado pelo `AuthController` e pela exclusão)
+- [x] Perfil: seção "Excluir conta" com botão `danger` (nova variante) e modal pedindo a senha; erro no campo ou alerta com a mensagem da API; sucesso → Home, logout e toast "Sua conta foi excluída."
+- [x] **E2E se limpam sozinhos:** `cy.newUser()` registra as contas e um `afterEach` global as exclui pela API. Conferido no banco de E2E: 8 usuários antes, 8 depois de 9 testes (os 7 `e2e_*` antigos foram apagados à mão)
+- [x] Testes: backend 297 (190 unitários + 107 de integração: exclusão com cascade conferido tabela por tabela, sessão encerrada, senha errada, demo, sem token); frontend 150 (+4 do perfil); E2E 9 testes (+ exclusão pela interface e o fluxo de habilidades da Fase 18), todos verdes no Chrome
+- [x] Navbar com login medida a 1280px pelo E2E: continua numa linha com a sexta seção ("Habilidades")
+
+**Pendente fora do código:** os usuários `e2e_*@example.com` criados antes desta fase continuam no banco de produção (Neon). O SQL para removê-los está em `deployment.md` §8.
 

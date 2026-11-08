@@ -16,7 +16,7 @@ O usuário explora personagens, nações, a linha do tempo e comparações entre
 | Conta | Cadastro, login, logout e sessão recuperada ao recarregar (JWT em memória + refresh token em cookie httpOnly) |
 | Exploração | Descoberta de personagens e nações (+10 XP na primeira vez), favoritos, histórico de descobertas |
 | Gamificação | XP e níveis, 6 conquistas, 4 quizzes com correção no backend, 3 desafios diários, painel personalizado e perfil com estatísticas |
-| Qualidade | Mobile-first, acessível (WCAG AA, teclado, `prefers-reduced-motion`), loading/empty/error em todas as telas; 285 testes no backend, 139 no frontend e E2E no Cypress |
+| Qualidade | Mobile-first, acessível (WCAG AA, teclado, `prefers-reduced-motion`), loading/empty/error em todas as telas; 297 testes no backend, 150 no frontend e E2E no Cypress |
 
 ## Stack
 

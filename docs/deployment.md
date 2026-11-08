@@ -114,3 +114,21 @@ Antes do push, rode a bateria local (`docs/testing.md`), já que ainda não há 
 - **CI no GitHub Actions** rodando testes, lint e build a cada push (e, se quiser, deploy só com tudo verde: `autoDeployTrigger: checksPass` no `render.yaml`).
 - **Restringir a API ao tráfego da Vercel:** hoje `*.onrender.com` também responde direto. A Vercel pode mandar um cabeçalho secreto em cada rewrite, e a API recusaria requisições sem ele.
 - **Domínio próprio** apontando para a Vercel.
+
+## 8. Dados de teste em produção
+
+Os E2E criam usuários `e2e_*@example.com` e, desde a Fase 19, **excluem cada um no fim do teste** (`DELETE /api/users/me`). Os que foram criados antes disso ficaram no banco. Para removê-los, no Neon → **SQL Editor** (as tabelas do usuário saem junto pelo `ON DELETE CASCADE`):
+
+```sql
+-- Confere antes
+select count(*) from users where email like 'e2e_%@example.com';
+-- Remove
+delete from users where email like 'e2e_%@example.com';
+```
+
+O usuário demo não é afetado (email `demo@avatarcodex.dev`) e não pode ser excluído pela API. Para zerar o progresso dele, apague a linha e reinicie a API no Render: o startup recria o demo do zero (`Database__SeedDemoUser`).
+
+```sql
+delete from users where email = 'demo@avatarcodex.dev';
+```
+

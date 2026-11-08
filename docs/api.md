@@ -159,6 +159,7 @@ Os dados do próprio usuário (nível, XP e progresso já calculados) vêm em `U
 
 | Método | Rota | | Descrição |
 |---|---|---|---|
+| DELETE | `/api/users/me` | 🔒 | Exclui a conta e todos os dados dela (`{ "password": "..." }` para confirmar). 204 e apaga o cookie de refresh; senha vazia ou errada → 400 com erro no campo `password` (não 401: a sessão continua válida); conta de demonstração → 422 |
 | GET | `/api/users/me/statistics` | 🔒 | Estatísticas do perfil: `discoveredCharacters`, `totalCharacters`, `discoveredNations`, `totalNations`, `favorites`, `unlockedAchievements`, `totalAchievements`, `completedQuizzes`, `totalQuizzes`, `quizAttempts`, `accuracyPercent` (acertos / respostas de todas as tentativas; `null` sem tentativas) |
 | GET | `/api/users/me/dashboard` | 🔒 | Agregado do dashboard numa chamada (`DashboardDto`, ver abaixo) |
 | GET | `/api/users/me/favorites` | 🔒 | Favoritos (`PagedResult<CharacterListItemDto>`, `?page`/`?pageSize`), mais recentes primeiro |
