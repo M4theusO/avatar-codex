@@ -135,6 +135,7 @@ Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personage
 | Descobrir nação | +10 | 1ª descoberta de cada nação por usuário (**DA-01**) | `NationDiscovered` |
 | Completar quiz | +20 | 1ª conclusão de cada quiz | `QuizCompleted` |
 | Quiz perfeito | +50 (bônus) | 1ª vez que gabarita aquele quiz | `QuizPerfect` |
+| Teste de elemento | +30 | 1ª conclusão do teste (refazer não dá XP) | `ElementTestCompleted` |
 | Completar desafio | valor do desafio (padrão +30) | conclusão automática | `ChallengeCompleted` |
 | Conquista | variável (`ExperienceReward`) | desbloqueio | `AchievementUnlocked` |
 
@@ -182,11 +183,11 @@ Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personage
 
 ## 9. Status de implementação (v1)
 
-Todos os requisitos P0, P1 e P2 estão implementados, com as exceções e ajustes abaixo. Os P3 (§4.12) não foram iniciados.
+Todos os requisitos P0, P1 e P2 estão implementados, com as exceções e ajustes abaixo. Dos P3 (§4.12), o teste de elemento (RF-ELTEST-01) foi implementado na Fase 20; o ranking (RF-RANK-01) entra na Fase 21; as funcionalidades sociais não foram iniciadas.
 
 | Requisito | Situação |
 |---|---|
 | RF-ELEM-01 (elementos e subtipos) | Disponível na API (`GET /api/elements`) e usado na Home, nos filtros e nos badges; não há uma página só de elementos. |
-| RF-PROF-01 (avatar e elemento no perfil) | O perfil mostra avatar e elemento quando existem, mas não há edição de perfil na v1 (`avatarUrl` e `elementId` ficam nulos). A escolha do elemento fica para o teste de elemento (RF-ELTEST-01, P3). |
+| RF-PROF-01 (avatar e elemento no perfil) | O elemento vem do teste de elemento (Fase 20) e aparece no perfil, no avatar e na barra de XP. Não há edição de perfil: `avatarUrl` continua nulo. |
 | RF-CHAL-01 ("Explore uma nação") | Coberto pelo tipo de desafio `DiscoverNations`. |
 | `POST /api/challenges/{id}/complete` da especificação | Removido de propósito (D9): a conclusão é automática no backend. |

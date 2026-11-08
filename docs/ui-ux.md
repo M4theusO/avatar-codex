@@ -86,7 +86,7 @@ Consequências:
 | `sm` | ≥ 640px | grid de 2–3 colunas |
 | `md` | ≥ 768px | tablet, grid de 3, filtros em drawer |
 | `lg` | ≥ 1024px | desktop, filtros em sidebar, grid de 4 |
-| `xl` | ≥ 1280px | navbar completa (abaixo disso, menu recolhido), conteúdo com largura máxima (~1200px) |
+| `xl` | ≥ 1280px | navbar completa, só com o texto dos links (abaixo disso, menu recolhido, com ícones), conteúdo com largura máxima (~1200px) |
 
 As telas são desenhadas primeiro para mobile e expandidas. Não vale fazer o desktop e só "quebrar" para mobile.
 
@@ -113,7 +113,7 @@ As telas são desenhadas primeiro para mobile e expandidas. Não vale fazer o de
 | `/favorites` | Favoritos | 🔒 |
 | `/achievements` | Conquistas | 🔒 |
 | `/challenges` | Desafios diários e histórico | 🔒 |
-| `/element-test` | Teste de elemento (P3) | 🔒 |
+| `/element-test` | Teste de elemento (Fase 20) | 🔒 |
 | `*` | NotFound | público |
 
 Rotas 🔒 redirecionam para `/login?redirect=<rota>` e voltam após o login.
@@ -188,6 +188,9 @@ Inclui abas/seções para descobertas, favoritos, conquistas e histórico de XP.
 Grid com conquistas desbloqueadas (coloridas, com data) e bloqueadas (esmaecidas, com barra de progresso).
 
 **Como ficou:** resumo "x de y conquistas desbloqueadas" com barra; cards na ordem do catálogo (cadastro → descobertas → quizzes → desafios). Desbloqueada: ícone sobre círculo com o acento do Ar, borda clara e "Desbloqueada em dd/mm/aaaa". Bloqueada: só o ícone fica esmaecido (com cadeado), os textos mantêm o contraste, e o progresso aparece como "3 / 10" + barra. Acesso pelo troféu na navbar e por "Ver conquistas" no perfil.
+
+### Teste de elemento (Fase 20)
+Introdução com o anel dos quatro elementos e o aviso de XP (ou o elemento atual, para quem vai refazer) → uma pergunta por vez, reaproveitando o `QuizQuestionStep` (rádios estilizados, foco no enunciado) → resultado vindo do backend: símbolo e nome do elemento em Cinzel sobre um brilho na cor dele, a descrição do elemento e as respostas por elemento em barras. "Refazer o teste" volta à primeira pergunta; "Ver meu perfil" leva ao perfil, que mostra o elemento com o link "Refazer o teste" (ou "Descobrir meu elemento"). O painel convida para o teste enquanto o usuário não tem elemento. Ao descobrir, o elemento passa a colorir o avatar e a barra de XP.
 
 ### Desafios
 Cards dos desafios do dia com progresso, recompensa e horário do próximo reset (UTC convertido para o horário local).

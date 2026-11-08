@@ -331,6 +331,10 @@ Migration `AddQuizTables` (tabelas `quizzes`, `questions`, `question_options`, `
 | SelectedOptionId | int | FK |
 | IsCorrect | bool | |
 
+### 3.6 Teste de elemento (Fase 20)
+
+**ElementTestQuestion** — `Id`, `Text` (300), `Order` (único; chave natural do seed). **ElementTestOption** — `Id`, `QuestionId` (CASCADE), `Text` (300), `Order`, `ElementId` (RESTRICT). Cada opção vale 1 ponto para o seu elemento; o seed valida que toda pergunta tem exatamente uma opção de cada elemento. Nenhuma resposta é gravada: o resultado vai para `User.ElementId` e o XP da 1ª conclusão fica em `ExperienceTransaction` (`ElementTestCompleted`, `SourceId` = 1). Por isso o seed pode remover perguntas e recriar as opções de uma pergunta alterada.
+
 ## 4. Seed
 
 - Dados em arquivos JSON versionados em `Infrastructure/Data/Seed/Content/` (embutidos no assembly), aplicados pelo `ContentSeeder` no startup da API quando `Database:MigrateAndSeedOnStartup = true` (apenas `appsettings.Development.json`).
@@ -352,6 +356,7 @@ Migration `AddQuizTables` (tabelas `quizzes`, `questions`, `question_options`, `
 | ComparisonAttribute / CharacterAttributeValue | 5 | 5 / 185 (`comparison-attributes.json`, `character-attributes.json`: todos os 37 personagens) |
 | Era / TimelineEvent | 3–4 / ~20 | 4 / 17 (`eras.json`, `timeline.json`) |
 | Quiz / Question | 3–5 / ~10 por quiz | 4 / 10 por quiz (`quizzes.json`) |
+| ElementTestQuestion / ElementTestOption | — | 8 / 4 por pergunta, uma de cada elemento (`element-test.json`) |
 | Achievement | ~12 | 6 (`achievements.json`, upsert por `Code`) |
 | ChallengeTemplate | ~8 | 8 (`challenges.json`, upsert por `Code`) |
 
@@ -375,6 +380,7 @@ Uma migration por mudança coesa de esquema, com nome descritivo (ex.: `AddQuizT
 | `AddDailyChallenges` | `challenge_templates` (`code` único, CHECKs de meta e XP), `daily_challenges` com unique (`challenge_template_id`, `date`), `user_daily_challenges` com PK (`user_id`, `daily_challenge_id`) |
 | `AddTimeline` | `eras` (`name` e `order` únicos), `timeline_events` (`title` e `order` únicos, imagem owned, FK `era_id` RESTRICT), `timeline_event_characters` |
 | `AddCharacterComparison` | `comparison_attributes` (`name` único, `order`), `character_attribute_values` (PK composta, `CHECK value` 0–100) |
+| `AddElementTest` | `element_test_questions` (`order` único), `element_test_options` (unique (`question_id`, `order`) e (`question_id`, `element_id`): uma opção por elemento em cada pergunta; FK do elemento RESTRICT) |
 
 ## 6. Testes de banco
 

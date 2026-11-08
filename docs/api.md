@@ -213,6 +213,15 @@ Resposta:
 
 Validações: todas as perguntas do quiz respondidas uma única vez, e cada opção deve pertencer à sua pergunta (senão 400, com as mensagens no campo `answers`). `experienceEarned` é o XP do quiz nesta tentativa (sem o das conquistas e dos desafios concluídos no mesmo evento); `reward` é `null` quando a tentativa não rendeu XP nem conquista.
 
+#### Teste de elemento (RF-ELTEST-01)
+
+| Método | Rota | | Descrição | Respostas |
+|---|---|---|---|---|
+| GET | `/api/element-test` | 🔒 | Perguntas na ordem, cada uma com uma opção por elemento, **sem o elemento de cada opção** (opção = `id`, `text`), e `experienceReward` (XP da 1ª conclusão) | 200, 401 |
+| POST | `/api/element-test/submissions` | 🔒 | `{ "answers": [{ "questionId", "optionId" }] }` → elemento calculado no backend e salvo no perfil (`User.ElementId`; refazer substitui). +30 XP só na 1ª conclusão | 200, 400, 401 |
+
+Resposta: `element` (`ElementDto` com descrição e subtipos), `scores` (todos os elementos na ordem do catálogo, com `points`), `experienceEarned` (30 na 1ª vez, 0 depois) e `reward` (`null` ao refazer). Cada resposta vale 1 ponto para o elemento da opção; no empate, vence o elemento escolhido na pergunta mais recente entre os empatados (`ElementTestRules`). Validações iguais às do quiz (todas as perguntas, uma vez cada, opção da própria pergunta), com as mensagens no campo `answers`.
+
 > A especificação usava `POST /api/quizzes/{id}/attempt`; aqui foi pluralizado (`attempts`) por consistência REST.
 
 ### Conquistas

@@ -44,7 +44,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 17 | Deploy | — | Frontend (Vercel/Netlify), backend (Render/Azure/Railway), PostgreSQL gerenciado; sem serviços pagos | Aplicação pública; decisões documentadas ✅ (2026-10-30) |
 | 18 | Habilidades | P2 | Página de habilidades por elemento e detalhe com quem as domina (RF-ABIL-01) | Habilidades navegáveis a partir da navbar e do detalhe do personagem ✅ (2026-11-08) |
 | 19 | Excluir conta | — | `DELETE /api/users/me` com senha, botão no perfil, E2E apagando os próprios usuários | Nenhum usuário de teste sobra no banco depois dos E2E ✅ (2026-11-08) |
-| 20 | Teste de elemento | P3 | Perguntas com pontuação por elemento no banco, resultado no perfil, XP na 1ª vez (RF-ELTEST-01) | Resultado decidido no backend e salvo em `User.ElementId` |
+| 20 | Teste de elemento | P3 | Perguntas com pontuação por elemento no banco, resultado no perfil, XP na 1ª vez (RF-ELTEST-01) | Resultado decidido no backend e salvo em `User.ElementId` ✅ (2026-11-08) |
 | 21 | Ranking | P3 | Ranking por XP global, do mês e por elemento, só para logados (RF-RANK-01) | Posição do usuário destacada; ordenação e desempate no backend |
 
 > Os testes **não ficam todos para a Fase 14**: cada fase já entrega os testes relevantes dela. A Fase 14 completa a cobertura e os fluxos E2E.
@@ -425,7 +425,21 @@ No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](d
 - [x] Perfil: seção "Excluir conta" com botão `danger` (nova variante) e modal pedindo a senha; erro no campo ou alerta com a mensagem da API; sucesso → Home, logout e toast "Sua conta foi excluída."
 - [x] **E2E se limpam sozinhos:** `cy.newUser()` registra as contas e um `afterEach` global as exclui pela API. Conferido no banco de E2E: 8 usuários antes, 8 depois de 9 testes (os 7 `e2e_*` antigos foram apagados à mão)
 - [x] Testes: backend 297 (190 unitários + 107 de integração: exclusão com cascade conferido tabela por tabela, sessão encerrada, senha errada, demo, sem token); frontend 150 (+4 do perfil); E2E 9 testes (+ exclusão pela interface e o fluxo de habilidades da Fase 18), todos verdes no Chrome
-- [x] Navbar com login medida a 1280px pelo E2E: continua numa linha com a sexta seção ("Habilidades")
+- [x] Navbar com login medida a 1280px pelo E2E (corrigido na Fase 20: a medida certa é a rolagem lateral, não a altura)
 
 **Pendente fora do código:** os usuários `e2e_*@example.com` criados antes desta fase continuam no banco de produção (Neon). O SQL para removê-los está em `deployment.md` §8.
+
+## Fase 20 — Teste de elemento (concluída)
+
+- [x] Conteúdo no banco: `ElementTestQuestion` + `ElementTestOption` (migration `AddElementTest`), seed `element-test.json` com 8 perguntas × 4 opções. O seed valida **uma opção de cada elemento por pergunta** (e o banco garante com unique (`question_id`, `element_id`)), para nenhum elemento sair em vantagem
+- [x] `GET /api/element-test` (🔒) sem o elemento de cada opção, como o quiz não expõe `isCorrect`
+- [x] `POST /api/element-test/submissions` (🔒): `ElementTestRules.Score` (função pura) soma 1 ponto por resposta; empate → vence o elemento escolhido na pergunta mais recente entre os empatados. Resultado em `User.ElementId` (refazer substitui) e +30 XP só na 1ª conclusão pelo `ProgressionService` (`ElementTestCompleted`, `SourceId` fixo = unique de XP). `experienceEarned` calculado no backend, como no quiz
+- [x] `/element-test` (🔒): introdução, uma pergunta por vez (reaproveita o `QuizQuestionStep`, agora com `progressLabel`), resultado com o elemento, a descrição e as respostas por elemento; toast "Elemento descoberto — X! +30 XP"; o elemento passa a valer na hora no avatar, na barra de XP e no perfil
+- [x] Entradas: "Descobrir meu elemento" / "Refazer o teste" no perfil e convite no painel enquanto não há elemento
+- [x] Testes: backend 304 (194 unitários + 110 de integração: regras com empate, validação do seed, seed recriando opções quando os elementos trocam de lugar, API sem vazar o elemento, XP uma vez só, refazer substitui, respostas inválidas); frontend 157; E2E 10 (+ teste de elemento até o perfil)
+- [x] Validado no Chrome (Cypress, prints a 1280px e 390px): introdução, pergunta, resultado e perfil
+
+**Encontrado no caminho:**
+- **Navbar com login estourava a largura** depois da sexta seção ("Habilidades"): a 1280px a área do usuário ficava cortada e havia rolagem lateral. O teste da Fase 19 media a altura (continuava numa linha só), não a largura. Como a barra tem a largura máxima do conteúdo (1200px), o espaço não cresce em telas maiores. **Correção:** no desktop os links ficam só com o texto (ícones continuam no menu recolhido) e a regra que alargava os espaçamentos a partir de 1440px saiu. O E2E agora confere `scrollWidth <= clientWidth` com login a 1280px; 1366, 1440 e 1600 conferidos à parte.
+- `cypress/screenshots` e `cypress/videos` foram para o `.gitignore`.
 
