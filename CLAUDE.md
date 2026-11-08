@@ -15,7 +15,7 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 
 **Todas as fases (0–22) concluídas.** Aplicação no ar em **https://avatar-codex.vercel.app** (`docs/development-phases.md`, `docs/deployment.md`).
 
-**Onde paramos (2026-11-08):** Fases 18–21 publicadas (push feito). **Fase 22** (editar nome de usuário e foto de perfil) concluída e testada localmente, **commitada sem push**. Nenhum servidor local rodando.
+**Onde paramos (2026-11-08):** Fases 18–21 publicadas (push feito). **Fase 22** (editar nome de usuário e foto de perfil), dicas nos ícones da navbar, correção da largura da navbar e favicon dos elementos: tudo publicado (push em 2026-11-08; o startup do Render aplica a migration `AddUserAvatars` no Neon).
 - **Fase 22:** `PATCH /api/users/me` (nome), `PUT`/`DELETE /api/users/me/avatar` (foto), `GET /api/avatars/{publicId}`; tabela `user_avatars` com PK = `UserId` (uma foto por usuário, sobrescrita a cada envio; migration `AddUserAvatars`); o navegador reduz a 256×256 e o backend confere tipo pelos bytes e 512 KB. Conta demo não muda nome nem foto. Para editar, usar `IUserRepository.GetForUpdateAsync` (o `GetByIdAsync` é sem rastreamento).
 - **Feito em 2026-11-08:** (1) retratos dos 25 personagens que faltavam (37/37), com push; (2) **Fase 18** página de habilidades (`/abilities`, `/abilities/:id`, `GET /api/abilities/{id}`); (3) **Fase 19** excluir conta (`DELETE /api/users/me` com senha, conta demo protegida) e **E2E apagando os próprios usuários** no `afterEach`; (4) **Fase 20** teste de elemento (`/element-test`, perguntas no banco, `ElementTestRules`, +30 XP na 1ª vez, migration `AddElementTest`); (5) **Fase 21** ranking (`/ranking`, `GET /api/ranking`, geral/mês/elemento, só logados, empate divide a posição). Detalhes em `docs/development-phases.md`.
 - **Deploy das imagens (push de 2026-11-08):** a Vercel publicou; o Render **não tinha aplicado** a mudança 25 min depois (API em produção ainda com 12 imagens). O próximo push (que inclui `backend/**`) deve redeployar; se não, conferir o painel do Render (é do usuário).
@@ -46,7 +46,7 @@ Projeto de **portfólio** (fins educacionais). Deve parecer um produto real, ter
 - **Dicas de shell:** heredocs com aspas e `\d` em regex já quebraram scripts várias vezes; para edições grandes, gravar um `.js` no scratchpad e rodar com `node`, ou usar o Edit. Prints do Cypress em larguras acima da janela headless saem cortados: medir com `getBoundingClientRect`, não pelo print.
 - **Line endings:** nos dois PCs `core.autocrlf=true`; o Prettier reescreve os arquivos em LF e o `git status` lista todos como modificados, mas sem diferença de conteúdo (`git diff --ignore-cr-at-eol`). Commitar só os arquivos alterados de verdade.
 
-**Próximo passo:** push da Fase 22 quando o usuário pedir (gera a migration `AddUserAvatars` no Neon pelo startup). Depois, candidatos a combinar: CI no GitHub Actions, opcionais de `docs/deployment.md` §7, limpeza dos `e2e_*` em produção (§8), funcionalidades sociais (P3).
+**Próximo passo:** nada pendente no código. Candidatos a combinar: CI no GitHub Actions, opcionais de `docs/deployment.md` §7, limpeza dos `e2e_*` em produção (§8), funcionalidades sociais (P3).
 - **Não iniciar trabalho novo sem confirmação explícita do usuário.**
 
 **Fluxo de trabalho combinado:** ao fim de cada fase → testes + lint + build + teste num Chrome real (CDP) → docs → commits pequenos → **push só quando o usuário pedir**. O usuário costuma pedir "rode o projeto para eu testar" (subir API + Vite em background) e depois "pare de rodar".
