@@ -20,6 +20,30 @@ public class ContentSeedDataTests
         Assert.All(data.Quizzes, q => Assert.Equal(10, q.Questions.Count));
         // Todo personagem do seed pode ser comparado.
         Assert.Equal(data.Characters.Select(c => c.Name).Order(), data.CharacterAttributes.Select(c => c.Character).Order());
+        Assert.Equal(8, data.ElementTest.Count);
+    }
+
+    [Fact]
+    public void Validate_ElementTestQuestionsNeedOneOptionPerElement()
+    {
+        var data = new ContentSeedData
+        {
+            Elements = [new ElementSeed("Ar", "Ar", "#D5C7A2", "wind"), new ElementSeed("Fogo", "Fogo", "#B86B35", "flame")],
+            BendingSubtypes = [], Nations = [], Series = [], Abilities = [], Characters = [], Achievements = [],
+            Quizzes = [], Challenges = [], Eras = [], TimelineEvents = [], ComparisonAttributes = [], CharacterAttributes = [],
+            ElementTest =
+            [
+                new ElementTestQuestionSeed("Repete", [new("A", "Ar"), new("B", "Ar")]),
+                new ElementTestQuestionSeed("Falta", [new("A", "Fogo")]),
+                new ElementTestQuestionSeed("Desconhecido", [new("A", "Ar"), new("B", "Lava")])
+            ]
+        };
+
+        var errors = data.Validate();
+
+        Assert.Contains("Teste de elemento, pergunta 1 deve ter exatamente uma opção de cada elemento.", errors);
+        Assert.Contains("Teste de elemento, pergunta 2 deve ter exatamente uma opção de cada elemento.", errors);
+        Assert.Contains(errors, e => e.Contains("pergunta 3 referencia elemento inexistente: 'Lava'"));
     }
 
     [Fact]
@@ -185,7 +209,8 @@ public class ContentSeedDataTests
         Eras = [],
         TimelineEvents = [],
         ComparisonAttributes = [],
-        CharacterAttributes = []
+        CharacterAttributes = [],
+        ElementTest = [new ElementTestQuestionSeed("Pergunta", [new ElementTestOptionSeed("Opção", "Ar")])]
     };
 
     private static CharacterSeed Character(

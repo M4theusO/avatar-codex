@@ -137,6 +137,50 @@ public class ContentSeeder(AppDbContext db)
         await SeedQuizzesAsync(data.Quizzes, cancellationToken);
         await SeedTimelineAsync(data, characters, cancellationToken);
         await SeedComparisonAsync(data, characters, cancellationToken);
+        await SeedElementTestAsync(data.ElementTest, cancellationToken);
+    }
+
+    /// <summary>
+    /// Perguntas pela posição (Order). Nenhuma resposta fica gravada, então perguntas que saíram do seed são
+    /// removidas e as opções de uma pergunta alterada são recriadas (em duas gravações, para os índices únicos
+    /// de ordem e de elemento por pergunta nunca verem duas versões ao mesmo tempo).
+    /// </summary>
+    private async Task SeedElementTestAsync(List<ElementTestQuestionSeed> seeds, CancellationToken cancellationToken)
+    {
+        var elements = await db.Elements.ToDictionaryAsync(e => e.Name, cancellationToken);
+        var questions = await db.ElementTestQuestions.Include(q => q.Options).ToListAsync(cancellationToken);
+
+        db.ElementTestQuestions.RemoveRange(questions.Where(q => q.Order > seeds.Count));
+
+        var pending = new List<(ElementTestQuestion Question, ElementTestQuestionSeed Seed)>();
+        foreach (var (seed, order) in seeds.Select((q, i) => (q, i + 1)))
+        {
+            var question = questions.FirstOrDefault(q => q.Order == order);
+            if (question is null)
+            {
+                question = new ElementTestQuestion { Text = seed.Text, Order = order };
+                db.ElementTestQuestions.Add(question);
+            }
+            question.Text = seed.Text;
+
+            var current = question.Options.OrderBy(o => o.Order).Select(o => (o.Text, o.ElementId));
+            var desired = seed.Options.Select(o => (o.Text, elements[o.Element].Id));
+            if (current.SequenceEqual(desired))
+                continue;
+
+            db.ElementTestOptions.RemoveRange(question.Options);
+            pending.Add((question, seed));
+        }
+        await db.SaveChangesAsync(cancellationToken);
+
+        foreach (var (question, seed) in pending)
+        {
+            question.Options = [.. seed.Options.Select((o, i) => new ElementTestOption
+            {
+                Text = o.Text, Order = i + 1, ElementId = elements[o.Element].Id
+            })];
+        }
+        await db.SaveChangesAsync(cancellationToken);
     }
 
     /// <summary>Atributos pelo nome (a ordem é a posição no arquivo) e valores por personagem + atributo.</summary>

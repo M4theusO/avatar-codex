@@ -109,7 +109,9 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
             ComparisonAttributes = [.. Enumerable.Reverse(data.ComparisonAttributes)],
             CharacterAttributes = [.. data.CharacterAttributes.Select(c => c.Character == "Aang"
                 ? c with { Values = new(c.Values) { ["Estratégia"] = 99 } }
-                : c)]
+                : c)],
+            // Troca os elementos das duas primeiras opções da 1ª pergunta e tira a última pergunta.
+            ElementTest = [SwapFirstTwoElements(data.ElementTest[0]), .. data.ElementTest.Skip(1).SkipLast(1)]
         };
 
         await using (var second = database.CreateContext())
@@ -155,6 +157,24 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
         Assert.Equal(
             data.CharacterAttributes.Sum(c => c.Values.Count),
             await check.CharacterAttributeValues.CountAsync());
+
+        Assert.Equal(data.ElementTest.Count - 1, await check.ElementTestQuestions.CountAsync());
+        var firstQuestion = await check.ElementTestOptions
+            .Where(o => check.ElementTestQuestions.Any(q => q.Id == o.QuestionId && q.Order == 1))
+            .OrderBy(o => o.Order)
+            .Select(o => o.Element.Name)
+            .ToListAsync();
+        Assert.Equal(
+            [data.ElementTest[0].Options[1].Element, data.ElementTest[0].Options[0].Element,
+             .. data.ElementTest[0].Options.Skip(2).Select(o => o.Element)],
+            firstQuestion);
+    }
+
+    private static ElementTestQuestionSeed SwapFirstTwoElements(ElementTestQuestionSeed question)
+    {
+        var options = question.Options.ToList();
+        (options[0], options[1]) = (options[0] with { Element = options[1].Element }, options[1] with { Element = options[0].Element });
+        return question with { Options = options };
     }
 
     private static List<TimelineEventSeed> SwapFirstTwoEventsOfKorra(List<TimelineEventSeed> events)

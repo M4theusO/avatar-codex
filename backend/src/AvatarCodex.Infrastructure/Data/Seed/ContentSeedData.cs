@@ -48,6 +48,11 @@ public record QuestionSeed(string Text, string? Explanation, List<QuizOptionSeed
 
 public record QuizSeed(string Title, string Description, string Category, QuizDifficulty Difficulty, List<QuestionSeed> Questions);
 
+/// <summary>Opção do teste de elemento: vale um ponto para o elemento indicado.</summary>
+public record ElementTestOptionSeed(string Text, string Element);
+
+public record ElementTestQuestionSeed(string Text, List<ElementTestOptionSeed> Options);
+
 public record ImageSeed(string Url, string? SourceUrl, string? Credit);
 
 public record RelationshipSeed(string Related, RelationshipType Type, string? Description);
@@ -101,6 +106,9 @@ public class ContentSeedData
 
     public required List<CharacterAttributesSeed> CharacterAttributes { get; init; }
 
+    /// <summary>Na ordem de exibição; cada pergunta tem uma opção por elemento.</summary>
+    public required List<ElementTestQuestionSeed> ElementTest { get; init; }
+
     public static ContentSeedData Load() => new()
     {
         Elements = Read<ElementSeed>("elements.json"),
@@ -115,7 +123,8 @@ public class ContentSeedData
         Eras = Read<EraSeed>("eras.json"),
         TimelineEvents = Read<TimelineEventSeed>("timeline.json"),
         ComparisonAttributes = Read<ComparisonAttributeSeed>("comparison-attributes.json"),
-        CharacterAttributes = Read<CharacterAttributesSeed>("character-attributes.json")
+        CharacterAttributes = Read<CharacterAttributesSeed>("character-attributes.json"),
+        ElementTest = Read<ElementTestQuestionSeed>("element-test.json")
     };
 
     /// <summary>Retorna os problemas encontrados (nomes duplicados ou referências inexistentes).</summary>
@@ -219,6 +228,7 @@ public class ContentSeedData
         }
 
         ValidateComparison(characters, errors);
+        ValidateElementTest(elements, errors);
 
         UniqueNames(Quizzes.Select(q => q.Title), "quiz", errors);
         foreach (var quiz in Quizzes)
@@ -268,6 +278,25 @@ public class ContentSeedData
                 if (benders.Contains(entry.Character) != value > 0)
                     errors.Add($"{owner}: '{attribute.Name}' deve ser 0 para quem não dobra e maior que 0 para dobradores.");
             }
+        }
+    }
+
+    /// <summary>Teste equilibrado: toda pergunta oferece exatamente uma opção de cada elemento.</summary>
+    private void ValidateElementTest(HashSet<string> elements, List<string> errors)
+    {
+        if (ElementTest.Count == 0)
+            errors.Add("O teste de elemento não tem perguntas.");
+        UniqueNames(ElementTest.Select(q => q.Text), "pergunta do teste de elemento", errors);
+
+        foreach (var (question, index) in ElementTest.Select((q, i) => (q, i + 1)))
+        {
+            var owner = $"Teste de elemento, pergunta {index}";
+            foreach (var option in question.Options)
+                CheckReference(elements, option.Element, owner, "elemento", errors);
+
+            var offered = question.Options.Select(o => o.Element).ToList();
+            if (offered.Count != elements.Count || !elements.SetEquals(offered))
+                errors.Add($"{owner} deve ter exatamente uma opção de cada elemento.");
         }
     }
 

@@ -1,0 +1,74 @@
+[
+  {
+    "text": "Diante de um problema difícil, você costuma…",
+    "options": [
+      { "text": "Procurar outro caminho e se adaptar ao que aparecer.", "element": "Água" },
+      { "text": "Manter a posição e resolver com paciência e firmeza.", "element": "Terra" },
+      { "text": "Partir para a ação com toda a energia, de frente.", "element": "Fogo" },
+      { "text": "Dar um passo atrás, respirar e olhar o problema de outro ângulo.", "element": "Ar" }
+    ]
+  },
+  {
+    "text": "Como seria o seu dia livre perfeito?",
+    "options": [
+      { "text": "Viajar sem roteiro, para onde o vento levar.", "element": "Ar" },
+      { "text": "Treinar algo novo até dominar de verdade.", "element": "Fogo" },
+      { "text": "Estar com amigos e família, cuidando de quem você gosta.", "element": "Água" },
+      { "text": "Tocar um projeto com as próprias mãos, no seu ritmo.", "element": "Terra" }
+    ]
+  },
+  {
+    "text": "Qual destas qualidades você mais admira em alguém?",
+    "options": [
+      { "text": "Lealdade: estar lá, aconteça o que acontecer.", "element": "Terra" },
+      { "text": "Paixão: viver tudo com intensidade.", "element": "Fogo" },
+      { "text": "Leveza: não se prender ao que não importa.", "element": "Ar" },
+      { "text": "Empatia: sentir o que o outro sente.", "element": "Água" }
+    ]
+  },
+  {
+    "text": "Num trabalho em grupo, você é quem…",
+    "options": [
+      { "text": "Toma a frente e puxa o ritmo.", "element": "Fogo" },
+      { "text": "Percebe como cada um está e faz a ponte entre as pessoas.", "element": "Água" },
+      { "text": "Traz ideias novas e deixa o clima mais leve.", "element": "Ar" },
+      { "text": "Garante que tudo seja entregue, do começo ao fim.", "element": "Terra" }
+    ]
+  },
+  {
+    "text": "Quando alguém te provoca, você…",
+    "options": [
+      { "text": "Desvia com bom humor e segue em frente.", "element": "Ar" },
+      { "text": "Fica firme e não se deixa abalar.", "element": "Terra" },
+      { "text": "Deixa passar por enquanto e responde na hora certa.", "element": "Água" },
+      { "text": "Responde na hora: não leva desaforo para casa.", "element": "Fogo" }
+    ]
+  },
+  {
+    "text": "Qual paisagem mais combina com você?",
+    "options": [
+      { "text": "Um oceano sob a lua cheia.", "element": "Água" },
+      { "text": "Um vulcão ao pôr do sol.", "element": "Fogo" },
+      { "text": "Montanhas e cânions de pedra.", "element": "Terra" },
+      { "text": "Um templo no alto, acima das nuvens.", "element": "Ar" }
+    ]
+  },
+  {
+    "text": "O que mais te motiva?",
+    "options": [
+      { "text": "Construir algo que dure.", "element": "Terra" },
+      { "text": "Encontrar paz e equilíbrio.", "element": "Ar" },
+      { "text": "Proteger e cuidar das pessoas próximas.", "element": "Água" },
+      { "text": "Superar os meus próprios limites.", "element": "Fogo" }
+    ]
+  },
+  {
+    "text": "Que conselho você daria a alguém que se sente perdido?",
+    "options": [
+      { "text": "Descubra o que te move e não deixe essa chama apagar.", "element": "Fogo" },
+      { "text": "Firme os pés no chão e dê um passo de cada vez.", "element": "Terra" },
+      { "text": "Solte o que te prende: o caminho aparece quando a mente fica leve.", "element": "Ar" },
+      { "text": "Seja flexível: quem sabe mudar de forma sempre encontra passagem.", "element": "Água" }
+    ]
+  }
+]

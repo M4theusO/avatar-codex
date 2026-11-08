@@ -33,6 +33,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TimeProvider t
     public DbSet<TimelineEvent> TimelineEvents => Set<TimelineEvent>();
     public DbSet<ComparisonAttribute> ComparisonAttributes => Set<ComparisonAttribute>();
     public DbSet<CharacterAttributeValue> CharacterAttributeValues => Set<CharacterAttributeValue>();
+    public DbSet<ElementTestQuestion> ElementTestQuestions => Set<ElementTestQuestion>();
+    public DbSet<ElementTestOption> ElementTestOptions => Set<ElementTestOption>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -9,6 +9,7 @@ public static class ExperienceRewards
     public const int NationDiscovered = 10;
     public const int QuizCompleted = 20;
     public const int QuizPerfect = 50;
+    public const int ElementTestCompleted = 30;
 
     /// <summary>Valor fixo do tipo. Desafios e conquistas têm valor próprio, definido no conteúdo.</summary>
     public static int For(ExperienceType type) => type switch
@@ -17,6 +18,7 @@ public static class ExperienceRewards
         ExperienceType.NationDiscovered => NationDiscovered,
         ExperienceType.QuizCompleted => QuizCompleted,
         ExperienceType.QuizPerfect => QuizPerfect,
+        ExperienceType.ElementTestCompleted => ElementTestCompleted,
         _ => throw new ArgumentOutOfRangeException(nameof(type), type, "O XP deste tipo vem do desafio ou da conquista.")
     };
 }

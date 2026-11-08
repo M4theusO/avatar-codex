@@ -468,6 +468,79 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.ToTable("elements", (string)null);
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.ElementTestOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ElementId")
+                        .HasColumnType("integer")
+                        .HasColumnName("element_id");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer")
+                        .HasColumnName("order");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("question_id");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("text");
+
+                    b.HasKey("Id")
+                        .HasName("pk_element_test_options");
+
+                    b.HasIndex("ElementId")
+                        .HasDatabaseName("ix_element_test_options_element_id");
+
+                    b.HasIndex("QuestionId", "ElementId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_element_test_options_question_id_element_id");
+
+                    b.HasIndex("QuestionId", "Order")
+                        .IsUnique()
+                        .HasDatabaseName("ix_element_test_options_question_id_order");
+
+                    b.ToTable("element_test_options", (string)null);
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.ElementTestQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer")
+                        .HasColumnName("order");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("text");
+
+                    b.HasKey("Id")
+                        .HasName("pk_element_test_questions");
+
+                    b.HasIndex("Order")
+                        .IsUnique()
+                        .HasDatabaseName("ix_element_test_questions_order");
+
+                    b.ToTable("element_test_questions", (string)null);
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.Era", b =>
                 {
                     b.Property<int>("Id")
@@ -1367,6 +1440,25 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.Navigation("Template");
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.ElementTestOption", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.Element", "Element")
+                        .WithMany()
+                        .HasForeignKey("ElementId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_element_test_options_elements_element_id");
+
+                    b.HasOne("AvatarCodex.Domain.Entities.ElementTestQuestion", null)
+                        .WithMany("Options")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_element_test_options_element_test_questions_question_id");
+
+                    b.Navigation("Element");
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.ExperienceTransaction", b =>
                 {
                     b.HasOne("AvatarCodex.Domain.Entities.User", null)
@@ -1761,6 +1853,11 @@ namespace AvatarCodex.Infrastructure.Migrations
             modelBuilder.Entity("AvatarCodex.Domain.Entities.Element", b =>
                 {
                     b.Navigation("BendingSubtypes");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.ElementTestQuestion", b =>
+                {
+                    b.Navigation("Options");
                 });
 
             modelBuilder.Entity("AvatarCodex.Domain.Entities.Era", b =>
