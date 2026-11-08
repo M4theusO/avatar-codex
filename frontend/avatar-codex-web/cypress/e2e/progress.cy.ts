@@ -82,4 +82,22 @@ describe('Progresso', () => {
         cy.get('dd').contains(element).should('be.visible')
       })
   })
+
+  it('vê a própria posição no ranking geral e no do mês', () => {
+    cy.visit('/dashboard')
+    cy.findByRole('link', { name: 'Ranking' }).click()
+    cy.location('pathname').should('eq', '/ranking')
+
+    // O número fica num <strong>: cy.contains lê o texto completo do parágrafo.
+    cy.contains('p', /Sua posição: \d+º de \d+/).should('be.visible')
+    cy.findByRole('list', { name: 'Ranking' }).within(() => {
+      cy.findByText('Você').should('be.visible')
+    })
+
+    cy.findByRole('button', { name: 'Este mês' }).click()
+    cy.location('search').should('eq', '?period=month')
+    cy.findByText(/recomeça em/).should('be.visible')
+    // O cadastro rendeu o "Primeiro passo" neste mês.
+    cy.contains('p', /Sua posição: \d+º de \d+ · 10 XP/).should('be.visible')
+  })
 })
