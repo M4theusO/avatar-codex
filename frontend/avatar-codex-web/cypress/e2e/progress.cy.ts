@@ -58,4 +58,28 @@ describe('Progresso', () => {
         expect(xp).to.be.at.least(110)
       })
   })
+
+  it('descobre o elemento no teste e ele vai para o perfil', () => {
+    cy.visit('/element-test')
+    cy.findByRole('button', { name: /Começar/ }).click()
+
+    // Escolhe sempre a primeira opção; o elemento é calculado no backend.
+    for (let question = 1; question <= 8; question++) {
+      cy.findByText(`Pergunta ${question} de 8`).should('be.visible')
+      cy.findAllByRole('radio').first().check({ force: true })
+      cy.findByRole('button', { name: question < 8 ? /Próxima/ : /Ver meu elemento/ }).click()
+    }
+
+    cy.findByText('Seu elemento é').should('be.visible')
+    cy.findByText(/Elemento descoberto — .+! \+30 XP/).should('be.visible')
+    cy.dismissLevelUp()
+    cy.findByRole('heading', { level: 2 })
+      .invoke('text')
+      .then((element) => {
+        cy.findByRole('link', { name: /Ver meu perfil/ }).click()
+        cy.location('pathname').should('eq', '/profile')
+        cy.findByRole('link', { name: 'Refazer o teste' }).should('be.visible')
+        cy.get('dd').contains(element).should('be.visible')
+      })
+  })
 })
