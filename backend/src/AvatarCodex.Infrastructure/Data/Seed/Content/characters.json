@@ -27,6 +27,7 @@
   },
   {
     "name": "Katara",
+    "image": { "url": "/images/characters/katara.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Mestra dobradora de água da Tribo da Água do Sul e uma das maiores curandeiras do mundo.",
     "biography": "Única dobradora de água de sua tribo, encontrou Aang no iceberg e o acompanhou em sua jornada, tornando-se sua mestra de dobra de água. Aprendeu a dobra de sangue com Hama, mas jurou não usá-la. Casou-se com Aang e teve três filhos: Bumi, Kya e Tenzin.",
@@ -137,6 +138,7 @@
   },
   {
     "name": "Azula",
+    "image": { "url": "/images/characters/azula.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Princesa Azula"],
     "description": "Prodígio da dobra de fogo e irmã de Zuko.",
     "biography": "Filha favorita de Ozai, dominava o fogo azul e o relâmpago desde jovem. Liderou a tomada de Ba Sing Se ao lado de Mai e Ty Lee, mas sua obsessão por controle a levou ao colapso no Agni Kai final contra Zuko e Katara.",
@@ -179,6 +181,7 @@
   },
   {
     "name": "Suki",
+    "image": { "url": "/images/characters/suki.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Líder das Guerreiras Kyoshi.",
     "biography": "Treinou Sokka na Ilha Kyoshi e mais tarde se juntou ao grupo do Avatar. Foi presa na Rocha Fervente, de onde escapou com Sokka e Zuko, e lutou contra a frota aérea da Nação do Fogo na batalha final.",
@@ -197,6 +200,7 @@
   },
   {
     "name": "Mai",
+    "image": { "url": "/images/characters/mai.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Nobre da Nação do Fogo, especialista em armas de arremesso.",
     "biography": "Amiga de infância de Azula, acompanhou a princesa na caça ao Avatar. Apaixonada por Zuko, rompeu com Azula para salvá-lo na Rocha Fervente.",
@@ -216,6 +220,7 @@
   },
   {
     "name": "Ty Lee",
+    "image": { "url": "/images/characters/ty-lee.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Acrobata e especialista em bloqueio de chi.",
     "biography": "Amiga de infância de Azula, deixou o circo para acompanhá-la. Depois de trair Azula para proteger Mai, foi presa e, mais tarde, juntou-se às Guerreiras Kyoshi.",
@@ -235,6 +240,7 @@
   },
   {
     "name": "Roku",
+    "image": { "url": "/images/characters/roku.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Avatar Roku"],
     "description": "Avatar anterior a Aang, nascido na Nação do Fogo.",
     "biography": "Amigo de infância de Sozin, tentou impedir sua ambição de expandir a Nação do Fogo. Morreu na erupção do vulcão de sua ilha quando Sozin se recusou a ajudá-lo, abrindo caminho para a guerra.",
@@ -251,6 +257,7 @@
   },
   {
     "name": "Kyoshi",
+    "image": { "url": "/images/characters/kyoshi.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Avatar Kyoshi"],
     "description": "Avatar do Reino da Terra conhecida por sua firmeza e senso de justiça.",
     "biography": "Uma das Avatares mais poderosas, separou sua terra natal do continente para protegê-la, criando a Ilha Kyoshi. Fundou as Guerreiras Kyoshi e viveu mais de duzentos anos.",
@@ -267,6 +274,7 @@
   },
   {
     "name": "Bumi",
+    "image": { "url": "/images/characters/bumi.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Rei Bumi"],
     "description": "Excêntrico rei de Omashu e amigo de infância de Aang.",
     "biography": "Poderoso dobrador de terra com uma mente imprevisível. Testou Aang com desafios quando ele chegou a Omashu e, durante o Cometa de Sozin, libertou sozinho a cidade do domínio da Nação do Fogo.",
@@ -285,6 +293,7 @@
   },
   {
     "name": "Jet",
+    "image": { "url": "/images/characters/jet.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Líder rebelde dos Combatentes da Liberdade.",
     "biography": "Órfão da guerra, liderava um grupo de jovens contra a Nação do Fogo na floresta do Reino da Terra, chegando a ameaçar inocentes. Em Ba Sing Se, foi capturado e submetido a lavagem cerebral pelo Dai Li.",
@@ -301,6 +310,7 @@
   },
   {
     "name": "Yue",
+    "image": { "url": "/images/characters/yue.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Princesa Yue"],
     "description": "Princesa da Tribo da Água do Norte que se tornou o Espírito da Lua.",
     "biography": "Recebeu a vida do Espírito da Lua ao nascer. Quando o Almirante Zhao matou o espírito durante o cerco ao Polo Norte, Yue se sacrificou para devolvê-lo à vida e tornou-se a nova Lua.",
@@ -338,6 +348,7 @@
   },
   {
     "name": "Zhao",
+    "image": { "url": "/images/characters/zhao.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Almirante Zhao", "Comandante Zhao"],
     "description": "Oficial ambicioso da Nação do Fogo e rival de Zuko.",
     "biography": "Obcecado por glória, liderou o cerco à Tribo da Água do Norte e matou o Espírito da Lua. Foi arrastado pelo Espírito do Oceano durante a batalha.",
@@ -356,6 +367,7 @@
   },
   {
     "name": "Hama",
+    "image": { "url": "/images/characters/hama.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Dobradora de água da Tribo do Sul que criou a dobra de sangue.",
     "biography": "Capturada pela Nação do Fogo, desenvolveu a dobra de sangue para escapar da prisão. Vivendo disfarçada em um vilarejo da Nação do Fogo, ensinou a técnica a Katara, que acabou entregando-a às autoridades.",
@@ -372,6 +384,7 @@
   },
   {
     "name": "Gyatso",
+    "image": { "url": "/images/characters/gyatso.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Monge Gyatso"],
     "description": "Monge do Templo do Ar do Sul e mentor de Aang.",
     "biography": "Tratava Aang como um filho e se opôs à decisão dos monges de separá-lo dele. Morreu defendendo o templo durante o ataque da Nação do Fogo que exterminou os Nômades do Ar.",
@@ -390,6 +403,7 @@
   },
   {
     "name": "Long Feng",
+    "image": { "url": "/images/characters/long-feng.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Líder do Dai Li e verdadeiro poder por trás do Rei da Terra.",
     "biography": "Como Grande Secretário de Ba Sing Se, escondia a guerra da população e controlava a cidade com a polícia secreta Dai Li. Tentou usar Azula para recuperar o poder, mas acabou traído por ela.",
@@ -474,6 +488,7 @@
   },
   {
     "name": "Asami Sato",
+    "image": { "url": "/images/characters/asami-sato.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Herdeira e presidente das Indústrias Futuro.",
     "biography": "Filha de Hiroshi Sato, rompeu com o pai ao descobrir sua ligação com os Igualitários. Engenheira e piloto habilidosa, assumiu a empresa e tornou-se uma das maiores aliadas de Korra, e depois sua parceira.",
@@ -493,6 +508,7 @@
   },
   {
     "name": "Tenzin",
+    "image": { "url": "/images/characters/tenzin.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Mestre Tenzin"],
     "description": "Mestre de dobra de ar e filho mais novo de Aang e Katara.",
     "biography": "Um dos últimos dobradores de ar, dedicou-se a preservar a cultura dos Nômades do Ar e ensinou dobra de ar a Korra. Membro do Conselho de Cidade República, vive na Ilha do Templo do Ar com a esposa Pema e os filhos.",
@@ -534,6 +550,7 @@
   },
   {
     "name": "Amon",
+    "image": { "url": "/images/characters/amon.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Noatak"],
     "description": "Líder mascarado do movimento Igualitário.",
     "biography": "Dizia ter perdido a família e o rosto para um dobrador de fogo e prometia igualdade aos não-dobradores. Na verdade era Noatak, filho do dobrador de sangue Yakone, e retirava a dobra das pessoas usando a dobra de sangue.",
@@ -552,6 +569,7 @@
   },
   {
     "name": "Unalaq",
+    "image": { "url": "/images/characters/unalaq.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Chefe da Tribo da Água do Norte e tio de Korra.",
     "biography": "Apresentava-se como guia espiritual, mas planejava libertar Vaatu e se fundir ao espírito do caos para se tornar o Avatar Sombrio. Foi derrotado por Korra durante a Convergência Harmônica.",
@@ -570,6 +588,7 @@
   },
   {
     "name": "Zaheer",
+    "image": { "url": "/images/characters/zaheer.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Líder da Lótus Vermelha que ganhou a dobra de ar.",
     "biography": "Anarquista que defendia o fim dos governos, ganhou a dobra de ar após a Convergência Harmônica. Liderou a Lótus Vermelha em um plano para envenenar Korra e alcançou o voo depois de perder sua companheira, P'Li.",
@@ -589,6 +608,7 @@
   },
   {
     "name": "P'Li",
+    "image": { "url": "/images/characters/p-li.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Integrante da Lótus Vermelha capaz de criar explosões com a mente.",
     "biography": "Companheira de Zaheer, usava a combustão para provocar explosões devastadoras. Foi derrotada por Suyin Beifong durante o ataque da Lótus Vermelha.",
@@ -607,6 +627,7 @@
   },
   {
     "name": "Kuvira",
+    "image": { "url": "/images/characters/kuvira.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Grande Unificadora"],
     "description": "Ex-capitã da guarda de Zaofu que se tornou ditadora do Império da Terra.",
     "biography": "Criada sob a proteção de Suyin Beifong, assumiu a missão de estabilizar o Reino da Terra após a morte da Rainha da Terra. Fundou o Império da Terra e construiu uma arma de energia espiritual, mas se rendeu depois de ser salva por Korra.",
@@ -626,6 +647,7 @@
   },
   {
     "name": "Suyin Beifong",
+    "image": { "url": "/images/characters/suyin-beifong.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Su"],
     "description": "Matriarca e fundadora de Zaofu, a cidade de metal.",
     "biography": "Filha mais nova de Toph e meia-irmã de Lin, fundou Zaofu como uma cidade de cultura e inovação. Ajudou Korra contra a Lótus Vermelha e liderou a resistência contra Kuvira, sua antiga protegida.",
@@ -665,6 +687,7 @@
   },
   {
     "name": "Varrick",
+    "image": { "url": "/images/characters/varrick.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Empresário excêntrico e inventor da Tribo da Água do Sul.",
     "biography": "Dono das Indústrias Varrick, financiou movimentos, produziu filmes e criou invenções revolucionárias. Ajudou Kuvira a desenvolver a arma de energia espiritual, mas depois a abandonou e se aliou a Korra.",
@@ -681,6 +704,7 @@
   },
   {
     "name": "Hiroshi Sato",
+    "image": { "url": "/images/characters/hiroshi-sato.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": [],
     "description": "Fundador das Indústrias Futuro e pai de Asami.",
     "biography": "Inventor do satomóvel, apoiou secretamente os Igualitários depois que a esposa foi morta por um dobrador de fogo. Anos depois, redimiu-se e morreu ajudando a destruir o robô gigante de Kuvira.",
@@ -699,6 +723,7 @@
   },
   {
     "name": "Wan",
+    "image": { "url": "/images/characters/wan.jpg", "sourceUrl": null, "credit": "Nickelodeon" },
     "aliases": ["Avatar Wan"],
     "description": "O primeiro Avatar.",
     "biography": "Viveu há dez mil anos, quando a humanidade habitava cidades sobre leões-tartaruga. Fundiu-se com Raava, o espírito da luz, e dedicou a vida a manter o equilíbrio entre humanos e espíritos.",
