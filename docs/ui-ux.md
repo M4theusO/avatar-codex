@@ -182,7 +182,7 @@ Quizzes                  47
 Taxa de acerto           87%
 Conquistas               14 / 30
 ```
-Seções: exploração (7 indicadores), histórico de XP, editar perfil e excluir conta. As descobertas recentes ficam só no painel (`/dashboard`).
+Seções: exploração (6 indicadores; favoritos ficam no atalho da navbar), histórico de XP, editar perfil e excluir conta. As descobertas recentes ficam só no painel (`/dashboard`).
 
 **Editar perfil (Fase 22):** seção antes de "Excluir conta", num cartão com duas partes (lado a lado a partir de 1024px). **Foto:** prévia grande no anel do elemento, "Enviar foto"/"Trocar foto" (abre o seletor de arquivos; JPEG, PNG ou WebP) e "Remover foto" quando há foto. O navegador recorta o centro e reduz para 256×256 antes de enviar; erros (tipo, tamanho, conta demo) aparecem logo abaixo (`role="alert"`). **Nome de usuário:** campo com a regra na dica ("Você continua entrando pelo email") e "Salvar nome", desativado enquanto nada mudou; erro da API no próprio campo. Sucesso vira toast ("Foto atualizada.", "Foto removida.", "Nome de usuário atualizado.") e a mudança aparece na hora no topo do perfil, na navbar e no ranking.
 
@@ -251,5 +251,5 @@ Transições de 150–300ms em hover/foco, entrada de cards com fade/slide leve 
 - Home: os 5 Avatares numa linha a partir de 1024px.
 - Nações: flex centralizado, 1 / 2 / 3 colunas; com 5 nações o desktop fica 3 + 2 centralizado.
 - Detalhe do personagem: a partir de 1024px, duas colunas (2:1): "Sobre" e "Habilidades" à esquerda; "Subtipos de dobra", "Relações" e "Aparições" à direita. No celular, a ordem é a mesma, empilhada.
-- Perfil: os 7 indicadores (personagens, nações, habilidades, favoritos, conquistas, quizzes, taxa de acerto) em 2 colunas no celular e 3 no desktop; o último, sozinho na linha, ocupa a linha inteira.
+- Perfil: os 6 indicadores (personagens, nações, habilidades, conquistas, quizzes, taxa de acerto) em 2 colunas no celular e 3 + 3 no desktop. Favoritos não têm card no perfil: o acesso é pelo atalho na navbar.
 - Comparação: os dois cards do "vs" sempre com a mesma altura.

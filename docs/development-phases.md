@@ -491,5 +491,6 @@ No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](d
 - [x] Testes: backend 349 (220 unitários + 129 de integração: XP uma vez só, 404, 401, histórico e estatísticas), frontend 174, E2E 12 (o teste de habilidades confere o toast de +10 XP), no Chrome contra o build
 - [x] Painel com o card "Habilidades" (5 indicadores: uma linha a partir de 768px; no celular, 2 colunas e o 5º na linha inteira)
 - [x] "Descobertas recentes" saiu do perfil e ficou só no painel (`DiscoveryList` foi para `components/dashboard`; o hook e o serviço de `GET /api/users/me/discoveries` saíram do frontend, o endpoint continua)
+- [x] Card "Favoritos" removido do perfil (o atalho da navbar já leva a `/favorites`): o perfil volta a 6 indicadores, 3 + 3 no desktop
 - Fora do escopo (combinar antes): conquistas e desafios diários que contem habilidades descobertas
 
