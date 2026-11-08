@@ -141,6 +141,7 @@ Exemplo de item da listagem (`image` é `null` para quem ainda não tem retrato;
 |---|---|---|---|---|
 | POST | `/api/characters/{id}/discovery` | 🔒 | Registra a descoberta (idempotente): **+10 XP** na primeira vez. Retorna `{ isNew, reward }`. | 200, 401, 404 |
 | POST | `/api/nations/{id}/discovery` | 🔒 | Registra a descoberta da nação (idempotente): **+10 XP** na primeira vez (DA-01). Retorna `{ isNew, reward }`. | 200, 401, 404 |
+| POST | `/api/abilities/{id}/discovery` | 🔒 | Registra a descoberta da habilidade (idempotente): **+10 XP** na primeira vez. Retorna `{ isNew, reward }`. | 200, 401, 404 |
 | POST | `/api/characters/{id}/favorite` | 🔒 | Adiciona favorito (idempotente, inclusive em paralelo) | 204, 401, 404 |
 | DELETE | `/api/characters/{id}/favorite` | 🔒 | Remove favorito (idempotente) | 204, 401, 404 |
 
@@ -163,10 +164,10 @@ Os dados do próprio usuário (nível, XP e progresso já calculados) vêm em `U
 | PUT | `/api/users/me/avatar` | 🔒 | Foto de perfil em `multipart/form-data`, campo `file`: JPEG, PNG ou WebP (tipo conferido pelos bytes, não pela extensão), até 512 KB. **Substitui a anterior** (uma foto por usuário). Devolve o `UserDto` com o novo `avatarUrl`. Sem arquivo, tipo errado ou grande demais → 400 (campo `file`); corpo acima do limite → 413; conta de demonstração → 422 |
 | DELETE | `/api/users/me/avatar` | 🔒 | Remove a foto (volta para as iniciais) e devolve o `UserDto` com `avatarUrl: null` |
 | DELETE | `/api/users/me` | 🔒 | Exclui a conta e todos os dados dela (`{ "password": "..." }` para confirmar). 204 e apaga o cookie de refresh; senha vazia ou errada → 400 com erro no campo `password` (não 401: a sessão continua válida); conta de demonstração → 422 |
-| GET | `/api/users/me/statistics` | 🔒 | Estatísticas do perfil: `discoveredCharacters`, `totalCharacters`, `discoveredNations`, `totalNations`, `favorites`, `unlockedAchievements`, `totalAchievements`, `completedQuizzes`, `totalQuizzes`, `quizAttempts`, `accuracyPercent` (acertos / respostas de todas as tentativas; `null` sem tentativas) |
+| GET | `/api/users/me/statistics` | 🔒 | Estatísticas do perfil: `discoveredCharacters`, `totalCharacters`, `discoveredNations`, `totalNations`, `discoveredAbilities`, `totalAbilities`, `favorites`, `unlockedAchievements`, `totalAchievements`, `completedQuizzes`, `totalQuizzes`, `quizAttempts`, `accuracyPercent` (acertos / respostas de todas as tentativas; `null` sem tentativas) |
 | GET | `/api/users/me/dashboard` | 🔒 | Agregado do dashboard numa chamada (`DashboardDto`, ver abaixo) |
 | GET | `/api/users/me/favorites` | 🔒 | Favoritos (`PagedResult<CharacterListItemDto>`, `?page`/`?pageSize`), mais recentes primeiro |
-| GET | `/api/users/me/discoveries` | 🔒 | Descobertas de personagens e nações (`PagedResult<DiscoveryDto>`: `kind` = `Character`/`Nation`, `id`, `name`, `image`, `element`, `discoveredAt`), mais recentes primeiro |
+| GET | `/api/users/me/discoveries` | 🔒 | Descobertas de personagens, nações e habilidades (`PagedResult<DiscoveryDto>`: `kind` = `Character`/`Nation`/`Ability`, `id`, `name`, `image`, `element`, `discoveredAt`), mais recentes primeiro |
 | GET | `/api/users/me/experience` | 🔒 | Histórico de transações de XP (`PagedResult<ExperienceTransactionDto>`: `id`, `amount`, `type`, `description`, `createdAt`), mais recente primeiro |
 | GET | `/api/users/me/quiz-history` | 🔒 | Todas as tentativas, mais recentes primeiro (`PagedResult<QuizAttemptDto>`: `id`, `quizId`, `quizTitle`, `score`, `totalQuestions`, `percentage`, `experienceEarned`, `completedAt`). O melhor resultado por quiz vem em `GET /api/quizzes` |
 | GET | `/api/users/me/achievements` | 🔒 | Catálogo completo do ponto de vista do usuário (`UserAchievementDto[]`: `id`, `name`, `description`, `icon`, `experienceReward`, `isUnlocked`, `unlockedAt`, `progress`, `target`). Bloqueadas trazem o progresso (limitado à meta); desbloqueadas, a data |

@@ -104,7 +104,7 @@ As telas são desenhadas primeiro para mobile e expandidas. Não vale fazer o de
 | `/nations` | Nações | público |
 | `/nations/:id` | Detalhe da nação | público |
 | `/abilities` | Habilidades agrupadas por elemento | público |
-| `/abilities/:id` | Detalhe da habilidade e quem a domina | público |
+| `/abilities/:id` | Detalhe da habilidade e quem a domina | público (descoberta se logado) |
 | `/timeline` | Linha do tempo | público |
 | `/compare` | Comparação (`?a=1&b=2`) | público |
 | `/quizzes` | Lista de quizzes | público |
@@ -221,7 +221,7 @@ Cards dos desafios do dia com progresso, recompensa e horário do próximo reset
 
 Disparados a partir do `reward` retornado pela API (nunca calculados no frontend):
 
-- **Descoberta** (personagem ou nação): `✨ NOVA DESCOBERTA — Você descobriu Zuko! +10 XP` (toast). Só aparece quando a API retorna `isNew: true`.
+- **Descoberta** (personagem, nação ou habilidade): `✨ NOVA DESCOBERTA — Você descobriu Zuko! +10 XP` (toast). Só aparece quando a API retorna `isNew: true`.
 - **XP**: animação curta na `XpBar` (a barra cresce e um brilho a atravessa). A `XpBar` aparece completa no perfil e compacta na navbar, sob o nome do usuário; usa a cor do elemento do usuário ou o neutro claro (DA-02).
 - **Nível**: modal `Novo nível! Você alcançou o nível 10. Continue sua jornada!` com `<dialog>` nativo (foco preso, Esc fecha, fundo inerte), foco inicial em "Continuar". Vários níveis entram numa fila e aparecem um de cada vez.
 - **Quiz**: toast `🎯 Quiz concluído — 9/10! +20 XP` só quando a tentativa rende XP.
@@ -251,5 +251,5 @@ Transições de 150–300ms em hover/foco, entrada de cards com fade/slide leve 
 - Home: os 5 Avatares numa linha a partir de 1024px.
 - Nações: flex centralizado, 1 / 2 / 3 colunas; com 5 nações o desktop fica 3 + 2 centralizado.
 - Detalhe do personagem: a partir de 1024px, duas colunas (2:1): "Sobre" e "Habilidades" à esquerda; "Subtipos de dobra", "Relações" e "Aparições" à direita. No celular, a ordem é a mesma, empilhada.
-- Perfil: os 6 indicadores em 2 colunas no celular e 3 no desktop.
+- Perfil: os 7 indicadores (personagens, nações, habilidades, favoritos, conquistas, quizzes, taxa de acerto) em 2 colunas no celular e 3 no desktop; o último, sozinho na linha, ocupa a linha inteira.
 - Comparação: os dois cards do "vs" sempre com a mesma altura.

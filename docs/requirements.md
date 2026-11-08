@@ -62,6 +62,7 @@ Prioridades: **P0** essencial · **P1** núcleo de gamificação · **P2** compl
 | RF-DISC-01 | Ao visitar um personagem pela primeira vez, registrar descoberta, conceder XP e mostrar feedback visual ("✨ Nova descoberta — Você descobriu Zuko! +10 XP"). |
 | RF-DISC-02 | Registrar também descoberta de nações (necessário para a conquista "Historiador" e o desafio "Explore uma nação"), com **+10 XP** na primeira descoberta de cada nação (DA-01). |
 | RF-DISC-03 | Histórico de descobertas (recentes no dashboard e perfil). |
+| RF-DISC-04 | Registrar a descoberta de habilidades ao abrir o detalhe, com **+10 XP** na primeira descoberta de cada habilidade. Aparece no histórico e nas estatísticas do perfil. |
 
 ### 4.5 XP e níveis — P1
 | ID | Requisito |
@@ -133,6 +134,7 @@ Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personage
 |---|---|---|---|
 | Descobrir personagem | +10 | 1ª descoberta de cada personagem por usuário | `CharacterDiscovered` |
 | Descobrir nação | +10 | 1ª descoberta de cada nação por usuário (**DA-01**) | `NationDiscovered` |
+| Descobrir habilidade | +10 | 1ª descoberta de cada habilidade por usuário | `AbilityDiscovered` |
 | Completar quiz | +20 | 1ª conclusão de cada quiz | `QuizCompleted` |
 | Quiz perfeito | +50 (bônus) | 1ª vez que gabarita aquele quiz | `QuizPerfect` |
 | Teste de elemento | +30 | 1ª conclusão do teste (refazer não dá XP) | `ElementTestCompleted` |

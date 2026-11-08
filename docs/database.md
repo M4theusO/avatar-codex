@@ -226,6 +226,8 @@ Migration `AddTimeline`. `Order` vem da posição no JSON; ao reordenar, o seed 
 
 **UserNationDiscovery** — PK (`UserId`, `NationId`), `DiscoveredAt`. A 1ª descoberta concede +10 XP (`ExperienceTransaction.Type = NationDiscovered`, `SourceId = NationId`; DA-01).
 
+**UserAbilityDiscovery** — PK (`UserId`, `AbilityId`), `DiscoveredAt`; índice (`UserId`, `DiscoveredAt DESC`). A 1ª descoberta concede +10 XP (`Type = AbilityDiscovered`, `SourceId = AbilityId`). Tabela `ability_discoveries`, migration `AddAbilityDiscoveries`.
+
 **UserFavoriteCharacter** — PK (`UserId`, `CharacterId`), `CreatedAt`.
 
 > As PKs compostas garantem por si só que não há descoberta nem favorito duplicado. A descoberta e a `ExperienceTransaction` são gravadas **na mesma transação**: se uma requisição concorrente já registrou, a violação de unicidade é tratada como "já descoberto" (RN-12).
@@ -238,8 +240,8 @@ Migration `AddTimeline`. `Order` vem da posição no JSON; ao reordenar, o seed 
 | Id | bigint | PK |
 | UserId | uuid | FK, CASCADE, índice |
 | Amount | int | CHECK > 0 |
-| Type | enum | `CharacterDiscovered`, `NationDiscovered`, `QuizCompleted`, `QuizPerfect`, `ChallengeCompleted`, `AchievementUnlocked` |
-| SourceId | int | id do personagem/nação/quiz/desafio/conquista que gerou o XP |
+| Type | enum | `CharacterDiscovered`, `NationDiscovered`, `AbilityDiscovered`, `QuizCompleted`, `QuizPerfect`, `ChallengeCompleted`, `AchievementUnlocked`, `ElementTestCompleted` |
+| SourceId | int | id do personagem/nação/habilidade/quiz/desafio/conquista que gerou o XP |
 | Description | varchar(200) | |
 | CreatedAt | timestamptz | |
 | | | **UNIQUE (`UserId`, `Type`, `SourceId`)**: garante a idempotência (RN-05) |
@@ -393,6 +395,7 @@ Uma migration por mudança coesa de esquema, com nome descritivo (ex.: `AddQuizT
 | `AddCharacterComparison` | `comparison_attributes` (`name` único, `order`), `character_attribute_values` (PK composta, `CHECK value` 0–100) |
 | `AddElementTest` | `element_test_questions` (`order` único), `element_test_options` (unique (`question_id`, `order`) e (`question_id`, `element_id`): uma opção por elemento em cada pergunta; FK do elemento RESTRICT) |
 | `AddUserAvatars` | `user_avatars` (PK `user_id` com FK CASCADE, `public_id` único, `data` bytea) |
+| `AddAbilityDiscoveries` | `ability_discoveries` (UserAbilityDiscovery): PK (`user_id`, `ability_id`), FK do usuário CASCADE, FK da habilidade RESTRICT |
 
 ## 6. Testes de banco
 

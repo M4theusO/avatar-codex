@@ -485,3 +485,9 @@ No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](d
 - Usuários `e2e_*` antigos (de 2026-10-26, antes da limpeza automática da Fase 19) apagados do banco local; a limpeza atual foi conferida (nenhum `e2e_*` sobra depois dos testes).
 - Frontend: 173 testes.
 
+**Descoberta de habilidades com XP (2026-11-08):**
+- [x] Abrir o detalhe de uma habilidade (logado) registra a descoberta e dá **+10 XP** só na primeira vez, como personagens e nações: `POST /api/abilities/{id}/discovery`, `UserAbilityDiscovery` (PK composta, migration `AddAbilityDiscoveries`), `ExperienceType.AbilityDiscovered`, `DiscoveryService.DiscoverAbilityAsync`
+- [x] Histórico de descobertas com `kind = Ability` (link para `/abilities/:id`), ícone próprio no histórico de XP, estatísticas `discoveredAbilities`/`totalAbilities` e card "Habilidades descobertas" no perfil (7 indicadores; o último ocupa a linha inteira quando fica sozinho)
+- [x] Testes: backend 349 (220 unitários + 129 de integração: XP uma vez só, 404, 401, histórico e estatísticas), frontend 174, E2E 12 (o teste de habilidades confere o toast de +10 XP), no Chrome contra o build
+- Fora do escopo (combinar antes): conquistas e desafios diários que contem habilidades descobertas; card de habilidades no dashboard (os 4 indicadores de lá continuam)
+
