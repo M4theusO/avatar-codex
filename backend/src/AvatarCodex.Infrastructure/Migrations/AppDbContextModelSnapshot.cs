@@ -1013,6 +1013,45 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.ToTable("user_achievements", (string)null);
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserAvatar", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("content_type");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("data");
+
+                    b.Property<Guid>("PublicId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("public_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("UserId")
+                        .HasName("pk_user_avatars");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_avatars_public_id");
+
+                    b.ToTable("user_avatars", (string)null);
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.UserCharacterDiscovery", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -1654,6 +1693,18 @@ namespace AvatarCodex.Infrastructure.Migrations
                         .HasConstraintName("fk_user_achievements_users_user_id");
 
                     b.Navigation("Achievement");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserAvatar", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("AvatarCodex.Domain.Entities.UserAvatar", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_avatars_users_user_id");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AvatarCodex.Domain.Entities.UserCharacterDiscovery", b =>

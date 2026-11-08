@@ -35,6 +35,7 @@ public static class DependencyInjection
         services.AddScoped<IComparisonRepository, ComparisonRepository>();
         services.AddScoped<IElementTestRepository, ElementTestRepository>();
         services.AddScoped<IRankingRepository, RankingRepository>();
+        services.AddScoped<IUserAvatarRepository, UserAvatarRepository>();
 
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         services.AddSingleton<ITokenService, JwtTokenService>();

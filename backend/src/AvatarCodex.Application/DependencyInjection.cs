@@ -10,6 +10,7 @@ public static class DependencyInjection
     {
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         services.AddScoped<AccountService>();
+        services.AddScoped<AvatarService>();
         services.AddScoped<ElementTestService>();
         services.AddScoped<RankingService>();
 

@@ -201,7 +201,68 @@ public class AuthServiceTests
     }
 
     private AccountService Account() =>
-        new(_users, new FakePasswordHasher(), new DeleteAccountRequestValidator());
+        new(_users, new FakePasswordHasher(), new DeleteAccountRequestValidator(), new UpdateProfileRequestValidator());
+
+    [Fact]
+    public async Task UpdateProfile_NewUsername_IsSavedTrimmedAndReturned()
+    {
+        var registered = await _service.RegisterAsync(ValidRegistration);
+
+        var user = await Account().UpdateProfileAsync(registered.Response.User.Id, new UpdateProfileRequest("  aang_2026 "));
+
+        Assert.Equal("aang_2026", user.Username);
+        Assert.Equal("aang_2026", Assert.Single(_users.Users).Username);
+    }
+
+    [Fact]
+    public async Task UpdateProfile_OnlyChangingCase_IsAllowed()
+    {
+        var registered = await _service.RegisterAsync(ValidRegistration);
+
+        var user = await Account().UpdateProfileAsync(registered.Response.User.Id, new UpdateProfileRequest("Matheus"));
+
+        Assert.Equal("Matheus", user.Username);
+    }
+
+    [Fact]
+    public async Task UpdateProfile_UsernameOfSomeoneElse_IsAConflict()
+    {
+        await _service.RegisterAsync(ValidRegistration with { Username = "katara", Email = "katara@example.com" });
+        var registered = await _service.RegisterAsync(ValidRegistration);
+
+        var error = await Assert.ThrowsAsync<ConflictException>(() =>
+            Account().UpdateProfileAsync(registered.Response.User.Id, new UpdateProfileRequest("KATARA")));
+
+        Assert.Equal(AccountService.UsernameTakenMessage, error.Message);
+        Assert.Equal("matheus", _users.Users.Single(u => u.Id == registered.Response.User.Id).Username);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("ab")]
+    [InlineData("nome com espaço")]
+    public async Task UpdateProfile_InvalidUsername_IsAValidationError(string username)
+    {
+        var registered = await _service.RegisterAsync(ValidRegistration);
+
+        var error = await Assert.ThrowsAsync<ValidationException>(() =>
+            Account().UpdateProfileAsync(registered.Response.User.Id, new UpdateProfileRequest(username)));
+
+        Assert.Equal("Username", Assert.Single(error.Errors).PropertyName);
+    }
+
+    [Fact]
+    public async Task UpdateProfile_DemoAccount_IsRefused()
+    {
+        var registered = await _service.RegisterAsync(
+            new RegisterRequest(DemoAccount.Username, DemoAccount.Email, DemoAccount.Password, DemoAccount.Password));
+
+        var error = await Assert.ThrowsAsync<BusinessRuleException>(() =>
+            Account().UpdateProfileAsync(registered.Response.User.Id, new UpdateProfileRequest("outro_nome")));
+
+        Assert.Equal(AccountService.DemoProfileMessage, error.Message);
+        Assert.Equal(DemoAccount.Username, Assert.Single(_users.Users).Username);
+    }
 
     [Fact]
     public async Task DeleteAccount_RightPassword_RemovesUserAndSessions()
@@ -267,6 +328,8 @@ public class AuthServiceTests
 
         public Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
             Task.FromResult(Users.FirstOrDefault(u => u.Id == id));
+
+        public Task<User?> GetForUpdateAsync(Guid id, CancellationToken cancellationToken) => GetByIdAsync(id, cancellationToken);
 
         public Task<RefreshToken?> GetRefreshTokenAsync(string tokenHash, CancellationToken cancellationToken) =>
             Task.FromResult(Tokens.FirstOrDefault(t => t.TokenHash == tokenHash));

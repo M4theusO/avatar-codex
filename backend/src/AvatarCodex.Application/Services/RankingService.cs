@@ -27,6 +27,7 @@ public class RankingService(
         var entries = rows.Select((row, i) => new RankingEntryDto(
             positions[i],
             row.Username,
+            row.AvatarUrl,
             LevelCalculator.GetLevel(row.TotalExperience),
             row.Score,
             row.ElementId is { } id ? new ElementSummaryDto(id, row.ElementName!, row.ElementColor!, row.ElementIcon!) : null,

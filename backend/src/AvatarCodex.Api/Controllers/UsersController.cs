@@ -21,8 +21,42 @@ public class UsersController(
     QuizService quizzes,
     DashboardService dashboard,
     DailyChallengeService challenges,
-    AccountService account) : ControllerBase
+    AccountService account,
+    AvatarService avatars) : ControllerBase
 {
+    /// <summary>
+    /// Edita o perfil (nome de usuário). Devolve o usuário atualizado. Nome em uso → 409;
+    /// conta de demonstração → 422.
+    /// </summary>
+    [HttpPatch]
+    [ProducesResponseType<UserDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<UserDto>> Update(UpdateProfileRequest request, CancellationToken cancellationToken) =>
+        Ok(await account.UpdateProfileAsync(User.GetUserId(), request, cancellationToken));
+
+    /// <summary>
+    /// Envia a foto de perfil (multipart, campo "file"; JPEG, PNG ou WebP até 512 KB). Substitui a anterior:
+    /// cada usuário tem uma só. Devolve o usuário com o novo avatarUrl.
+    /// </summary>
+    [HttpPut("avatar")]
+    [Consumes("multipart/form-data")]
+    [RequestSizeLimit(AvatarRules.MaxRequestBytes)]
+    [RequestFormLimits(MultipartBodyLengthLimit = AvatarRules.MaxRequestBytes)]
+    [ProducesResponseType<UserDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<UserDto>> UploadAvatar(IFormFile? file, CancellationToken cancellationToken) =>
+        Ok(await avatars.UploadAsync(User.GetUserId(), await file.ReadBytesAsync(cancellationToken), cancellationToken));
+
+    /// <summary>Remove a foto de perfil (volta para as iniciais).</summary>
+    [HttpDelete("avatar")]
+    [ProducesResponseType<UserDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<UserDto>> RemoveAvatar(CancellationToken cancellationToken) =>
+        Ok(await avatars.RemoveAsync(User.GetUserId(), cancellationToken));
+
     /// <summary>
     /// Exclui a conta e todos os dados dela, confirmando a senha. Senha errada → 400 (campo password);
     /// conta de demonstração → 422. Apaga também o cookie de refresh.

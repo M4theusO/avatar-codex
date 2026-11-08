@@ -16,6 +16,7 @@ public class RankingQueryParameters
 public record RankingEntryDto(
     int Position,
     string Username,
+    string? AvatarUrl,
     int Level,
     int Experience,
     ElementSummaryDto? Element,

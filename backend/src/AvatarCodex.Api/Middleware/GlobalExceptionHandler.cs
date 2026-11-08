@@ -9,6 +9,7 @@ namespace AvatarCodex.Api.Middleware;
 public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     public const string InvalidDataMessage = "Os dados enviados são inválidos.";
+    public const string PayloadTooLargeMessage = "O arquivo enviado é grande demais.";
 
     public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
     {
@@ -22,6 +23,11 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
             NotFoundException => new ErrorResponse(StatusCodes.Status404NotFound, exception.Message, []),
             ConflictException => new ErrorResponse(StatusCodes.Status409Conflict, exception.Message, []),
             BusinessRuleException => new ErrorResponse(StatusCodes.Status422UnprocessableEntity, exception.Message, []),
+            // Corpo acima do limite (ex.: foto de perfil) ou malformado: erro do cliente, não 500.
+            BadHttpRequestException bad => new ErrorResponse(
+                bad.StatusCode,
+                bad.StatusCode == StatusCodes.Status413PayloadTooLarge ? PayloadTooLargeMessage : InvalidDataMessage,
+                []),
             _ => null
         };
 

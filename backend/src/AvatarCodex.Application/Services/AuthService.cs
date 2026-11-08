@@ -33,7 +33,7 @@ public class AuthService(
         if (await users.EmailExistsAsync(request.Email, cancellationToken))
             throw new ConflictException("Este email já está cadastrado.");
         if (await users.UsernameExistsAsync(request.Username, cancellationToken))
-            throw new ConflictException("Este nome de usuário já está em uso.");
+            throw new ConflictException(AccountService.UsernameTakenMessage);
 
         var user = new User
         {

@@ -7,6 +7,7 @@ public record RankingFilter(DateTimeOffset? From, DateTimeOffset? To, int? Eleme
 public record RankingRow(
     Guid UserId,
     string Username,
+    string? AvatarUrl,
     int TotalExperience,
     int Score,
     int? ElementId,

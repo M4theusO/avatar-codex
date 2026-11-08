@@ -13,13 +13,7 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 
     public RegisterRequestValidator()
     {
-        RuleFor(r => r.Username)
-            .Cascade(CascadeMode.Stop)
-            .NotEmpty().WithMessage("Informe um nome de usuário.")
-            .Length(UsernameMinLength, UsernameMaxLength)
-                .WithMessage($"O nome de usuário deve ter entre {UsernameMinLength} e {UsernameMaxLength} caracteres.")
-            .Matches("^[A-Za-z0-9_.-]+$")
-                .WithMessage("Use apenas letras sem acento, números, ponto, hífen ou sublinhado.");
+        RuleFor(r => r.Username).Cascade(CascadeMode.Stop).ValidUsername();
 
         RuleFor(r => r.Email)
             .Cascade(CascadeMode.Stop)
@@ -38,6 +32,26 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 
         RuleFor(r => r.ConfirmPassword)
             .Equal(r => r.Password).WithMessage("As senhas não conferem.");
+    }
+}
+
+/// <summary>Regra do nome de usuário, a mesma no cadastro e na edição do perfil.</summary>
+public static class UsernameRules
+{
+    public static IRuleBuilderOptions<T, string> ValidUsername<T>(this IRuleBuilder<T, string> rule) =>
+        rule
+            .NotEmpty().WithMessage("Informe um nome de usuário.")
+            .Length(RegisterRequestValidator.UsernameMinLength, RegisterRequestValidator.UsernameMaxLength)
+                .WithMessage($"O nome de usuário deve ter entre {RegisterRequestValidator.UsernameMinLength} e {RegisterRequestValidator.UsernameMaxLength} caracteres.")
+            .Matches("^[A-Za-z0-9_.-]+$")
+                .WithMessage("Use apenas letras sem acento, números, ponto, hífen ou sublinhado.");
+}
+
+public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequest>
+{
+    public UpdateProfileRequestValidator()
+    {
+        RuleFor(r => r.Username).Cascade(CascadeMode.Stop).ValidUsername();
     }
 }
 

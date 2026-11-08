@@ -11,6 +11,7 @@ public class RankingRepository(AppDbContext db) : IRankingRepository
     {
         public Guid UserId { get; init; }
         public string Username { get; init; } = "";
+        public string? AvatarUrl { get; init; }
         public int TotalExperience { get; init; }
         public int Score { get; init; }
         public int? ElementId { get; init; }
@@ -40,6 +41,7 @@ public class RankingRepository(AppDbContext db) : IRankingRepository
                    {
                        UserId = user.Id,
                        Username = user.Username,
+                       AvatarUrl = user.AvatarUrl,
                        TotalExperience = user.ExperiencePoints,
                        Score = month.Score,
                        ElementId = user.ElementId,
@@ -54,6 +56,7 @@ public class RankingRepository(AppDbContext db) : IRankingRepository
             {
                 UserId = user.Id,
                 Username = user.Username,
+                AvatarUrl = user.AvatarUrl,
                 TotalExperience = user.ExperiencePoints,
                 Score = user.ExperiencePoints,
                 ElementId = user.ElementId,
@@ -79,7 +82,7 @@ public class RankingRepository(AppDbContext db) : IRankingRepository
             .ToListAsync(cancellationToken);
 
         return ([.. rows.Select(r => new RankingRow(
-            r.UserId, r.Username, r.TotalExperience, r.Score, r.ElementId, r.ElementName, r.ElementColor, r.ElementIcon))], total);
+            r.UserId, r.Username, r.AvatarUrl, r.TotalExperience, r.Score, r.ElementId, r.ElementName, r.ElementColor, r.ElementIcon))], total);
     }
 
     public Task<int> CountAboveAsync(RankingFilter filter, int score, CancellationToken cancellationToken) =>
