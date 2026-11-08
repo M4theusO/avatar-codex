@@ -62,10 +62,50 @@ public class CatalogApiTests(ContentApiFixture api)
         var elements = await api.GetJsonAsync<List<ElementDto>>("/api/elements");
         var air = elements.Single(e => e.Name == "Ar");
 
-        var abilities = await api.GetJsonAsync<List<AbilityDto>>($"/api/abilities?elementId={air.Id}");
+        var abilities = await api.GetJsonAsync<List<AbilityListItemDto>>($"/api/abilities?elementId={air.Id}");
 
         Assert.NotEmpty(abilities);
         Assert.All(abilities, a => Assert.Equal("Ar", a.Element?.Name));
+    }
+
+    [SkippableFact]
+    public async Task Abilities_OrderedByElementWithoutElementLast_WithCharacterCount()
+    {
+        api.Database.SkipIfUnavailable();
+
+        var abilities = await api.GetJsonAsync<List<AbilityListItemDto>>("/api/abilities");
+
+        Assert.Equal("Água", abilities.First().Element?.Name);
+        Assert.Null(abilities.Last().Element);
+        var elementOrder = abilities.Select(a => a.Element?.Id ?? int.MaxValue).ToList();
+        Assert.Equal(elementOrder.Order(), elementOrder);
+        Assert.All(abilities, a => Assert.True(a.CharacterCount >= 0));
+        Assert.Contains(abilities, a => a.Name == "Sentido sísmico" && a.CharacterCount > 0);
+    }
+
+    [SkippableFact]
+    public async Task AbilityDetails_ListsCharactersThatHaveIt()
+    {
+        api.Database.SkipIfUnavailable();
+        var abilities = await api.GetJsonAsync<List<AbilityListItemDto>>("/api/abilities");
+        var lightning = abilities.Single(a => a.Name == "Redirecionamento de relâmpago");
+
+        var details = await api.GetJsonAsync<AbilityDetailsDto>($"/api/abilities/{lightning.Id}");
+
+        Assert.Equal("Fogo", details.Element?.Name);
+        Assert.Equal(lightning.CharacterCount, details.Characters.Count);
+        Assert.Contains(details.Characters, c => c.Name == "Zuko" && c.Nation?.Name == "Nação do Fogo");
+        Assert.Equal(details.Characters.Select(c => c.Name).Order(), details.Characters.Select(c => c.Name));
+    }
+
+    [SkippableFact]
+    public async Task AbilityDetails_UnknownAbility_ReturnsNotFound()
+    {
+        api.Database.SkipIfUnavailable();
+
+        var response = await api.CreateClient().GetAsync("/api/abilities/999999");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [SkippableFact]

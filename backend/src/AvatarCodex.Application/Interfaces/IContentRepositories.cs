@@ -61,7 +61,12 @@ public interface ICatalogRepository
 {
     Task<IReadOnlyList<Element>> GetElementsAsync(CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<Ability>> GetAbilitiesAsync(int? elementId, CancellationToken cancellationToken);
+    /// <summary>Habilidades na ordem dos elementos (sem elemento por último) e por nome, com a contagem de personagens.</summary>
+    Task<IReadOnlyList<(Ability Ability, int CharacterCount)>> GetAbilitiesAsync(
+        int? elementId, CancellationToken cancellationToken);
+
+    /// <summary>Habilidade com Element e personagens (com Nation e Element) carregados, ou null.</summary>
+    Task<Ability?> GetAbilityDetailsAsync(int id, CancellationToken cancellationToken);
 
     Task<IReadOnlyList<Series>> GetSeriesAsync(CancellationToken cancellationToken);
 }

@@ -75,6 +75,22 @@ public static class ContentMappings
         ability.Element.ToSummaryDto(),
         ability.Image.ToDto());
 
+    public static AbilityListItemDto ToListItemDto(this Ability ability, int characterCount) => new(
+        ability.Id,
+        ability.Name,
+        ability.Description,
+        ability.Element.ToSummaryDto(),
+        ability.Image.ToDto(),
+        characterCount);
+
+    public static AbilityDetailsDto ToDetailsDto(this Ability ability) => new(
+        ability.Id,
+        ability.Name,
+        ability.Description,
+        ability.Element.ToSummaryDto(),
+        ability.Image.ToDto(),
+        [.. ability.Characters.OrderBy(c => c.Name).Select(c => c.ToListItemDto())]);
+
     public static SeriesDto ToDto(this Series series) => new(series.Id, series.Code, series.Name);
 
     public static ElementDto ToDto(this Element element) => new(

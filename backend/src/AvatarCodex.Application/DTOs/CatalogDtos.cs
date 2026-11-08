@@ -28,4 +28,21 @@ public record ElementDto(
 
 public record AbilityDto(int Id, string Name, string Description, ElementSummaryDto? Element, ImageDto? Image);
 
+/// <summary>Item da lista de habilidades, com quantos personagens a possuem.</summary>
+public record AbilityListItemDto(
+    int Id,
+    string Name,
+    string Description,
+    ElementSummaryDto? Element,
+    ImageDto? Image,
+    int CharacterCount);
+
+public record AbilityDetailsDto(
+    int Id,
+    string Name,
+    string Description,
+    ElementSummaryDto? Element,
+    ImageDto? Image,
+    IReadOnlyList<CharacterListItemDto> Characters);
+
 public record SeriesDto(int Id, string Code, string Name);

@@ -1,3 +1,5 @@
+using AvatarCodex.Api.Extensions;
+using AvatarCodex.Api.Middleware;
 using AvatarCodex.Application.DTOs;
 using AvatarCodex.Application.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -21,11 +23,19 @@ public class ElementsController(CatalogService catalog) : ControllerBase
 [Produces("application/json")]
 public class AbilitiesController(CatalogService catalog) : ControllerBase
 {
+    /// <summary>Habilidades (ordem dos elementos, depois nome) com a quantidade de personagens.</summary>
     [HttpGet]
-    [ProducesResponseType<IReadOnlyList<AbilityDto>>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<AbilityDto>>> GetAll(
+    [ProducesResponseType<IReadOnlyList<AbilityListItemDto>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<AbilityListItemDto>>> GetAll(
         [FromQuery] int? elementId, CancellationToken cancellationToken) =>
         Ok(await catalog.GetAbilitiesAsync(elementId, cancellationToken));
+
+    /// <summary>Detalhe da habilidade com quem a possui. Com token, preenche isFavorite/isDiscovered.</summary>
+    [HttpGet("{id:int}")]
+    [ProducesResponseType<AbilityDetailsDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<AbilityDetailsDto>> GetById(int id, CancellationToken cancellationToken) =>
+        Ok(await catalog.GetAbilityByIdAsync(id, User.GetUserIdOrNull(), cancellationToken));
 }
 
 [ApiController]
