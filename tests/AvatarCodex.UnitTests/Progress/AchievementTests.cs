@@ -13,6 +13,8 @@ public class AchievementTests
     private static readonly Achievement FirstStep = New(1, "Primeiro passo", AchievementRequirementType.AccountCreated, 0, 10);
     private static readonly Achievement Curious = New(2, "Curioso", AchievementRequirementType.CharactersDiscovered, 10, 50);
     private static readonly Achievement Historian = New(3, "Historiador", AchievementRequirementType.AllNationsDiscovered, 0, 50);
+    private static readonly Achievement BendingApprentice = New(5, "Aprendiz de dobra", AchievementRequirementType.AbilitiesDiscovered, 5, 50);
+    private static readonly Achievement ScrollKeeper = New(6, "Guardião dos pergaminhos", AchievementRequirementType.AllAbilitiesDiscovered, 0, 100);
     private static readonly Achievement Level2 = New(4, "Aprendiz", AchievementRequirementType.LevelReached, 2, 20);
 
     private readonly FakeProgressionRepository _progressionRepository = new();
@@ -31,12 +33,17 @@ public class AchievementTests
         RequirementType = type, RequirementValue = value, ExperienceReward = xp
     };
 
-    private static ProgressMetrics Metrics(int xp = 0, int characters = 0, int nations = 0, int totalNations = 5) =>
-        new(xp, characters, nations, totalNations);
+    private static ProgressMetrics Metrics(
+        int xp = 0, int characters = 0, int nations = 0, int totalNations = 5, int abilities = 0, int totalAbilities = 23) =>
+        new(xp, characters, nations, totalNations, AbilitiesDiscovered: abilities, TotalAbilities: totalAbilities);
 
     private Task<Application.DTOs.RewardResult?> DiscoverCharacterAsync(int characterId) =>
         _progression.GrantAsync(UserId, ExperienceType.CharacterDiscovered, characterId, $"Descobriu {characterId}",
             new UserCharacterDiscovery { UserId = UserId, CharacterId = characterId });
+
+    private Task<Application.DTOs.RewardResult?> DiscoverAbilityAsync(int abilityId) =>
+        _progression.GrantAsync(UserId, ExperienceType.AbilityDiscovered, abilityId, $"Descobriu {abilityId}",
+            new UserAbilityDiscovery { UserId = UserId, AbilityId = abilityId });
 
     private async Task DiscoverCharactersAsync(int count)
     {
@@ -63,6 +70,24 @@ public class AchievementTests
         Assert.False(AchievementRules.IsMet(Historian, Metrics(nations: 0, totalNations: 0)));
     }
 
+    [Theory]
+    [InlineData(4, false)]
+    [InlineData(5, true)]
+    public void Rules_AbilitiesDiscovered_UnlocksAtTheTarget(int discovered, bool expected)
+    {
+        Assert.Equal(expected, AchievementRules.IsMet(BendingApprentice, Metrics(abilities: discovered)));
+        Assert.Equal(Math.Min(discovered, 5), AchievementRules.Progress(BendingApprentice, Metrics(abilities: discovered)));
+    }
+
+    [Fact]
+    public void Rules_AllAbilities_FollowsTheNumberOfAbilitiesInTheContent()
+    {
+        Assert.Equal(23, AchievementRules.Target(ScrollKeeper, Metrics(totalAbilities: 23)));
+        Assert.False(AchievementRules.IsMet(ScrollKeeper, Metrics(abilities: 22, totalAbilities: 23)));
+        Assert.True(AchievementRules.IsMet(ScrollKeeper, Metrics(abilities: 23, totalAbilities: 23)));
+        Assert.False(AchievementRules.IsMet(ScrollKeeper, Metrics(abilities: 0, totalAbilities: 0)));
+    }
+
     [Fact]
     public void Rules_AccountCreatedAndLevel()
     {
@@ -78,13 +103,16 @@ public class AchievementTests
     [InlineData(AchievementRequirementType.ChallengesCompleted, 6)]
     [InlineData(AchievementRequirementType.CharactersDiscovered, 7)]
     [InlineData(AchievementRequirementType.NationsDiscovered, 2)]
+    [InlineData(AchievementRequirementType.AbilitiesDiscovered, 8)]
+    [InlineData(AchievementRequirementType.AllAbilitiesDiscovered, 8)]
     [InlineData(AchievementRequirementType.LevelReached, 2)]
     public void Rules_EachRequirementTypeReadsItsOwnMetric(AchievementRequirementType type, int expected)
     {
         // Valores diferentes em cada métrica: trocar uma pela outra faria o teste falhar.
         var metrics = new ProgressMetrics(
             ExperiencePoints: 150, CharactersDiscovered: 7, NationsDiscovered: 2, TotalNations: 5,
-            QuizzesCompleted: 3, PerfectQuizzes: 4, CorrectAnswers: 5, ChallengesCompleted: 6);
+            QuizzesCompleted: 3, PerfectQuizzes: 4, CorrectAnswers: 5, ChallengesCompleted: 6,
+            AbilitiesDiscovered: 8, TotalAbilities: 23);
 
         Assert.Equal(expected, AchievementRules.Current(New(9, "Teste", type, 100, 10), metrics));
     }
@@ -107,6 +135,20 @@ public class AchievementTests
         var transaction = _progressionRepository.Transactions.Last();
         Assert.Equal((ExperienceType.AchievementUnlocked, Curious.Id, 50), (transaction.Type, transaction.SourceId, transaction.Amount));
         Assert.Equal("Conquista: Curioso", transaction.Description);
+    }
+
+    [Fact]
+    public async Task Grant_FifthAbilityDiscovery_UnlocksBendingApprentice()
+    {
+        _achievements.Catalog.Add(BendingApprentice);
+        for (var id = 1; id <= 4; id++)
+            Assert.Empty((await DiscoverAbilityAsync(id))!.AchievementsUnlocked);
+
+        var reward = await DiscoverAbilityAsync(5);
+
+        var unlocked = Assert.Single(reward!.AchievementsUnlocked);
+        Assert.Equal("Aprendiz de dobra", unlocked.Name);
+        Assert.Equal(60, reward.XpGained);
     }
 
     [Fact]

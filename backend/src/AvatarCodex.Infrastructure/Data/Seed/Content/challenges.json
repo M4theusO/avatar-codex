@@ -32,6 +32,22 @@
     "experienceReward": 40
   },
   {
+    "code": "DISCOVER_2_ABILITIES",
+    "title": "Descubra 2 habilidades",
+    "description": "Abra a página de 2 habilidades que você ainda não conhece.",
+    "challengeType": "DiscoverAbilities",
+    "targetValue": 2,
+    "experienceReward": 30
+  },
+  {
+    "code": "DISCOVER_4_ABILITIES",
+    "title": "Descubra 4 habilidades",
+    "description": "Abra a página de 4 habilidades que você ainda não conhece.",
+    "challengeType": "DiscoverAbilities",
+    "targetValue": 4,
+    "experienceReward": 40
+  },
+  {
     "code": "COMPLETE_QUIZ",
     "title": "Complete um quiz",
     "description": "Responda todas as perguntas de um quiz. Refazer um quiz também vale.",

@@ -38,5 +38,7 @@ public class AchievementRepository(AppDbContext db) : IAchievementRepository
             // Todas as tentativas contam, inclusive quizzes refeitos (ver docs/development-phases.md, Fase 9).
             CorrectAnswers: await db.QuizAnswers.CountAsync(
                 a => a.IsCorrect && db.QuizAttempts.Any(t => t.Id == a.UserQuizAttemptId && t.UserId == userId), cancellationToken),
-            ChallengesCompleted: await db.UserDailyChallenges.CountAsync(u => u.UserId == userId, cancellationToken));
+            ChallengesCompleted: await db.UserDailyChallenges.CountAsync(u => u.UserId == userId, cancellationToken),
+            AbilitiesDiscovered: await db.AbilityDiscoveries.CountAsync(d => d.UserId == userId, cancellationToken),
+            TotalAbilities: await db.Abilities.CountAsync(cancellationToken));
 }

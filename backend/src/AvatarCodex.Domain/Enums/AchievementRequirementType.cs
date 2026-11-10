@@ -10,6 +10,11 @@ public enum AchievementRequirementType
     /// <summary>Todas as nações cadastradas: a meta acompanha o conteúdo, RequirementValue é ignorado.</summary>
     AllNationsDiscovered,
 
+    AbilitiesDiscovered,
+
+    /// <summary>Todas as habilidades cadastradas: a meta acompanha o conteúdo, RequirementValue é ignorado.</summary>
+    AllAbilitiesDiscovered,
+
     QuizzesCompleted,
     PerfectQuizzes,
     CorrectAnswers,

@@ -29,7 +29,7 @@ public class AchievementsApiTests(ContentApiFixture api)
 
         var catalog = await api.GetJsonAsync<List<AchievementDto>>("/api/achievements");
 
-        Assert.Equal(6, catalog.Count);
+        Assert.Equal(8, catalog.Count);
         Assert.Equal("Primeiro passo", catalog[0].Name);
         Assert.Equal(["Curioso", "Explorador"], catalog.Skip(1).Take(2).Select(a => a.Name));
         Assert.All(catalog, a => Assert.True(a.ExperienceReward > 0));

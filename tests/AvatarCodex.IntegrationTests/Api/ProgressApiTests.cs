@@ -153,6 +153,25 @@ public class ProgressApiTests(ContentApiFixture api)
         Assert.Equal(1, await db.AbilityDiscoveries.CountAsync(d => d.UserId == auth.User.Id));
     }
 
+    [SkippableFact]
+    public async Task FifthAbilityDiscovery_UnlocksBendingApprenticeOnce()
+    {
+        api.Database.SkipIfUnavailable();
+        var (client, auth) = await NewUserClientAsync();
+        var abilities = await api.GetJsonAsync<List<AbilityListItemDto>>("/api/abilities");
+
+        var rewards = new List<RewardResult?>();
+        foreach (var ability in abilities.Take(6))
+            rewards.Add((await ReadAsync<DiscoveryResultDto>(await client.PostAsync($"/api/abilities/{ability.Id}/discovery", null))).Reward);
+
+        Assert.All(rewards.Take(4), r => Assert.Empty(r!.AchievementsUnlocked));
+        Assert.Equal("Aprendiz de dobra", Assert.Single(rewards[4]!.AchievementsUnlocked).Name);
+        Assert.Empty(rewards[5]!.AchievementsUnlocked);
+
+        await using var db = api.Database.CreateContext();
+        Assert.Equal(1, await db.UserAchievements.CountAsync(u => u.UserId == auth.User.Id && u.Achievement.Code == "BENDING_APPRENTICE"));
+    }
+
     [SkippableTheory]
     [InlineData("/api/characters/999999/discovery")]
     [InlineData("/api/nations/999999/discovery")]
@@ -300,6 +319,6 @@ public class ProgressApiTests(ContentApiFixture api)
         Assert.True(stats.TotalAbilities >= 23);
         Assert.True(stats.TotalCharacters >= 37);
         Assert.Equal(1, stats.UnlockedAchievements);
-        Assert.Equal(6, stats.TotalAchievements);
+        Assert.Equal(8, stats.TotalAchievements);
     }
 }

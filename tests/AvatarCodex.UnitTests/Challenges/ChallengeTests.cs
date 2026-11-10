@@ -37,6 +37,8 @@ public class ChallengeRulesTests
     [InlineData(ChallengeType.DiscoverCharacters, 3, 2, false)]
     [InlineData(ChallengeType.DiscoverCharacters, 3, 3, true)]
     [InlineData(ChallengeType.DiscoverNations, 1, 1, true)]
+    [InlineData(ChallengeType.DiscoverAbilities, 2, 1, false)]
+    [InlineData(ChallengeType.DiscoverAbilities, 2, 2, true)]
     [InlineData(ChallengeType.CompleteQuizzes, 2, 1, false)]
     [InlineData(ChallengeType.QuizScoreAtLeast, 80, 70, false)]
     [InlineData(ChallengeType.QuizScoreAtLeast, 80, 80, true)]
@@ -47,6 +49,7 @@ public class ChallengeRulesTests
             ChallengeType.DiscoverCharacters => new DailyActivity(current, 0, 0, 0),
             ChallengeType.DiscoverNations => new DailyActivity(0, current, 0, 0),
             ChallengeType.CompleteQuizzes => new DailyActivity(0, 0, current, 0),
+            ChallengeType.DiscoverAbilities => new DailyActivity(0, 0, 0, 0, AbilitiesDiscovered: current),
             _ => new DailyActivity(0, 0, 0, current)
         };
 

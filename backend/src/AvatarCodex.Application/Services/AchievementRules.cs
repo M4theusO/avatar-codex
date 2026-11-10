@@ -14,6 +14,7 @@ public static class AchievementRules
     {
         AchievementRequirementType.AccountCreated => 1,
         AchievementRequirementType.AllNationsDiscovered => metrics.TotalNations,
+        AchievementRequirementType.AllAbilitiesDiscovered => metrics.TotalAbilities,
         _ => achievement.RequirementValue
     };
 
@@ -22,6 +23,7 @@ public static class AchievementRules
         AchievementRequirementType.AccountCreated => 1,
         AchievementRequirementType.CharactersDiscovered => metrics.CharactersDiscovered,
         AchievementRequirementType.NationsDiscovered or AchievementRequirementType.AllNationsDiscovered => metrics.NationsDiscovered,
+        AchievementRequirementType.AbilitiesDiscovered or AchievementRequirementType.AllAbilitiesDiscovered => metrics.AbilitiesDiscovered,
         AchievementRequirementType.QuizzesCompleted => metrics.QuizzesCompleted,
         AchievementRequirementType.PerfectQuizzes => metrics.PerfectQuizzes,
         AchievementRequirementType.CorrectAnswers => metrics.CorrectAnswers,

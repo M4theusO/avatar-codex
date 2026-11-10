@@ -8,7 +8,8 @@ public record DailyActivity(
     int NationsDiscovered,
     int QuizzesCompleted,
     /// <summary>Melhor porcentagem de acertos numa tentativa do dia; 0 sem tentativas.</summary>
-    int BestQuizPercentage);
+    int BestQuizPercentage,
+    int AbilitiesDiscovered = 0);
 
 public interface IChallengeRepository
 {

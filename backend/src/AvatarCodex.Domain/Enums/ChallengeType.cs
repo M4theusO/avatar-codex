@@ -9,6 +9,9 @@ public enum ChallengeType
     /// <summary>Nações descobertas no dia.</summary>
     DiscoverNations,
 
+    /// <summary>Habilidades descobertas no dia.</summary>
+    DiscoverAbilities,
+
     /// <summary>Quizzes diferentes concluídos no dia (refazer um quiz já concluído antes também conta).</summary>
     CompleteQuizzes,
 

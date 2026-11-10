@@ -60,7 +60,9 @@ public class ChallengeRepository(AppDbContext db) : IChallengeRepository
             NationsDiscovered: await db.NationDiscoveries.CountAsync(
                 d => d.UserId == userId && d.DiscoveredAt >= from && d.DiscoveredAt < to, cancellationToken),
             QuizzesCompleted: attempts.Select(a => a.QuizId).Distinct().Count(),
-            BestQuizPercentage: attempts.Count == 0 ? 0 : attempts.Max(a => QuizScoring.Percentage(a.Score, a.TotalQuestions)));
+            BestQuizPercentage: attempts.Count == 0 ? 0 : attempts.Max(a => QuizScoring.Percentage(a.Score, a.TotalQuestions)),
+            AbilitiesDiscovered: await db.AbilityDiscoveries.CountAsync(
+                d => d.UserId == userId && d.DiscoveredAt >= from && d.DiscoveredAt < to, cancellationToken));
     }
 
     public async Task<(IReadOnlyList<UserDailyChallenge> Items, int TotalItems)> GetHistoryAsync(

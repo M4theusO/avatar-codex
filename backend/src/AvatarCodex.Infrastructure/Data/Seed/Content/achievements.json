@@ -36,6 +36,24 @@
     "experienceReward": 50
   },
   {
+    "code": "BENDING_APPRENTICE",
+    "name": "Aprendiz de dobra",
+    "description": "Descubra 5 habilidades.",
+    "icon": "zap",
+    "requirementType": "AbilitiesDiscovered",
+    "requirementValue": 5,
+    "experienceReward": 50
+  },
+  {
+    "code": "SCROLL_KEEPER",
+    "name": "Guardião dos pergaminhos",
+    "description": "Descubra todas as habilidades.",
+    "icon": "book-open",
+    "requirementType": "AllAbilitiesDiscovered",
+    "requirementValue": 0,
+    "experienceReward": 100
+  },
+  {
     "code": "AVATAR_SCHOLAR",
     "name": "Conhecedor de Avatar",
     "description": "Acerte 100 perguntas nos quizzes.",

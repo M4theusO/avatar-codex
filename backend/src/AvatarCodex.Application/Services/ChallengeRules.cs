@@ -16,6 +16,7 @@ public static class ChallengeRules
     {
         ChallengeType.DiscoverCharacters => activity.CharactersDiscovered,
         ChallengeType.DiscoverNations => activity.NationsDiscovered,
+        ChallengeType.DiscoverAbilities => activity.AbilitiesDiscovered,
         ChallengeType.CompleteQuizzes => activity.QuizzesCompleted,
         ChallengeType.QuizScoreAtLeast => activity.BestQuizPercentage,
         _ => throw new ArgumentOutOfRangeException(nameof(template), template.ChallengeType, null)

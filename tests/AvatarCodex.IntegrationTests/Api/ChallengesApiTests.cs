@@ -80,11 +80,13 @@ public class ChallengesApiTests(ChallengesApiFixture api)
         var characters = await api.GetJsonAsync<PagedResult<CharacterListItemDto>>("/api/characters?pageSize=5");
         var nations = await api.GetJsonAsync<List<NationDto>>("/api/nations");
         var quizzes = await api.GetJsonAsync<List<QuizListItemDto>>("/api/quizzes");
+        var abilities = await api.GetJsonAsync<List<AbilityListItemDto>>("/api/abilities");
 
         // Descobertas em paralelo: a conclusão de cada desafio continua única.
         var discoveries = await Task.WhenAll(
             characters.Items.Select(c => client.PostAsync($"/api/characters/{c.Id}/discovery", null))
-                .Concat(nations.Take(2).Select(n => client.PostAsync($"/api/nations/{n.Id}/discovery", null))));
+                .Concat(nations.Take(2).Select(n => client.PostAsync($"/api/nations/{n.Id}/discovery", null)))
+                .Concat(abilities.Take(4).Select(a => client.PostAsync($"/api/abilities/{a.Id}/discovery", null))));
         var rewards = (await Task.WhenAll(discoveries.Select(ReadAsync<DiscoveryResultDto>)))
             .Select(r => r.Reward)
             .ToList();
@@ -124,6 +126,11 @@ public class ChallengesApiTests(ChallengesApiFixture api)
         Assert.Equal(3, challengeXp.Count);
         Assert.Equal(daily.Challenges.Sum(c => c.ExperienceReward), challengeXp.Sum(t => t.Amount));
         Assert.Equal(3, await db.UserDailyChallenges.CountAsync(u => u.UserId == userId));
+
+        // A atividade do dia conta cada tipo de descoberta separadamente (inclusive habilidades).
+        var (from, to) = ChallengeRules.DayRange(daily.Date);
+        var activity = await new ChallengeRepository(db).GetActivityAsync(userId, from, to, CancellationToken.None);
+        Assert.Equal((5, 2, 4, 2), (activity.CharactersDiscovered, activity.NationsDiscovered, activity.AbilitiesDiscovered, activity.QuizzesCompleted));
     }
 
     [SkippableFact]

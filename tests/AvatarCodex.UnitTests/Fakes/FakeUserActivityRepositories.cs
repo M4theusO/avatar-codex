@@ -87,6 +87,7 @@ public sealed class FakeAchievementRepository(FakeProgressionRepository progress
 {
     public List<Achievement> Catalog { get; } = [];
     public int TotalNations { get; set; } = 5;
+    public int TotalAbilities { get; set; } = 23;
     public int CorrectAnswers { get; set; }
     public int QuizzesCompleted { get; set; }
     public int PerfectQuizzes { get; set; }
@@ -109,7 +110,9 @@ public sealed class FakeAchievementRepository(FakeProgressionRepository progress
             QuizzesCompleted: QuizzesCompleted,
             PerfectQuizzes: PerfectQuizzes,
             CorrectAnswers: CorrectAnswers,
-            ChallengesCompleted: progression.Records.OfType<UserDailyChallenge>().Count(u => u.UserId == userId)));
+            ChallengesCompleted: progression.Records.OfType<UserDailyChallenge>().Count(u => u.UserId == userId),
+            AbilitiesDiscovered: progression.Records.OfType<UserAbilityDiscovery>().Count(d => d.UserId == userId),
+            TotalAbilities: TotalAbilities));
 }
 
 /// <summary>

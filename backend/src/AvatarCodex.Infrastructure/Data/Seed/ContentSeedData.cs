@@ -183,9 +183,11 @@ public class ContentSeedData
             if (achievement.ExperienceReward <= 0)
                 errors.Add($"{owner} deve dar XP (experienceReward > 0).");
 
-            // Nesses dois tipos a meta é fixa (conta criada) ou vem do conteúdo (todas as nações).
+            // Nesses tipos a meta é fixa (conta criada) ou vem do conteúdo (todas as nações ou habilidades).
             var usesValue = achievement.RequirementType is not (
-                AchievementRequirementType.AccountCreated or AchievementRequirementType.AllNationsDiscovered);
+                AchievementRequirementType.AccountCreated
+                    or AchievementRequirementType.AllNationsDiscovered
+                    or AchievementRequirementType.AllAbilitiesDiscovered);
             if (usesValue && achievement.RequirementValue <= 0)
                 errors.Add($"{owner} precisa de requirementValue > 0.");
             if (!usesValue && achievement.RequirementValue != 0)

@@ -11,7 +11,9 @@ public record ProgressMetrics(
     int QuizzesCompleted = 0,
     int PerfectQuizzes = 0,
     int CorrectAnswers = 0,
-    int ChallengesCompleted = 0);
+    int ChallengesCompleted = 0,
+    int AbilitiesDiscovered = 0,
+    int TotalAbilities = 0);
 
 public interface IAchievementRepository
 {
