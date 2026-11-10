@@ -9,7 +9,8 @@ services:
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
     healthCheckPath: /api/health
-    autoDeployTrigger: commit
+    # Só publica depois que todos os checks do commit no GitHub (a CI) passarem.
+    autoDeployTrigger: checksPass
     # Só reconstrói quando o backend muda (mudanças no frontend ou na doc não geram deploy da API).
     buildFilter:
       paths:
