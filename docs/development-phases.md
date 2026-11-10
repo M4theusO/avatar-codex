@@ -492,7 +492,7 @@ No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](d
 - [x] Painel com o card "Habilidades" (5 indicadores: uma linha a partir de 768px; no celular, 2 colunas e o 5º na linha inteira)
 - [x] "Descobertas recentes" saiu do perfil e ficou só no painel (`DiscoveryList` foi para `components/dashboard`; o hook e o serviço de `GET /api/users/me/discoveries` saíram do frontend, o endpoint continua)
 - [x] Card "Favoritos" removido do perfil (o atalho da navbar já leva a `/favorites`): o perfil volta a 6 indicadores, 3 + 3 no desktop
-- Fora do escopo (combinar antes): conquistas e desafios diários que contem habilidades descobertas
+- Conquistas e desafios diários de habilidades: feitos em 2026-11-10 (seção abaixo)
 
 ## CI no GitHub Actions (2026-11-10)
 
@@ -501,3 +501,13 @@ No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](d
 - [x] Deploy só com a CI verde: `autoDeployTrigger: checksPass` no `render.yaml`; na Vercel, *Deployment Checks* no painel (`docs/deployment.md` §5)
 - [x] Actions atualizadas (`checkout@v7`, `setup-node@v7`, `setup-dotnet@v6`, todas em Node 24) e aviso EF1002 suprimido com justificativa em `ContentSeederTests` (nome de tabela não pode ser parâmetro)
 - Fora do escopo por enquanto: E2E Cypress na CI
+
+## Conquistas e desafios de habilidades (2026-11-10)
+
+- [x] Conquistas novas em `achievements.json`: **Aprendiz de dobra** (5 habilidades descobertas, +50 XP, ícone `zap`) e **Guardião dos pergaminhos** (todas as habilidades, +100 XP, ícone `book-open`). Tipos `AbilitiesDiscovered` e `AllAbilitiesDiscovered` (a meta do segundo acompanha o conteúdo, como `AllNationsDiscovered`); o catálogo fica com 8, e as de habilidades aparecem depois das de nações
+- [x] Desafios novos em `challenges.json`: **Descubra 2 habilidades** (+30 XP) e **Descubra 4 habilidades** (+40 XP), tipo `DiscoverAbilities`; 10 modelos no sorteio diário
+- [x] Métricas: `ProgressMetrics` ganha `AbilitiesDiscovered`/`TotalAbilities` e `DailyActivity` ganha `AbilitiesDiscovered` (descobertas no dia em UTC). Nada muda no fluxo: a descoberta já passava pelo `ProgressionService`, que avalia desafios e conquistas
+- [x] Sem migration: os tipos são gravados como texto; o seed sincroniza por `Code` no startup (inclusive em produção)
+- [x] Frontend: ícones `zap` e `book-open` nas conquistas e `Zap` no desafio de habilidades
+- [x] Testes: backend 358 (228 unitários + 130 de integração: regras dos dois tipos novos, 5ª habilidade desbloqueando "Aprendiz de dobra" uma única vez, atividade do dia contando habilidades; o teste de desafios descobre 4 habilidades, porque o sorteio do dia pode incluí-las), frontend 175, E2E 12
+- [x] Validado no Chrome (Cypress): 5ª habilidade mostra o toast "Conquista desbloqueada — Aprendiz de dobra! +50 XP"; `/achievements` com 8 conquistas e "Guardião dos pergaminhos" em 5/23

@@ -77,7 +77,7 @@ Prioridades: **P0** essencial · **P1** núcleo de gamificação · **P2** compl
 | RF-ACH-01 | Catálogo de conquistas (desbloqueadas e bloqueadas) com progresso. |
 | RF-ACH-02 | Desbloqueio automático verificado pelo backend, com notificação. |
 
-Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personagens descobertos), **Explorador** (50 personagens na especificação; no seed, 30, porque há 37 personagens), **Historiador** (todas as nações), **Mestre dos elementos** (N desafios concluídos), **Conhecedor de Avatar** (100 respostas corretas).
+Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personagens descobertos), **Explorador** (50 personagens na especificação; no seed, 30, porque há 37 personagens), **Historiador** (todas as nações), **Aprendiz de dobra** (5 habilidades descobertas), **Guardião dos pergaminhos** (todas as habilidades), **Mestre dos elementos** (N desafios concluídos), **Conhecedor de Avatar** (100 respostas corretas).
 
 ### 4.7 Quiz — P1
 | ID | Requisito |
@@ -190,5 +190,5 @@ Todos os requisitos P0, P1 e P2 estão implementados, com as exceções e ajuste
 |---|---|
 | RF-ELEM-01 (elementos e subtipos) | Disponível na API (`GET /api/elements`) e usado na Home, nos filtros e nos badges; não há uma página só de elementos. |
 | RF-PROF-01 (avatar e elemento no perfil) | O elemento vem do teste de elemento (Fase 20) e aparece no perfil, no avatar e na barra de XP. Desde a Fase 22 o usuário edita o nome de usuário e envia uma foto de perfil (uma por usuário, substituída a cada envio), mostrada no perfil, na navbar e no ranking. |
-| RF-CHAL-01 ("Explore uma nação") | Coberto pelo tipo de desafio `DiscoverNations`. |
+| RF-CHAL-01 ("Explore uma nação") | Coberto pelo tipo de desafio `DiscoverNations`. Também há desafios de descobrir habilidades (`DiscoverAbilities`). |
 | `POST /api/challenges/{id}/complete` da especificação | Removido de propósito (D9): a conclusão é automática no backend. |

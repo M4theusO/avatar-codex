@@ -254,7 +254,7 @@ Migration `AddTimeline`. `Order` vem da posição no JSON; ao reordenar, o seed 
 | Name | varchar(100) | |
 | Description | varchar(300) | |
 | Icon | varchar(50) | |
-| RequirementType | enum | `AccountCreated`, `CharactersDiscovered`, `NationsDiscovered`, `AllNationsDiscovered`, `QuizzesCompleted`, `PerfectQuizzes`, `CorrectAnswers`, `ChallengesCompleted`, `LevelReached` |
+| RequirementType | enum | `AccountCreated`, `CharactersDiscovered`, `NationsDiscovered`, `AllNationsDiscovered`, `AbilitiesDiscovered`, `AllAbilitiesDiscovered`, `QuizzesCompleted`, `PerfectQuizzes`, `CorrectAnswers`, `ChallengesCompleted`, `LevelReached` |
 | RequirementValue | int | |
 | ExperienceReward | int | > 0 (todo desbloqueio gera uma `ExperienceTransaction`) |
 
@@ -269,7 +269,7 @@ Migration `AddDailyChallenges`.
 | Code | varchar(50) | único; chave estável do seed |
 | Title | varchar(100) | |
 | Description | varchar(300) | |
-| ChallengeType | enum | `DiscoverCharacters`, `DiscoverNations`, `CompleteQuizzes`, `QuizScoreAtLeast` |
+| ChallengeType | enum | `DiscoverCharacters`, `DiscoverNations`, `DiscoverAbilities`, `CompleteQuizzes`, `QuizScoreAtLeast` |
 | TargetValue | int | quantidade, ou % para `QuizScoreAtLeast`; CHECK > 0 |
 | ExperienceReward | int | CHECK > 0 |
 | IsActive | bool | |
@@ -370,8 +370,8 @@ Migration `AddQuizTables` (tabelas `quizzes`, `questions`, `question_options`, `
 | Era / TimelineEvent | 3–4 / ~20 | 4 / 17 (`eras.json`, `timeline.json`) |
 | Quiz / Question | 3–5 / ~10 por quiz | 4 / 10 por quiz (`quizzes.json`) |
 | ElementTestQuestion / ElementTestOption | — | 8 / 4 por pergunta, uma de cada elemento (`element-test.json`) |
-| Achievement | ~12 | 6 (`achievements.json`, upsert por `Code`) |
-| ChallengeTemplate | ~8 | 8 (`challenges.json`, upsert por `Code`) |
+| Achievement | ~12 | 8 (`achievements.json`, upsert por `Code`) |
+| ChallengeTemplate | ~8 | 10 (`challenges.json`, upsert por `Code`) |
 
 - Usuário de demonstração apenas em Development (`DemoUserSeeder`, credenciais no README): criado no startup se ainda não existir, com a senha em hash PBKDF2.
 

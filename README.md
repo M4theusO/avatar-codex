@@ -17,8 +17,8 @@ O usuário explora personagens, nações, a linha do tempo e comparações entre
 | Conteúdo | 37 personagens com busca, filtros, ordenação e paginação (estado na URL); detalhe com habilidades e relações; página de habilidades (23, por elemento) com quem domina cada uma; 5 nações; linha do tempo com 4 eras e 17 eventos; comparação de dois personagens (radar, barras e tabela) |
 | Conta | Cadastro, login, logout, sessão recuperada ao recarregar (JWT em memória + refresh token em cookie httpOnly), edição do nome de usuário e da foto de perfil, e exclusão da conta com confirmação de senha |
 | Exploração | Descoberta de personagens e nações (+10 XP na primeira vez), favoritos, histórico de descobertas |
-| Gamificação | XP e níveis, 6 conquistas, 4 quizzes com correção no backend, 3 desafios diários, teste de elemento (resultado no perfil), ranking por XP (geral, do mês e por elemento), painel personalizado e perfil com estatísticas |
-| Qualidade | Mobile-first, acessível (WCAG AA, teclado, `prefers-reduced-motion`), loading/empty/error em todas as telas; 349 testes no backend, 174 no frontend e E2E no Cypress |
+| Gamificação | XP e níveis, 8 conquistas, 4 quizzes com correção no backend, 3 desafios diários, teste de elemento (resultado no perfil), ranking por XP (geral, do mês e por elemento), painel personalizado e perfil com estatísticas |
+| Qualidade | Mobile-first, acessível (WCAG AA, teclado, `prefers-reduced-motion`), loading/empty/error em todas as telas; 358 testes no backend, 175 no frontend e E2E no Cypress |
 
 ## Stack
 
