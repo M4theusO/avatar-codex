@@ -143,4 +143,4 @@ Em caso de falha, o Cypress salva capturas em `cypress/screenshots/` (ignorado p
 
 - **Sem segredos:** a senha do PostgreSQL só existe dentro do runner, e o `Jwt:Secret` dos testes vem de `TestSettings`.
 - **E2E fora da CI por enquanto:** precisaria subir a API, o build e o Chrome no runner. O `npm ci` pula o download do binário do Cypress (`CYPRESS_INSTALL_BINARY=0`).
-- **Deploy independente:** a Vercel e o Render publicam a cada push sem esperar a CI; ligar "deploy só com tudo verde" está em `docs/deployment.md` §7.
+- **Deploy só com a CI verde:** o Render espera os checks (`autoDeployTrigger: checksPass`) e a Vercel só promove a produção depois deles (*Deployment Checks*); ver `docs/deployment.md` §5.

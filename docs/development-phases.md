@@ -498,4 +498,6 @@ No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](d
 
 - [x] `.github/workflows/ci.yml`: job do backend (build + testes com PostgreSQL 18 como service, `AVATARCODEX_TEST_DB` definido no job) e job do frontend (`npm ci`, lint, format, testes, build), a cada push na `main`, em PRs e manual; cancela execuções antigas da mesma branch
 - [x] Badge da CI no README; `docs/testing.md` §5 e `docs/deployment.md` atualizados
-- Fora do escopo por enquanto: E2E Cypress na CI e deploy condicionado à CI verde
+- [x] Deploy só com a CI verde: `autoDeployTrigger: checksPass` no `render.yaml`; na Vercel, *Deployment Checks* no painel (`docs/deployment.md` §5)
+- [x] Actions atualizadas (`checkout@v7`, `setup-node@v7`, `setup-dotnet@v6`, todas em Node 24) e aviso EF1002 suprimido com justificativa em `ContentSeederTests` (nome de tabela não pode ser parâmetro)
+- Fora do escopo por enquanto: E2E Cypress na CI

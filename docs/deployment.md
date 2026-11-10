@@ -38,7 +38,7 @@ navegador ──HTTPS──► Vercel ── arquivos do build (React + imagens)
 | HTTPS | Termina na Vercel e no Render; a API lê `X-Forwarded-Proto`/`For` (`ReverseProxyExtensions`) e não usa `UseHttpsRedirection` | O health check do Render chama o container direto em HTTP; um redirecionamento quebraria o health check |
 | Cache do proxy | Desligado para `/api/*` (`x-vercel-enable-rewrite-caching: 0`) | Respostas da API dependem do usuário e nunca podem ficar em cache na CDN |
 | Regiões | Render em Virginia e Neon em AWS US East 1 | A API faz várias consultas por requisição; API e banco perto um do outro pesa mais que a distância até o usuário (a Vercel já serve o frontend de perto) |
-| CI | GitHub Actions (`.github/workflows/ci.yml`) | Build e testes do backend (com PostgreSQL) e lint, format, testes e build do frontend a cada push na `main` e em PRs (`docs/testing.md` §5). O deploy não espera a CI |
+| CI | GitHub Actions (`.github/workflows/ci.yml`) | Build e testes do backend (com PostgreSQL) e lint, format, testes e build do frontend a cada push na `main` e em PRs (`docs/testing.md` §5). Produção só é atualizada com a CI verde (§5) |
 
 ## 3. Configuração de produção
 
@@ -96,7 +96,12 @@ Push na `main`:
 - a Vercel reconstrói o frontend (e cria *previews* para outras branches);
 - o Render reconstrói a API só quando algo em `backend/` muda (`buildFilter` do `render.yaml`). Migrations novas são aplicadas no startup.
 
-Antes do push, rode a bateria local (`docs/testing.md`); a CI repete os testes, o lint e o build no GitHub Actions, mas o deploy não espera por ela.
+Antes do push, rode a bateria local (`docs/testing.md`); a CI repete os testes, o lint e o build no GitHub Actions.
+
+**Produção só com a CI verde:**
+- **Render:** `autoDeployTrigger: checksPass` no `render.yaml`: o deploy da API só começa depois que todos os checks do commit no GitHub passam. Se a CI falhar, a versão anterior continua no ar.
+- **Vercel:** *Deployment Checks* (Project → Settings → **Deployment Checks** → *Add Checks* → GitHub → marcar os jobs **Backend (.NET)** e **Frontend (React)** do workflow **CI**). O build de produção acontece, mas só recebe o domínio `avatar-codex.vercel.app` quando os checks passam. Exige *auto-assign custom production domains* ligado (padrão). Em emergência, **Force Promote** na página do deploy ignora a trava.
+- Os dois são configuração de painel/Blueprint; o `render.yaml` é aplicado pelo Blueprint no push seguinte.
 
 **Voltar uma versão:** Render → serviço → **Events** → *Rollback*; Vercel → **Deployments** → *Promote to Production* numa versão anterior. Migrations não são desfeitas no rollback; uma migration que remove dados precisa de cuidado extra.
 
@@ -111,7 +116,6 @@ Antes do push, rode a bateria local (`docs/testing.md`); a CI repete os testes, 
 
 ## 7. Melhorias futuras
 
-- **Deploy só com a CI verde (pendente, próxima tarefa):** `autoDeployTrigger: checksPass` no `render.yaml` (e o equivalente na Vercel). Hoje a CI roda em paralelo ao deploy.
 - **Restringir a API ao tráfego da Vercel:** hoje `*.onrender.com` também responde direto. A Vercel pode mandar um cabeçalho secreto em cada rewrite, e a API recusaria requisições sem ele.
 - **Domínio próprio** apontando para a Vercel.
 
