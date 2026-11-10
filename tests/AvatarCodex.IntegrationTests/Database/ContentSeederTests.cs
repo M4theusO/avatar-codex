@@ -46,8 +46,14 @@ public class ContentSeederTests(TestDatabase database) : IClassFixture<TestDatab
     }
 
     /// <summary>xmin muda a cada UPDATE no PostgreSQL: o maior valor indica se alguma linha foi reescrita.</summary>
+    /// <remarks>
+    /// Nome de tabela não pode ser parâmetro SQL; ele vem só de constantes dos próprios testes, então o aviso
+    /// de interpolação (EF1002) não se aplica aqui.
+    /// </remarks>
     private static Task<long> LastWriteAsync(Infrastructure.Data.AppDbContext db, string table) =>
+#pragma warning disable EF1002
         db.Database.SqlQueryRaw<long>($"SELECT max(xmin::text::bigint) AS \"Value\" FROM {table}").SingleAsync();
+#pragma warning restore EF1002
 
     [SkippableFact]
     public async Task Seed_RunTwice_DoesNotDuplicateOrModifyRows()
