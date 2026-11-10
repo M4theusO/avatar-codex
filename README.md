@@ -1,5 +1,7 @@
 # Avatar Codex
 
+[![CI](https://github.com/M4theusO/avatar-codex/actions/workflows/ci.yml/badge.svg)](https://github.com/M4theusO/avatar-codex/actions/workflows/ci.yml)
+
 Enciclopédia interativa + plataforma de exploração + sistema de evolução do usuário, inspirada em *Avatar: The Last Airbender* e *The Legend of Korra*.
 
 O usuário explora personagens, nações, a linha do tempo e comparações entre personagens, e constrói sua própria jornada: descobertas, favoritos, quizzes, XP, níveis, conquistas, desafios diários, o teste de elemento e o ranking. Toda regra de progresso é decidida pelo backend.
