@@ -131,3 +131,16 @@ Em caso de falha, o Cypress salva capturas em `cypress/screenshots/` (ignorado p
 - **Chrome, não Electron:** no Electron (navegador padrão do Cypress) a troca de página depois do login às vezes não acontecia; no Chrome, 10 de 10 execuções seguidas passaram. `npm run e2e` já usa `--browser chrome`.
 - **Contra o build:** mais próximo de produção e sem a otimização de dependências do servidor de desenvolvimento no meio do teste.
 - **Sem esperas fixas nem `data-testid`:** o Cypress espera pelos elementos acessíveis, como um usuário os encontraria.
+
+## 5. CI (GitHub Actions)
+
+`.github/workflows/ci.yml` roda a cada push na `main`, em pull requests e manualmente (*Run workflow*). Um push novo na mesma branch cancela a execução anterior. O badge no topo do README mostra o resultado da `main`.
+
+| Job | Ambiente | Passos |
+|---|---|---|
+| Backend (.NET) | Ubuntu, .NET 10, PostgreSQL 18 como *service container* | `dotnet restore`, `dotnet build -c Release`, `dotnet test` com `AVATARCODEX_TEST_DB` apontando para o service (unitários + integração, nenhum ignorado) |
+| Frontend (React) | Ubuntu, Node 24, cache do npm | `npm ci`, `npm run lint`, `npm run format:check`, `npm run test`, `npm run build` |
+
+- **Sem segredos:** a senha do PostgreSQL só existe dentro do runner, e o `Jwt:Secret` dos testes vem de `TestSettings`.
+- **E2E fora da CI por enquanto:** precisaria subir a API, o build e o Chrome no runner. O `npm ci` pula o download do binário do Cypress (`CYPRESS_INSTALL_BINARY=0`).
+- **Deploy independente:** a Vercel e o Render publicam a cada push sem esperar a CI; ligar "deploy só com tudo verde" está em `docs/deployment.md` §7.
