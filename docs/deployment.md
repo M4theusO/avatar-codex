@@ -111,7 +111,7 @@ Antes do push, rode a bateria local (`docs/testing.md`); a CI repete os testes, 
 
 ## 7. Melhorias futuras
 
-- **Deploy só com a CI verde:** `autoDeployTrigger: checksPass` no `render.yaml` (e o equivalente na Vercel). Hoje a CI roda em paralelo ao deploy.
+- **Deploy só com a CI verde (pendente, próxima tarefa):** `autoDeployTrigger: checksPass` no `render.yaml` (e o equivalente na Vercel). Hoje a CI roda em paralelo ao deploy.
 - **Restringir a API ao tráfego da Vercel:** hoje `*.onrender.com` também responde direto. A Vercel pode mandar um cabeçalho secreto em cada rewrite, e a API recusaria requisições sem ele.
 - **Domínio próprio** apontando para a Vercel.
 
