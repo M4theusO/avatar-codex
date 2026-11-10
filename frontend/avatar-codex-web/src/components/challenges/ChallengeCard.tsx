@@ -1,4 +1,4 @@
-import { CircleCheck, Compass, Landmark, ListChecks, Target } from 'lucide-react'
+import { CircleCheck, Compass, Landmark, ListChecks, Target, Zap } from 'lucide-react'
 import type { ChallengeType, DailyChallenge } from '../../types/progress'
 import ProgressBar from '../common/ProgressBar'
 import styles from './Challenges.module.css'
@@ -6,6 +6,7 @@ import styles from './Challenges.module.css'
 const icons: Record<ChallengeType, typeof Target> = {
   DiscoverCharacters: Compass,
   DiscoverNations: Landmark,
+  DiscoverAbilities: Zap,
   CompleteQuizzes: ListChecks,
   QuizScoreAtLeast: Target,
 }

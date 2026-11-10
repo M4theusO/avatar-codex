@@ -1,22 +1,26 @@
 import {
   Award,
+  BookOpen,
   Brain,
   Compass,
   Eye,
   Footprints,
   Scroll,
   Sparkles,
+  Zap,
   type LucideIcon,
 } from 'lucide-react'
 
 // O nome do ícone vem do banco (campo `icon` da conquista); desconhecido cai no Award.
 const icons: Record<string, LucideIcon> = {
+  'book-open': BookOpen,
   brain: Brain,
   compass: Compass,
   eye: Eye,
   footprints: Footprints,
   scroll: Scroll,
   sparkles: Sparkles,
+  zap: Zap,
 }
 
 interface AchievementIconProps {

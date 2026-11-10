@@ -112,7 +112,11 @@ export interface Dashboard {
 }
 
 export type ChallengeType =
-  'DiscoverCharacters' | 'DiscoverNations' | 'CompleteQuizzes' | 'QuizScoreAtLeast'
+  | 'DiscoverCharacters'
+  | 'DiscoverNations'
+  | 'DiscoverAbilities'
+  | 'CompleteQuizzes'
+  | 'QuizScoreAtLeast'
 
 /** Desafio do dia: `progress`/`target` vêm prontos do backend (em `QuizScoreAtLeast`, são porcentagens). */
 export interface DailyChallenge {

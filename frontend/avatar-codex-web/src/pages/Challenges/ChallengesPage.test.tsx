@@ -59,6 +59,29 @@ describe('ChallengesPage', () => {
     expect(within(done).queryByRole('progressbar')).not.toBeInTheDocument()
   })
 
+  it('mostra o desafio de descobrir habilidades com o progresso em contagem', async () => {
+    mockSession()
+    vi.mocked(getDailyChallenges).mockResolvedValue({
+      date: '2026-11-10',
+      resetsAt: '2026-11-11T00:00:00Z',
+      challenges: [
+        challenge({
+          id: 4,
+          title: 'Descubra 2 habilidades',
+          type: 'DiscoverAbilities',
+          progress: 1,
+          target: 2,
+        }),
+      ],
+    })
+    renderRoute('/challenges')
+
+    expect(
+      await screen.findByRole('progressbar', { name: 'Progresso de Descubra 2 habilidades' }),
+    ).toHaveAttribute('aria-valuenow', '1')
+    expect(screen.getByText('1 / 2')).toBeInTheDocument()
+  })
+
   it('lista o histórico de concluídos e mostra o estado vazio', async () => {
     mockSession()
     vi.mocked(getChallengeHistory).mockResolvedValueOnce(
