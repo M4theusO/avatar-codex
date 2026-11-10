@@ -101,7 +101,9 @@ Antes do push, rode a bateria local (`docs/testing.md`); a CI repete os testes, 
 **Produção só com a CI verde:**
 - **Render:** `autoDeployTrigger: checksPass` no `render.yaml`: o deploy da API só começa depois que todos os checks do commit no GitHub passam. Se a CI falhar, a versão anterior continua no ar.
 - **Vercel:** *Deployment Checks* (Project → Settings → **Deployment Checks** → *Add Checks* → GitHub → marcar os jobs **Backend (.NET)** e **Frontend (React)** do workflow **CI**). O build de produção acontece, mas só recebe o domínio `avatar-codex.vercel.app` quando os checks passam. Exige *auto-assign custom production domains* ligado (padrão). Em emergência, **Force Promote** na página do deploy ignora a trava.
-- Os dois são configuração de painel/Blueprint; o `render.yaml` é aplicado pelo Blueprint no push seguinte.
+- Os dois são configuração de painel/Blueprint. Em 2026-11-10 o Blueprint **não** aplicou o `checksPass` sozinho (o painel continuou em "On commit"): confira em Settings → Build & Deploy → **Auto-Deploy** e, se preciso, escolha "After CI checks pass" no painel.
+
+**Atenção ao `buildFilter`:** o Render decide se reconstrói a API olhando o **último commit** do push. Se o push termina com um commit que não toca `backend/` (ex.: só docs), a mudança de backend de um commit anterior não é publicada. Nesse caso, faça **Manual Deploy → Deploy latest commit**, ou deixe o commit de backend por último.
 
 **Voltar uma versão:** Render → serviço → **Events** → *Rollback*; Vercel → **Deployments** → *Promote to Production* numa versão anterior. Migrations não são desfeitas no rollback; uma migration que remove dados precisa de cuidado extra.
 
