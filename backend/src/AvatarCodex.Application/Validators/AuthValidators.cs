@@ -55,6 +55,14 @@ public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequ
     }
 }
 
+public class UpdatePrivacyRequestValidator : AbstractValidator<UpdatePrivacyRequest>
+{
+    public UpdatePrivacyRequestValidator()
+    {
+        RuleFor(r => r.IsProfilePrivate).NotNull().WithMessage("Informe se o perfil é privado.");
+    }
+}
+
 public class LoginRequestValidator : AbstractValidator<LoginRequest>
 {
     public LoginRequestValidator()

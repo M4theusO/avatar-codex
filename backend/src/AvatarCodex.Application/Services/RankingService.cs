@@ -31,7 +31,8 @@ public class RankingService(
             LevelCalculator.GetLevel(row.TotalExperience),
             row.Score,
             row.ElementId is { } id ? new ElementSummaryDto(id, row.ElementName!, row.ElementColor!, row.ElementIcon!) : null,
-            row.UserId == userId));
+            row.UserId == userId,
+            row.IsProfilePrivate));
 
         return new RankingDto(
             monthly ? RankingRules.Month : RankingRules.AllTime,

@@ -37,6 +37,17 @@ public class UsersController(
         Ok(await account.UpdateProfileAsync(User.GetUserId(), request, cancellationToken));
 
     /// <summary>
+    /// Torna o perfil público (para quem está logado) ou privado. Devolve o usuário atualizado.
+    /// Conta de demonstração → 422 (fica sempre visível).
+    /// </summary>
+    [HttpPut("privacy")]
+    [ProducesResponseType<UserDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<UserDto>> UpdatePrivacy(UpdatePrivacyRequest request, CancellationToken cancellationToken) =>
+        Ok(await account.UpdatePrivacyAsync(User.GetUserId(), request, cancellationToken));
+
+    /// <summary>
     /// Envia a foto de perfil (multipart, campo "file"; JPEG, PNG ou WebP até 512 KB). Substitui a anterior:
     /// cada usuário tem uma só. Devolve o usuário com o novo avatarUrl.
     /// </summary>

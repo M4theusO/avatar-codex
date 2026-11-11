@@ -19,6 +19,7 @@ public record UserDto(
     int CurrentLevelXp,
     int NextLevelXp,
     int LevelProgress,
+    bool IsProfilePrivate,
     DateTimeOffset CreatedAt);
 
 /// <summary>
@@ -35,6 +36,9 @@ public record AuthResult(AuthResponse Response, string RefreshToken, DateTimeOff
 
 /// <summary>Edição do perfil: por enquanto, só o nome de usuário (o login é pelo email).</summary>
 public record UpdateProfileRequest(string Username);
+
+/// <summary>Visibilidade do perfil público. Null = campo ausente, recusado pelo validator.</summary>
+public record UpdatePrivacyRequest(bool? IsProfilePrivate);
 
 /// <summary>Confirmação da exclusão da conta: a senha atual, mesmo com a sessão válida.</summary>
 public record DeleteAccountRequest(string Password);

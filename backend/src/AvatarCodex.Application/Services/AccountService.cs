@@ -12,12 +12,37 @@ public class AccountService(
     IUserRepository users,
     IPasswordHasher passwordHasher,
     IValidator<DeleteAccountRequest> deleteValidator,
-    IValidator<UpdateProfileRequest> updateValidator)
+    IValidator<UpdateProfileRequest> updateValidator,
+    IValidator<UpdatePrivacyRequest> privacyValidator)
 {
     public const string WrongPasswordMessage = "Senha incorreta.";
     public const string DemoAccountMessage = "A conta de demonstração é compartilhada e não pode ser excluída.";
     public const string DemoProfileMessage = "A conta de demonstração é compartilhada e o nome dela não pode ser alterado.";
     public const string UsernameTakenMessage = "Este nome de usuário já está em uso.";
+    public const string DemoPrivacyMessage = "A conta de demonstração é compartilhada e o perfil dela continua visível.";
+
+    /// <summary>
+    /// Torna o perfil público (para quem está logado) ou privado. Repetir o estado atual não é erro;
+    /// a conta demo fica sempre visível.
+    /// </summary>
+    public async Task<UserDto> UpdatePrivacyAsync(Guid userId, UpdatePrivacyRequest request, CancellationToken cancellationToken = default)
+    {
+        await privacyValidator.ValidateAndThrowAsync(request, cancellationToken);
+
+        var user = await users.GetForUpdateAsync(userId, cancellationToken)
+            ?? throw new UnauthorizedException(AuthService.InvalidSessionMessage);
+
+        var isPrivate = request.IsProfilePrivate!.Value;
+        if (user.IsProfilePrivate == isPrivate)
+            return user.ToDto();
+
+        if (DemoAccount.Is(user))
+            throw new BusinessRuleException(DemoPrivacyMessage);
+
+        user.IsProfilePrivate = isPrivate;
+        await users.SaveChangesAsync(cancellationToken);
+        return user.ToDto();
+    }
 
     /// <summary>
     /// Troca o nome de usuário. Mudar só maiúsculas/minúsculas do próprio nome é permitido;

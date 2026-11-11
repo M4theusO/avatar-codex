@@ -15,6 +15,9 @@ public interface IUserRepository
     /// <summary>Usuário com Element carregado, ou null.</summary>
     Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
+    /// <summary>Usuário sem rastreamento, com Element carregado, ou null. Não diferencia maiúsculas/minúsculas.</summary>
+    Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken);
+
     /// <summary>Usuário rastreado (com Element), para alterar e salvar com SaveChangesAsync; ou null.</summary>
     Task<User?> GetForUpdateAsync(Guid id, CancellationToken cancellationToken);
 

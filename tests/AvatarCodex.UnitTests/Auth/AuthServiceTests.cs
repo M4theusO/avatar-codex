@@ -201,7 +201,59 @@ public class AuthServiceTests
     }
 
     private AccountService Account() =>
-        new(_users, new FakePasswordHasher(), new DeleteAccountRequestValidator(), new UpdateProfileRequestValidator());
+        new(_users, new FakePasswordHasher(), new DeleteAccountRequestValidator(), new UpdateProfileRequestValidator(),
+            new UpdatePrivacyRequestValidator());
+
+    [Fact]
+    public async Task UpdatePrivacy_TogglesAndReturnsTheUser()
+    {
+        var registered = await _service.RegisterAsync(ValidRegistration);
+        Assert.False(registered.Response.User.IsProfilePrivate);
+
+        var hidden = await Account().UpdatePrivacyAsync(registered.Response.User.Id, new UpdatePrivacyRequest(true));
+        Assert.True(hidden.IsProfilePrivate);
+        Assert.True(Assert.Single(_users.Users).IsProfilePrivate);
+
+        // Repetir o estado atual não é erro.
+        Assert.True((await Account().UpdatePrivacyAsync(registered.Response.User.Id, new UpdatePrivacyRequest(true))).IsProfilePrivate);
+
+        var shown = await Account().UpdatePrivacyAsync(registered.Response.User.Id, new UpdatePrivacyRequest(false));
+        Assert.False(shown.IsProfilePrivate);
+    }
+
+    [Fact]
+    public async Task UpdatePrivacy_MissingValue_IsAValidationError()
+    {
+        var registered = await _service.RegisterAsync(ValidRegistration);
+
+        await Assert.ThrowsAsync<ValidationException>(() =>
+            Account().UpdatePrivacyAsync(registered.Response.User.Id, new UpdatePrivacyRequest(null)));
+    }
+
+    [Fact]
+    public async Task UpdatePrivacy_DemoAccount_StaysPublic()
+    {
+        var registered = await _service.RegisterAsync(
+            new RegisterRequest(DemoAccount.Username, DemoAccount.Email, DemoAccount.Password, DemoAccount.Password));
+
+        var error = await Assert.ThrowsAsync<BusinessRuleException>(() =>
+            Account().UpdatePrivacyAsync(registered.Response.User.Id, new UpdatePrivacyRequest(true)));
+
+        Assert.Equal(AccountService.DemoPrivacyMessage, error.Message);
+        Assert.False(Assert.Single(_users.Users).IsProfilePrivate);
+    }
+
+    [Theory]
+    [InlineData(false, false, true)]
+    [InlineData(true, false, false)]
+    [InlineData(true, true, true)]
+    [InlineData(false, true, true)]
+    public void ProfileRules_CanView_PrivateOnlyForTheOwner(bool isPrivate, bool isOwner, bool expected)
+    {
+        var owner = new User { Id = Guid.NewGuid(), Username = "aang", Email = "a@example.com", PasswordHash = "x", IsProfilePrivate = isPrivate };
+
+        Assert.Equal(expected, ProfileRules.CanView(owner, isOwner ? owner.Id : Guid.NewGuid()));
+    }
 
     [Fact]
     public async Task UpdateProfile_NewUsername_IsSavedTrimmedAndReturned()
@@ -328,6 +380,9 @@ public class AuthServiceTests
 
         public Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
             Task.FromResult(Users.FirstOrDefault(u => u.Id == id));
+
+        public Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken) =>
+            Task.FromResult(Users.FirstOrDefault(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase)));
 
         public Task<User?> GetForUpdateAsync(Guid id, CancellationToken cancellationToken) => GetByIdAsync(id, cancellationToken);
 

@@ -18,6 +18,7 @@ public class RankingRepository(AppDbContext db) : IRankingRepository
         public string? ElementName { get; init; }
         public string? ElementColor { get; init; }
         public string? ElementIcon { get; init; }
+        public bool IsProfilePrivate { get; init; }
     }
 
     /// <summary>Quem entra no ranking: XP no período maior que zero (e do elemento, se filtrado).</summary>
@@ -47,7 +48,8 @@ public class RankingRepository(AppDbContext db) : IRankingRepository
                        ElementId = user.ElementId,
                        ElementName = user.Element != null ? user.Element.Name : null,
                        ElementColor = user.Element != null ? user.Element.Color : null,
-                       ElementIcon = user.Element != null ? user.Element.Icon : null
+                       ElementIcon = user.Element != null ? user.Element.Icon : null,
+                       IsProfilePrivate = user.IsProfilePrivate
                    };
         }
         else
@@ -62,7 +64,8 @@ public class RankingRepository(AppDbContext db) : IRankingRepository
                 ElementId = user.ElementId,
                 ElementName = user.Element != null ? user.Element.Name : null,
                 ElementColor = user.Element != null ? user.Element.Color : null,
-                ElementIcon = user.Element != null ? user.Element.Icon : null
+                ElementIcon = user.Element != null ? user.Element.Icon : null,
+                IsProfilePrivate = user.IsProfilePrivate
             });
         }
 
@@ -82,7 +85,7 @@ public class RankingRepository(AppDbContext db) : IRankingRepository
             .ToListAsync(cancellationToken);
 
         return ([.. rows.Select(r => new RankingRow(
-            r.UserId, r.Username, r.AvatarUrl, r.TotalExperience, r.Score, r.ElementId, r.ElementName, r.ElementColor, r.ElementIcon))], total);
+            r.UserId, r.Username, r.AvatarUrl, r.TotalExperience, r.Score, r.ElementId, r.ElementName, r.ElementColor, r.ElementIcon, r.IsProfilePrivate))], total);
     }
 
     public Task<int> CountAboveAsync(RankingFilter filter, int score, CancellationToken cancellationToken) =>

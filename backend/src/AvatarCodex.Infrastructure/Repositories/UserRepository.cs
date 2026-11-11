@@ -22,6 +22,9 @@ public class UserRepository(AppDbContext db) : IUserRepository
     public Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
         db.Users.AsNoTracking().Include(u => u.Element).FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
+    public Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken) =>
+        db.Users.AsNoTracking().Include(u => u.Element).FirstOrDefaultAsync(u => u.Username == username, cancellationToken);
+
     public Task<User?> GetForUpdateAsync(Guid id, CancellationToken cancellationToken) =>
         db.Users.Include(u => u.Element).FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 

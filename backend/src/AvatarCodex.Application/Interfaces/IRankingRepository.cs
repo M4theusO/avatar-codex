@@ -13,7 +13,8 @@ public record RankingRow(
     int? ElementId,
     string? ElementName,
     string? ElementColor,
-    string? ElementIcon);
+    string? ElementIcon,
+    bool IsProfilePrivate);
 
 public interface IRankingRepository
 {

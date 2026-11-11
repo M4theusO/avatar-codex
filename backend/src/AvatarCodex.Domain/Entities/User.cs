@@ -10,6 +10,9 @@ public class User : IAuditableEntity
     public required string PasswordHash { get; set; }
     public string? AvatarUrl { get; set; }
 
+    /// <summary>Perfil privado: só o próprio usuário vê /users/{username}. Padrão: visível para quem está logado.</summary>
+    public bool IsProfilePrivate { get; set; }
+
     public int? ElementId { get; set; }
     public Element? Element { get; set; }
 

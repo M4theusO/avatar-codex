@@ -12,6 +12,7 @@ public class RankingQueryParameters
 /// <summary>
 /// Linha do ranking. Só dados públicos do jogo (nome de usuário, nível, XP e elemento): nada de email ou id.
 /// Experience é o XP do período (total no geral, do mês no mensal); Level é sempre o nível atual.
+/// IsProfilePrivate diz se o nome leva ao perfil público (o próprio usuário sempre vê o seu).
 /// </summary>
 public record RankingEntryDto(
     int Position,
@@ -20,7 +21,8 @@ public record RankingEntryDto(
     int Level,
     int Experience,
     ElementSummaryDto? Element,
-    bool IsCurrentUser);
+    bool IsCurrentUser,
+    bool IsProfilePrivate);
 
 public record RankingPositionDto(int Position, int Experience);
 

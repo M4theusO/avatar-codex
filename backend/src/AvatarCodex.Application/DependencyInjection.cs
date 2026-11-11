@@ -13,6 +13,7 @@ public static class DependencyInjection
         services.AddScoped<AvatarService>();
         services.AddScoped<ElementTestService>();
         services.AddScoped<RankingService>();
+        services.AddScoped<PublicProfileService>();
 
         services.AddScoped<CharacterService>();
         services.AddScoped<NationService>();

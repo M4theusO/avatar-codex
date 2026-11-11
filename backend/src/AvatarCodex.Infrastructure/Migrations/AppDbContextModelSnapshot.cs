@@ -951,6 +951,10 @@ namespace AvatarCodex.Infrastructure.Migrations
                         .HasDefaultValue(0)
                         .HasColumnName("experience_points");
 
+                    b.Property<bool>("IsProfilePrivate")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_profile_private");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text")

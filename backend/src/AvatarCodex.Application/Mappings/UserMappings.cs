@@ -22,6 +22,7 @@ public static class UserMappings
             progress.CurrentLevelXp,
             progress.NextLevelXp,
             progress.ProgressPercent,
+            user.IsProfilePrivate,
             user.CreatedAt);
     }
 
