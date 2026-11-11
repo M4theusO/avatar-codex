@@ -48,7 +48,7 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 21 | Ranking | P3 | Ranking por XP global, do mês e por elemento, só para logados (RF-RANK-01) | Posição do usuário destacada; ordenação e desempate no backend ✅ (2026-11-08) |
 | 22 | Editar perfil | — | Nome de usuário e foto de perfil | Conta demo protegida ✅ (2026-11-08) |
 | 23 | Perfil público | P3 | `GET /api/users/{username}`, `PUT /api/users/me/privacy`, `User.IsProfilePrivate` (migration `AddProfilePrivacy`), `/users/:username`, nomes do ranking com link, chave "Perfil privado" em Editar perfil (RF-SOCIAL-01) | Só para logados; privado = 404 igual ao de inexistente; nunca email/id; conta demo sempre visível ✅ (2026-11-11) |
-| 24 | Seguir usuários | P3 | Tabela `user_follows` (PK seguidor + seguido, CHECK contra seguir a si mesmo, CASCADE), `PUT`/`DELETE /api/users/{username}/follow` idempotentes, listas de seguindo/seguidores, botão otimista no perfil público, aba "Seguindo" no ranking. Sem XP por seguir | Planejada |
+| 24 | Seguir usuários | P3 | Tabela `user_follows` (PK seguidor + seguido, CHECK contra seguir a si mesmo, CASCADE), `PUT`/`DELETE /api/users/{username}/follow` idempotentes, listas de seguindo/seguidores, botão otimista no perfil público, aba "Seguindo" no ranking. Sem XP por seguir | Perfil privado de outra pessoa não pode ser seguido (404); a si mesmo e a conta demo, 422 ✅ (2026-11-11) |
 | 25 | Feed de atividades | P3 | `GET /api/feed`: subiu de nível, conquista, quiz gabaritado e elemento descoberto de quem você segue, a partir das tabelas existentes (sem tabela nova); seção no painel, sem item novo na navbar | Planejada |
 
 > Os testes **não ficam todos para a Fase 14**: cada fase já entrega os testes relevantes dela. A Fase 14 completa a cobertura e os fluxos E2E.
@@ -535,3 +535,19 @@ Decisões aprovadas pelo usuário: **sem texto livre** (comentários e mensagens
 - **Nome de usuário na URL** (`/users/aang`), e não um id: o nome já é público no ranking, é único sem diferenciar maiúsculas/minúsculas e não pode ser "me" (mínimo de 3 caracteres). Se o usuário trocar o nome, o link antigo deixa de funcionar, o que é aceitável aqui.
 - **Privado não some do ranking:** o ranking já é só para logados e mostra só dados do jogo; o perfil privado só perde o link.
 - **Coluna `IsProfilePrivate`, e não `IsProfilePublic`:** com o default `false` do .NET, o EF não confunde "não informado" com o valor padrão do banco.
+
+## Fase 24 — Seguir usuários (concluída)
+
+- [x] `UserFollow` (tabela `user_follows`, migration `AddUserFollows`): PK (seguidor, seguido), CASCADE nas duas FKs, `CHECK` contra seguir a si mesmo
+- [x] `PUT /api/users/{username}/follow` (idempotente; privado/inexistente → 404, a si mesmo/conta demo → 422) e `DELETE` (sempre 204), em `FollowService` + `FollowRules`. Sem XP
+- [x] `GET /api/users/me/following` e `/followers` (paginados, mais recentes primeiro); o perfil público ganha `followersCount`, `followingCount` e `isFollowing`
+- [x] Ranking com `following=true`: só quem consulta e quem ele segue (`RankingFilter.FollowedBy`)
+- [x] Frontend: `FollowButton` no perfil público (otimista, desfaz e avisa se a API recusar), contadores no cabeçalho, seção "Conexões" no `/profile` (abas Seguindo/Seguidores com o total, links só para perfis visíveis, vazio convidando a ir ao ranking) e "Todo mundo"/"Seguindo" no ranking (`?following=1`, com dica quando você está sozinho)
+- [ ] Testes: backend 381 (238 unitários + 143 de integração; **os 6 novos de integração ainda não rodaram com o banco**: seguir e desfazer com contadores e listas, idempotência, recusas, quem ficou privado depois, ranking "Seguindo", exclusão da conta, sem token), frontend 189, E2E 14 (novo: seguir, ranking "Seguindo", conexões e deixar de seguir), no Chrome contra a API e o Vite de desenvolvimento
+- [x] Validado no Chrome (CDP) a 1280px e 390px, sem rolagem horizontal: perfil com "Seguir"/"Seguindo" e contadores, ranking "Seguindo" e conexões
+
+**Decisões:**
+- **Perfil privado não pode ser seguido** (aprovado pelo usuário): para os outros ele não existe. Quem já seguia continua seguindo, mas sem ver o perfil; deixar de seguir sempre funciona.
+- **Conta demo não pode ser seguida:** ela é compartilhada, e os visitantes acumulariam seguidores de teste nela. Ela pode seguir outras pessoas.
+- **Sem XP por seguir**, para não incentivar contas falsas.
+- **E2E espera a API** depois do clique: o botão é otimista, e trocar de página antes da resposta cancelava o `PUT`.

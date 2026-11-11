@@ -110,13 +110,13 @@ As telas são desenhadas primeiro para mobile e expandidas. Não vale fazer o de
 | `/quizzes` | Lista de quizzes | público |
 | `/quizzes/:id` | Jogar quiz + resultado | 🔒 |
 | `/quizzes/history` | Histórico de quizzes | 🔒 |
-| `/profile` | Perfil e estatísticas (progresso) | 🔒 |
+| `/profile` | Perfil e estatísticas (progresso); seção "Conexões" com as abas Seguindo/Seguidores (`Connections`) | 🔒 |
 | `/favorites` | Favoritos | 🔒 |
 | `/achievements` | Conquistas | 🔒 |
 | `/challenges` | Desafios diários e histórico | 🔒 |
 | `/element-test` | Teste de elemento (Fase 20) | 🔒 |
-| `/ranking` | Ranking por XP (`?period=month&element=3&page=2`); o nome leva ao perfil público, se não for privado | 🔒 |
-| `/users/:username` | Perfil público: cabeçalho do perfil (`ProfileHero`), estatísticas (`StatsGrid`, sem atalhos) e conquistas desbloqueadas. Inexistente ou privado: "Perfil não encontrado". No próprio perfil, aviso e botão "Editar perfil" | 🔒 |
+| `/ranking` | Ranking por XP (`?period=month&element=3&page=2`); o nome leva ao perfil público, se não for privado; "Todo mundo"/"Seguindo" (`?following=1`) | 🔒 |
+| `/users/:username` | Perfil público: cabeçalho do perfil (`ProfileHero`), estatísticas (`StatsGrid`, sem atalhos) e conquistas desbloqueadas. Inexistente ou privado: "Perfil não encontrado". No próprio perfil, aviso e botão "Editar perfil"; no dos outros, número de seguidores/seguindo e o botão "Seguir"/"Seguindo" (`FollowButton`, otimista) | 🔒 |
 | `*` | NotFound | público |
 
 Rotas 🔒 redirecionam para `/login?redirect=<rota>` e voltam após o login.

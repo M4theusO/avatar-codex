@@ -398,6 +398,7 @@ Uma migration por mudança coesa de esquema, com nome descritivo (ex.: `AddQuizT
 | `AddUserAvatars` | `user_avatars` (PK `user_id` com FK CASCADE, `public_id` único, `data` bytea) |
 | `AddAbilityDiscoveries` | `ability_discoveries` (UserAbilityDiscovery): PK (`user_id`, `ability_id`), FK do usuário CASCADE, FK da habilidade RESTRICT |
 | `AddProfilePrivacy` | `users.is_profile_private` (bool, default false: os usuários existentes ficam com o perfil visível) |
+| `AddUserFollows` | `user_follows` (UserFollow): PK (`follower_id`, `followed_id`), as duas FKs para `users` com CASCADE, `CHECK follower_id <> followed_id`, índice (`followed_id`, `created_at` desc) para seguidores |
 
 ## 6. Testes de banco
 

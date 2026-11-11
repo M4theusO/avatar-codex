@@ -184,7 +184,7 @@ Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personage
 
 ## 9. Status de implementação (v1)
 
-Todos os requisitos P0, P1 e P2 estão implementados, com as exceções e ajustes abaixo. Dos P3 (§4.12), o teste de elemento (RF-ELTEST-01, Fase 20) e o ranking (RF-RANK-01, Fase 21) foram implementados; o ranking é só para quem está logado, porque mostra os nomes de usuário. Das funcionalidades sociais (RF-SOCIAL-01), o perfil público com privacidade (Fase 23) foi implementado: visível só para quem está logado, privado vira 404 para os outros, a conta demo fica sempre visível. Seguir usuários (Fase 24) e o feed (Fase 25) ainda não foram iniciados.
+Todos os requisitos P0, P1 e P2 estão implementados, com as exceções e ajustes abaixo. Dos P3 (§4.12), o teste de elemento (RF-ELTEST-01, Fase 20) e o ranking (RF-RANK-01, Fase 21) foram implementados; o ranking é só para quem está logado, porque mostra os nomes de usuário. Das funcionalidades sociais (RF-SOCIAL-01), o perfil público com privacidade (Fase 23) foi implementado: visível só para quem está logado, privado vira 404 para os outros, a conta demo fica sempre visível. Seguir usuários (Fase 24) também: sem XP, não dá para seguir perfil privado de outra pessoa (404), a si mesmo nem a conta demo (422); quem ficou privado depois continua na lista, sem link. O feed (Fase 25) ainda não foi iniciado.
 
 | Requisito | Situação |
 |---|---|
