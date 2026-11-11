@@ -45,4 +45,43 @@ describe('Perfil público', () => {
       })
     })
   })
+
+  // Fase 24: seguir, ranking "Seguindo" e conexões no perfil.
+  it('segue outro usuário, compara no ranking "Seguindo" e deixa de seguir', () => {
+    cy.newUser().then((star) => {
+      cy.newUser().then((fan) => {
+        cy.registerViaApi(star)
+        cy.clearAllCookies()
+        cy.registerViaApi(fan)
+
+        // O botão muda na hora (otimista): espera a API confirmar antes de trocar de página.
+        cy.intercept('PUT', '**/api/users/*/follow').as('follow')
+        cy.visit(`/users/${star.username}`)
+        cy.findByRole('button', { name: 'Seguir' }).click()
+        cy.findByRole('button', { name: 'Seguindo' }).should('have.attr', 'aria-pressed', 'true')
+        cy.wait('@follow').its('response.statusCode').should('eq', 204)
+        cy.contains('dt', 'Seguidores').next().should('have.text', '1')
+
+        // Ranking só com você e quem você segue.
+        cy.visit('/ranking')
+        cy.findByRole('button', { name: 'Seguindo' }).click()
+        cy.location('search').should('eq', '?following=1')
+        cy.findByRole('list', { name: 'Ranking' }).within(() => {
+          cy.findAllByRole('listitem').should('have.length', 2)
+          cy.findByRole('link', { name: star.username }).should('be.visible')
+          cy.findByText('Você').should('be.visible')
+        })
+
+        // Conexões no próprio perfil, com link para o perfil seguido.
+        cy.visit('/profile')
+        cy.findByRole('list', { name: 'Seguindo' })
+          .findByRole('link', { name: star.username })
+          .click()
+        cy.location('pathname').should('eq', `/users/${star.username}`)
+        cy.findByRole('button', { name: 'Seguindo' }).click()
+        cy.findByRole('button', { name: 'Seguir' }).should('have.attr', 'aria-pressed', 'false')
+        cy.contains('dt', 'Seguidores').next().should('have.text', '0')
+      })
+    })
+  })
 })
