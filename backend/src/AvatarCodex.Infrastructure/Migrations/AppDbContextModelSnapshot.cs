@@ -1164,6 +1164,33 @@ namespace AvatarCodex.Infrastructure.Migrations
                     b.ToTable("favorite_characters", (string)null);
                 });
 
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserFollow", b =>
+                {
+                    b.Property<Guid>("FollowerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("follower_id");
+
+                    b.Property<Guid>("FollowedId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("followed_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.HasKey("FollowerId", "FollowedId")
+                        .HasName("pk_user_follows");
+
+                    b.HasIndex("FollowedId", "CreatedAt")
+                        .IsDescending(false, true)
+                        .HasDatabaseName("ix_user_follows_followed_id_created_at");
+
+                    b.ToTable("user_follows", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_user_follows_not_self", "follower_id <> followed_id");
+                        });
+                });
+
             modelBuilder.Entity("AvatarCodex.Domain.Entities.UserNationDiscovery", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -1812,6 +1839,27 @@ namespace AvatarCodex.Infrastructure.Migrations
                         .HasConstraintName("fk_favorite_characters_users_user_id");
 
                     b.Navigation("Character");
+                });
+
+            modelBuilder.Entity("AvatarCodex.Domain.Entities.UserFollow", b =>
+                {
+                    b.HasOne("AvatarCodex.Domain.Entities.User", "Followed")
+                        .WithMany()
+                        .HasForeignKey("FollowedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_follows_users_followed_id");
+
+                    b.HasOne("AvatarCodex.Domain.Entities.User", "Follower")
+                        .WithMany()
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_follows_users_follower_id");
+
+                    b.Navigation("Followed");
+
+                    b.Navigation("Follower");
                 });
 
             modelBuilder.Entity("AvatarCodex.Domain.Entities.UserNationDiscovery", b =>

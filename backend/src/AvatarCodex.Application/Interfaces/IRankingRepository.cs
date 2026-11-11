@@ -1,7 +1,10 @@
 namespace AvatarCodex.Application.Interfaces;
 
-/// <summary>From/To = mês do ranking mensal (null no geral); ElementId filtra pelo elemento do usuário.</summary>
-public record RankingFilter(DateTimeOffset? From, DateTimeOffset? To, int? ElementId);
+/// <summary>
+/// From/To = mês do ranking mensal (null no geral); ElementId filtra pelo elemento do usuário;
+/// FollowedBy = só esse usuário e quem ele segue (aba "Seguindo").
+/// </summary>
+public record RankingFilter(DateTimeOffset? From, DateTimeOffset? To, int? ElementId, Guid? FollowedBy = null);
 
 /// <summary>Score é o XP do período; TotalExperience é o XP total (para o nível).</summary>
 public record RankingRow(

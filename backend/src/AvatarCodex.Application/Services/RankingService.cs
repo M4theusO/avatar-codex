@@ -17,7 +17,7 @@ public class RankingService(
         RankingRules.TryParsePeriod(query.Period, out var monthly);
 
         (DateTimeOffset Start, DateTimeOffset End)? month = monthly ? RankingRules.MonthOf(timeProvider.GetUtcNow()) : null;
-        var filter = new RankingFilter(month?.Start, month?.End, query.ElementId);
+        var filter = new RankingFilter(month?.Start, month?.End, query.ElementId, query.Following ? userId : null);
         var skip = (query.Page - 1) * query.PageSize;
 
         var (rows, totalItems) = await repository.GetPageAsync(filter, skip, query.PageSize, cancellationToken);
@@ -39,6 +39,7 @@ public class RankingService(
             month?.Start,
             month?.End,
             query.ElementId,
+            query.Following,
             new PagedResult<RankingEntryDto>([.. entries], query.Page, query.PageSize, totalItems),
             await GetCurrentUserAsync(filter, userId, cancellationToken));
     }

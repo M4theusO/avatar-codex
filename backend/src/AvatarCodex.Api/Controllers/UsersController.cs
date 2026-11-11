@@ -22,7 +22,8 @@ public class UsersController(
     DashboardService dashboard,
     DailyChallengeService challenges,
     AccountService account,
-    AvatarService avatars) : ControllerBase
+    AvatarService avatars,
+    FollowService follows) : ControllerBase
 {
     /// <summary>
     /// Edita o perfil (nome de usuário). Devolve o usuário atualizado. Nome em uso → 409;
@@ -135,6 +136,22 @@ public class UsersController(
     public async Task<ActionResult<PagedResult<CompletedChallengeDto>>> GetChallenges(
         [FromQuery] PageQueryParameters query, CancellationToken cancellationToken) =>
         Ok(await challenges.GetHistoryAsync(User.GetUserId(), query, cancellationToken));
+
+    /// <summary>Quem o usuário segue, mais recentes primeiro.</summary>
+    [HttpGet("following")]
+    [ProducesResponseType<PagedResult<FollowUserDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PagedResult<FollowUserDto>>> GetFollowing(
+        [FromQuery] PageQueryParameters query, CancellationToken cancellationToken) =>
+        Ok(await follows.GetFollowingAsync(User.GetUserId(), query, cancellationToken));
+
+    /// <summary>Quem segue o usuário, mais recentes primeiro.</summary>
+    [HttpGet("followers")]
+    [ProducesResponseType<PagedResult<FollowUserDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PagedResult<FollowUserDto>>> GetFollowers(
+        [FromQuery] PageQueryParameters query, CancellationToken cancellationToken) =>
+        Ok(await follows.GetFollowersAsync(User.GetUserId(), query, cancellationToken));
 
     /// <summary>Descobertas de personagens e nações, mais recentes primeiro.</summary>
     [HttpGet("discoveries")]

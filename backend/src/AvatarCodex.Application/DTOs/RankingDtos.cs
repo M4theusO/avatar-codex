@@ -5,6 +5,8 @@ public class RankingQueryParameters
 {
     public string Period { get; set; } = "all";
     public int? ElementId { get; set; }
+    /// <summary>true = só quem consulta e quem ele segue (aba "Seguindo").</summary>
+    public bool Following { get; set; }
     public int Page { get; set; } = 1;
     public int PageSize { get; set; } = 20;
 }
@@ -34,5 +36,6 @@ public record RankingDto(
     DateTimeOffset? PeriodStart,
     DateTimeOffset? PeriodEnd,
     int? ElementId,
+    bool Following,
     PagedResult<RankingEntryDto> Entries,
     RankingPositionDto? CurrentUser);

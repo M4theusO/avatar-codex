@@ -37,6 +37,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, TimeProvider t
     public DbSet<ElementTestQuestion> ElementTestQuestions => Set<ElementTestQuestion>();
     public DbSet<ElementTestOption> ElementTestOptions => Set<ElementTestOption>();
     public DbSet<UserAvatar> UserAvatars => Set<UserAvatar>();
+    public DbSet<UserFollow> UserFollows => Set<UserFollow>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -17,7 +17,8 @@ public static class ProfileRules
 public class PublicProfileService(
     IUserRepository users,
     IUserCollectionRepository collection,
-    IAchievementRepository achievements)
+    IAchievementRepository achievements,
+    IFollowRepository follows)
 {
     public const string NotFoundMessage = "Perfil não encontrado.";
 
@@ -34,6 +35,9 @@ public class PublicProfileService(
         var catalog = await achievements.GetCatalogAsync(cancellationToken);
         var unlocked = await achievements.GetUnlockedAsync(owner.Id, cancellationToken);
         var progress = LevelCalculator.GetProgress(owner.ExperiencePoints);
+        var isOwner = owner.Id == viewerId;
+        var (followers, following) = await follows.GetCountsAsync(owner.Id, cancellationToken);
+        var isFollowing = !isOwner && await follows.IsFollowingAsync(viewerId, owner.Id, cancellationToken);
 
         return new PublicProfileDto(
             owner.Username,
@@ -45,8 +49,11 @@ public class PublicProfileService(
             progress.NextLevelXp,
             progress.ProgressPercent,
             owner.CreatedAt,
-            owner.Id == viewerId,
+            isOwner,
             owner.IsProfilePrivate,
+            followers,
+            following,
+            isFollowing,
             statistics,
             // Mais recentes primeiro; empate (mesmo evento) na ordem do catálogo.
             [.. catalog

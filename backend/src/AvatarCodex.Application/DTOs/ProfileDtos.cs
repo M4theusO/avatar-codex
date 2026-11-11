@@ -5,7 +5,8 @@ public record ProfileAchievementDto(int Id, string Name, string Description, str
 
 /// <summary>
 /// Perfil público (GET /api/users/{username}): só dados do jogo. Nunca email, id ou histórico detalhado.
-/// IsCurrentUser = quem consulta é o dono do perfil (o frontend oferece "Editar perfil").
+/// IsCurrentUser = quem consulta é o dono do perfil (o frontend oferece "Editar perfil");
+/// IsFollowing = quem consulta segue este perfil (sempre false no próprio).
 /// </summary>
 public record PublicProfileDto(
     string Username,
@@ -19,5 +20,8 @@ public record PublicProfileDto(
     DateTimeOffset CreatedAt,
     bool IsCurrentUser,
     bool IsProfilePrivate,
+    int FollowersCount,
+    int FollowingCount,
+    bool IsFollowing,
     UserStatisticsDto Statistics,
     IReadOnlyList<ProfileAchievementDto> Achievements);

@@ -14,6 +14,7 @@ public static class DependencyInjection
         services.AddScoped<ElementTestService>();
         services.AddScoped<RankingService>();
         services.AddScoped<PublicProfileService>();
+        services.AddScoped<FollowService>();
 
         services.AddScoped<CharacterService>();
         services.AddScoped<NationService>();

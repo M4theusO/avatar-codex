@@ -27,6 +27,9 @@ public class RankingRepository(AppDbContext db) : IRankingRepository
         var users = db.Users.AsNoTracking();
         if (filter.ElementId is { } elementId)
             users = users.Where(u => u.ElementId == elementId);
+        if (filter.FollowedBy is { } viewerId)
+            users = users.Where(u => u.Id == viewerId
+                || db.UserFollows.Any(f => f.FollowerId == viewerId && f.FollowedId == u.Id));
 
         IQueryable<Row> rows;
         if (filter.From is { } from && filter.To is { } to)
