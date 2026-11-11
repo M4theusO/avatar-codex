@@ -1,5 +1,7 @@
 import { Crown } from 'lucide-react'
+import { Link } from 'react-router'
 import type { RankingEntry } from '../../types/ranking'
+import { profilePath } from '../../utils/profile'
 import { formatXp } from '../../utils/ranking'
 import { userAvatarImage } from '../../utils/userAvatar'
 import CharacterAvatar from '../common/CharacterAvatar'
@@ -27,7 +29,16 @@ export default function RankingList({ entries }: { entries: RankingEntry[] }) {
           />
           <span className={styles.player}>
             <span className={styles.username}>
-              {entry.username}
+              {entry.isProfilePrivate && !entry.isCurrentUser ? (
+                <span className={styles.name}>{entry.username}</span>
+              ) : (
+                <Link
+                  to={profilePath(entry.username)}
+                  className={`${styles.name} ${styles.profileLink}`}
+                >
+                  {entry.username}
+                </Link>
+              )}
               {entry.isCurrentUser && <span className={styles.you}>Você</span>}
             </span>
             <span className={styles.meta}>

@@ -40,6 +40,11 @@ export async function updateProfile(username: string) {
   return (await api.patch<User>('/api/users/me', { username })).data
 }
 
+/** Torna o perfil privado (só você vê) ou visível para quem está logado. Devolve o usuário. */
+export async function updatePrivacy(isProfilePrivate: boolean) {
+  return (await api.put<User>('/api/users/me/privacy', { isProfilePrivate })).data
+}
+
 /** Envia a foto de perfil (substitui a anterior). Devolve o usuário com o novo `avatarUrl`. */
 export async function uploadAvatar(image: Blob) {
   const form = new FormData()

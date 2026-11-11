@@ -19,6 +19,8 @@ export interface RankingEntry {
   experience: number
   element: ElementSummary | null
   isCurrentUser: boolean
+  /** Perfil privado: o nome não leva ao perfil público. */
+  isProfilePrivate: boolean
 }
 
 export interface Ranking {

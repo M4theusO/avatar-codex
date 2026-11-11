@@ -81,6 +81,7 @@ export function user(overrides: Partial<User> = {}): User {
     currentLevelXp: 0,
     nextLevelXp: 100,
     levelProgress: 0,
+    isProfilePrivate: false,
     createdAt: '2026-10-26T12:00:00Z',
     ...overrides,
   }

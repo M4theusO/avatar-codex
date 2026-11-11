@@ -1,9 +1,16 @@
 import { AlertCircle, Camera, Trash2 } from 'lucide-react'
-import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
+import { useId, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
+import { Link } from 'react-router'
 import { useAuth } from '../../hooks/useAuth'
-import { useRemoveAvatar, useUpdateUsername, useUploadAvatar } from '../../hooks/useProfile'
+import {
+  useRemoveAvatar,
+  useUpdatePrivacy,
+  useUpdateUsername,
+  useUploadAvatar,
+} from '../../hooks/useProfile'
 import { useToast } from '../../hooks/useToast'
 import { getApiError } from '../../utils/apiError'
+import { profilePath } from '../../utils/profile'
 import { ACCEPTED_TYPES, checkAvatarFile, userAvatarImage } from '../../utils/userAvatar'
 import { Button } from '../common/Button'
 import CharacterAvatar from '../common/CharacterAvatar'
@@ -18,6 +25,7 @@ export default function EditProfile() {
     <div className={styles.panel}>
       <PhotoEditor />
       <UsernameForm key={user.username} current={user.username} />
+      <PrivacyToggle />
     </div>
   )
 }
@@ -142,5 +150,61 @@ function UsernameForm({ current }: { current: string }) {
         {update.isPending ? 'Salvando…' : 'Salvar nome'}
       </Button>
     </form>
+  )
+}
+
+/** Liga/desliga o perfil privado na hora; o estado vem do usuário devolvido pela API. */
+function PrivacyToggle() {
+  const { user } = useAuth()
+  const { showToast } = useToast()
+  const update = useUpdatePrivacy()
+  const [error, setError] = useState<string>()
+  const hintId = useId()
+
+  if (!user) return null
+
+  const toggle = async (event: ChangeEvent<HTMLInputElement>) => {
+    setError(undefined)
+    const isPrivate = event.target.checked
+    try {
+      await update.mutateAsync(isPrivate)
+      showToast(
+        isPrivate ? 'Seu perfil agora é privado.' : 'Seu perfil agora é visível.',
+        'success',
+      )
+    } catch (failure) {
+      setError(getApiError(failure).message)
+    }
+  }
+
+  return (
+    <div className={styles.privacy}>
+      <h3 className={styles.label}>Visibilidade</h3>
+      <label className={styles.switch}>
+        <input
+          type="checkbox"
+          role="switch"
+          checked={user.isProfilePrivate}
+          onChange={toggle}
+          disabled={update.isPending}
+          aria-describedby={hintId}
+        />
+        Perfil privado
+      </label>
+      <p id={hintId} className={styles.hint}>
+        {user.isProfilePrivate
+          ? 'Só você vê seu perfil público. No ranking, seu nome continua aparecendo, mas sem link.'
+          : 'Quem está logado pode abrir seu perfil pelo ranking: nível, elemento, estatísticas e conquistas. Email e histórico nunca aparecem.'}
+      </p>
+      <Link to={profilePath(user.username)} className={styles.publicLink}>
+        Ver meu perfil público
+      </Link>
+      {error && (
+        <p className={styles.alert} role="alert">
+          <AlertCircle size={18} aria-hidden="true" />
+          {error}
+        </p>
+      )}
+    </div>
   )
 }

@@ -1,28 +1,42 @@
 import { Link } from 'react-router'
 import { useStatistics } from '../../hooks/useUserData'
+import type { UserStatistics } from '../../types/progress'
 import ProgressBar from '../common/ProgressBar'
 import Skeleton from '../common/Skeleton'
 import { ErrorState } from '../common/StatusMessage'
 import styles from './Profile.module.css'
 
+/** Estatísticas do próprio usuário, com atalhos para as páginas de cada uma. */
 export default function ExplorationStats() {
   const { data, isPending, isError, refetch } = useStatistics()
 
-  if (isPending) {
-    return (
-      <div className={styles.stats} aria-busy="true">
-        {Array.from({ length: 6 }, (_, index) => (
-          <Skeleton key={index} height="6.5rem" />
-        ))}
-      </div>
-    )
-  }
+  if (isPending) return <StatsGridSkeleton />
   if (isError) {
     return (
       <ErrorState title="Não foi possível carregar suas estatísticas" onRetry={() => refetch()} />
     )
   }
+  return <StatsGrid statistics={data} showLinks />
+}
 
+export function StatsGridSkeleton() {
+  return (
+    <div className={styles.stats} aria-busy="true">
+      {Array.from({ length: 6 }, (_, index) => (
+        <Skeleton key={index} height="6.5rem" />
+      ))}
+    </div>
+  )
+}
+
+interface StatsGridProps {
+  statistics: UserStatistics
+  /** Atalhos ("Ver conquistas"...) só fazem sentido no próprio perfil. */
+  showLinks?: boolean
+}
+
+/** Os 6 indicadores de exploração, do próprio usuário ou de um perfil público. */
+export function StatsGrid({ statistics: data, showLinks = false }: StatsGridProps) {
   return (
     <ul className={styles.stats}>
       <li className={styles.stat}>
@@ -57,9 +71,11 @@ export default function ExplorationStats() {
           max={data.totalAbilities}
           label="Habilidades descobertas"
         />
-        <Link to="/abilities" className={styles.statLink}>
-          Ver habilidades
-        </Link>
+        {showLinks && (
+          <Link to="/abilities" className={styles.statLink}>
+            Ver habilidades
+          </Link>
+        )}
       </li>
       <li className={styles.stat}>
         <span className={styles.statLabel}>Conquistas</span>
@@ -71,9 +87,11 @@ export default function ExplorationStats() {
           max={data.totalAchievements}
           label="Conquistas desbloqueadas"
         />
-        <Link to="/achievements" className={styles.statLink}>
-          Ver conquistas
-        </Link>
+        {showLinks && (
+          <Link to="/achievements" className={styles.statLink}>
+            Ver conquistas
+          </Link>
+        )}
       </li>
       <li className={styles.stat}>
         <span className={styles.statLabel}>Quizzes concluídos</span>
@@ -85,9 +103,11 @@ export default function ExplorationStats() {
           max={data.totalQuizzes}
           label="Quizzes concluídos"
         />
-        <Link to="/quizzes" className={styles.statLink}>
-          Ver quizzes
-        </Link>
+        {showLinks && (
+          <Link to="/quizzes" className={styles.statLink}>
+            Ver quizzes
+          </Link>
+        )}
       </li>
       <li className={styles.stat}>
         <span className={styles.statLabel}>Taxa de acerto</span>
@@ -97,9 +117,11 @@ export default function ExplorationStats() {
         <span className={styles.statLabel}>
           {data.quizAttempts === 1 ? '1 tentativa' : `${data.quizAttempts} tentativas`}
         </span>
-        <Link to="/quizzes/history" className={styles.statLink}>
-          Ver histórico
-        </Link>
+        {showLinks && (
+          <Link to="/quizzes/history" className={styles.statLink}>
+            Ver histórico
+          </Link>
+        )}
       </li>
     </ul>
   )

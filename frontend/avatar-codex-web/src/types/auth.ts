@@ -15,6 +15,8 @@ export interface User {
   currentLevelXp: number
   nextLevelXp: number
   levelProgress: number
+  /** Perfil privado: só o próprio usuário vê /users/:username. */
+  isProfilePrivate: boolean
   createdAt: string
 }
 

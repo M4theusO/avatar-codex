@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { removeAvatar, updateProfile, uploadAvatar } from '../services/authService'
+import { removeAvatar, updatePrivacy, updateProfile, uploadAvatar } from '../services/authService'
 import type { User } from '../types/auth'
 import { resizeAvatar } from '../utils/userAvatar'
 import { useAuth } from './useAuth'
@@ -10,7 +10,11 @@ function useApplyUser() {
   const { updateUser } = useAuth()
   const invalidate = useInvalidateUserContent()
   return (user: User) => {
-    updateUser({ username: user.username, avatarUrl: user.avatarUrl })
+    updateUser({
+      username: user.username,
+      avatarUrl: user.avatarUrl,
+      isProfilePrivate: user.isProfilePrivate,
+    })
     invalidate()
   }
 }
@@ -19,6 +23,14 @@ export function useUpdateUsername() {
   const apply = useApplyUser()
   return useMutation({
     mutationFn: (username: string) => updateProfile(username),
+    onSuccess: apply,
+  })
+}
+
+export function useUpdatePrivacy() {
+  const apply = useApplyUser()
+  return useMutation({
+    mutationFn: (isProfilePrivate: boolean) => updatePrivacy(isProfilePrivate),
     onSuccess: apply,
   })
 }

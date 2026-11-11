@@ -1,7 +1,12 @@
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { removeAvatar, updateProfile, uploadAvatar } from '../../services/authService'
+import {
+  removeAvatar,
+  updatePrivacy,
+  updateProfile,
+  uploadAvatar,
+} from '../../services/authService'
 import { apiError, mockSession, user as userFixture } from '../../test/fixtures'
 import { renderRoute } from '../../test/renderWithProviders'
 import { resizeAvatar } from '../../utils/userAvatar'
@@ -115,5 +120,36 @@ describe('ProfilePage · editar perfil', () => {
     expect(await screen.findByText('Foto removida.')).toBeInTheDocument()
     expect(section.queryByRole('button', { name: 'Remover foto' })).not.toBeInTheDocument()
     expect(document.querySelector('img[src$="/api/avatars/abc"]')).toBeNull()
+  })
+
+  it('torna o perfil privado e mostra o link para o perfil público', async () => {
+    vi.mocked(updatePrivacy).mockResolvedValue(userFixture({ isProfilePrivate: true }))
+    const { section, user } = await openProfile()
+
+    const toggle = section.getByRole('switch', { name: 'Perfil privado' })
+    expect(toggle).not.toBeChecked()
+    expect(section.getByRole('link', { name: 'Ver meu perfil público' })).toHaveAttribute(
+      'href',
+      '/users/toph',
+    )
+    await user.click(toggle)
+
+    expect(updatePrivacy).toHaveBeenCalledWith(true)
+    expect(await screen.findByText('Seu perfil agora é privado.')).toBeInTheDocument()
+    expect(toggle).toBeChecked()
+    expect(section.getByText(/Só você vê seu perfil público/)).toBeInTheDocument()
+  })
+
+  it('conta demo: a recusa da API aparece e a chave não muda', async () => {
+    vi.mocked(updatePrivacy).mockRejectedValue(
+      apiError(422, 'A conta de demonstração é compartilhada e o perfil dela continua visível.'),
+    )
+    const { section, user } = await openProfile()
+
+    const toggle = section.getByRole('switch', { name: 'Perfil privado' })
+    await user.click(toggle)
+
+    expect(await section.findByRole('alert')).toHaveTextContent('o perfil dela continua visível')
+    expect(toggle).not.toBeChecked()
   })
 })

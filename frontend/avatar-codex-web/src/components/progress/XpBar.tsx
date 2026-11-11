@@ -4,7 +4,7 @@ import styles from './XpBar.module.css'
 
 const numberFormat = new Intl.NumberFormat('pt-BR')
 
-type XpData = Pick<
+export type XpData = Pick<
   User,
   'level' | 'experiencePoints' | 'currentLevelXp' | 'nextLevelXp' | 'levelProgress' | 'element'
 >

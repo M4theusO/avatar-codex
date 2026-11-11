@@ -26,6 +26,7 @@ function entry(overrides: Partial<RankingEntry> = {}): RankingEntry {
     experience: 1240,
     element: null,
     isCurrentUser: false,
+    isProfilePrivate: false,
     ...overrides,
   }
 }
@@ -97,6 +98,30 @@ describe('RankingPage', () => {
     expect(rows[2]).toHaveAttribute('aria-current', 'true')
     expect(within(rows[2]).getByText('Você')).toBeInTheDocument()
     expect(within(rows[0]).getByText('1.240 XP')).toBeInTheDocument()
+  })
+
+  it('o nome leva ao perfil público, exceto quando o perfil é privado', async () => {
+    mockSession()
+    vi.mocked(getElements).mockResolvedValue(elements)
+    vi.mocked(getRanking).mockResolvedValue(
+      ranking({
+        entries: page([
+          entry({ position: 1, username: 'katara' }),
+          entry({ position: 2, username: 'azula', isProfilePrivate: true }),
+          entry({ position: 3, username: 'toph', isCurrentUser: true, isProfilePrivate: true }),
+        ]),
+      }),
+    )
+    renderRoute('/ranking')
+
+    expect(await screen.findByRole('link', { name: 'katara' })).toHaveAttribute(
+      'href',
+      '/users/katara',
+    )
+    expect(screen.getByText('azula')).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'azula' })).not.toBeInTheDocument()
+    // O próprio perfil continua acessível para quem é dono dele.
+    expect(screen.getByRole('link', { name: 'toph' })).toHaveAttribute('href', '/users/toph')
   })
 
   it('troca para o mês e para um elemento pela URL', async () => {
