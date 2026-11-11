@@ -3,6 +3,7 @@ import { cleanup, configure } from '@testing-library/react'
 import { afterEach, beforeEach, vi } from 'vitest'
 import { restoreSession } from '../services/authService'
 import { challenge, dashboard } from './fixtures'
+import * as followService from '../services/followService'
 import * as quizService from '../services/quizService'
 import * as userService from '../services/userService'
 
@@ -26,6 +27,7 @@ window.scrollTo = vi.fn() as typeof window.scrollTo
 vi.mock('../services/authService')
 vi.mock('../services/userService')
 vi.mock('../services/quizService')
+vi.mock('../services/followService')
 
 const emptyPage = { items: [], page: 1, pageSize: 12, totalItems: 0, totalPages: 0 }
 
@@ -54,6 +56,8 @@ beforeEach(() => {
     accuracyPercent: null,
   })
   vi.mocked(quizService.getQuizzes).mockResolvedValue([])
+  vi.mocked(followService.getFollowing).mockResolvedValue(emptyPage)
+  vi.mocked(followService.getFollowers).mockResolvedValue(emptyPage)
   vi.mocked(quizService.getQuizHistory).mockResolvedValue(emptyPage)
   vi.mocked(userService.getAchievements).mockResolvedValue([])
   vi.mocked(userService.getDailyChallenges).mockResolvedValue({

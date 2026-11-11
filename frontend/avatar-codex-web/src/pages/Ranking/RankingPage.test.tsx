@@ -37,6 +37,7 @@ function ranking(overrides: Partial<Ranking> = {}): Ranking {
     periodStart: null,
     periodEnd: null,
     elementId: null,
+    following: false,
     entries: page([
       entry({ position: 1, username: 'katara' }),
       entry({ position: 1, username: 'zuko', element: fire }),
@@ -122,6 +123,33 @@ describe('RankingPage', () => {
     expect(screen.queryByRole('link', { name: 'azula' })).not.toBeInTheDocument()
     // O próprio perfil continua acessível para quem é dono dele.
     expect(screen.getByRole('link', { name: 'toph' })).toHaveAttribute('href', '/users/toph')
+  })
+
+  it('aba Seguindo: pede só quem você segue e sugere seguir alguém quando está sozinho', async () => {
+    mockSession()
+    vi.mocked(getElements).mockResolvedValue(elements)
+    vi.mocked(getRanking).mockImplementation(async (query) =>
+      query.following
+        ? ranking({
+            following: true,
+            entries: page([entry({ position: 1, username: 'toph', isCurrentUser: true })]),
+            currentUser: { position: 1, experience: 1240 },
+          })
+        : ranking(),
+    )
+    const { router } = renderRoute('/ranking')
+    const user = userEvent.setup()
+
+    await user.click(await screen.findByRole('button', { name: 'Seguindo' }))
+
+    await waitFor(() => expect(router.state.location.search).toBe('?following=1'))
+    expect(getRanking).toHaveBeenLastCalledWith({ period: 'all', following: true, page: 1 })
+    expect(await screen.findByText(/Siga outros jogadores/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Seguindo' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: 'Todo mundo' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    )
   })
 
   it('troca para o mês e para um elemento pela URL', async () => {

@@ -4,6 +4,12 @@
   gap: var(--space-4);
 }
 
+.segments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
 .segmented {
   display: inline-flex;
   align-self: flex-start;

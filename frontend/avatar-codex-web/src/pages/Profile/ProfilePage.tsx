@@ -8,6 +8,7 @@ import EditProfile from '../../components/profile/EditProfile'
 import ExperienceHistory from '../../components/profile/ExperienceHistory'
 import ExplorationStats from '../../components/profile/ExplorationStats'
 import ProfileHero from '../../components/profile/ProfileHero'
+import Connections from '../../components/social/Connections'
 import { useAuth } from '../../hooks/useAuth'
 import { useLogout } from '../../hooks/useLogout'
 import { formatMemberSince } from '../../utils/profile'
@@ -64,6 +65,10 @@ export default function ProfilePage() {
 
       <Section title="Exploração">
         <ExplorationStats />
+      </Section>
+
+      <Section title="Conexões">
+        <Connections />
       </Section>
 
       <Section title="Histórico de XP">

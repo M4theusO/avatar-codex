@@ -5,7 +5,7 @@ function positiveInt(value: string | null): number | undefined {
   return Number.isInteger(number) && number > 0 ? number : undefined
 }
 
-/** Filtros a partir da URL (`?period=month&element=3&page=2`); valores inválidos voltam ao padrão. */
+/** Filtros a partir da URL (`?period=month&element=3&following=1&page=2`); valores inválidos voltam ao padrão. */
 export function parseRankingQuery(params: URLSearchParams): RankingQuery {
   const query: RankingQuery = {
     period: params.get('period') === 'month' ? 'month' : 'all',
@@ -13,6 +13,7 @@ export function parseRankingQuery(params: URLSearchParams): RankingQuery {
   }
   const elementId = positiveInt(params.get('element'))
   if (elementId) query.elementId = elementId
+  if (params.get('following') === '1') query.following = true
   return query
 }
 
@@ -21,6 +22,7 @@ export function rankingQueryToParams(query: RankingQuery): Record<string, string
   const params: Record<string, string> = {}
   if (query.period === 'month') params.period = 'month'
   if (query.elementId) params.element = String(query.elementId)
+  if (query.following) params.following = '1'
   if (query.page > 1) params.page = String(query.page)
   return params
 }

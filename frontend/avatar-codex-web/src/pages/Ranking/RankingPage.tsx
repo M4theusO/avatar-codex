@@ -32,7 +32,7 @@ export default function RankingPage() {
       <title>Ranking · Avatar Codex</title>
       <PageHeader
         title="Ranking"
-        description="Quem mais ganhou XP explorando o universo de Avatar: no geral, neste mês e por elemento."
+        description="Quem mais ganhou XP explorando o universo de Avatar: no geral, neste mês, por elemento ou só entre quem você segue."
       />
 
       <RankingFilters query={query} elements={elements.data ?? []} onChange={handleChange} />
@@ -80,13 +80,21 @@ function RankingContent({ data, filterElement, userElement, onPageChange }: Rank
           icon={Medal}
           title="Ninguém neste ranking ainda"
           description={
-            filterElement
-              ? `Ninguém com o elemento ${filterElement.name} ganhou XP neste período.`
-              : 'Ninguém ganhou XP neste período.'
+            data.following
+              ? 'Nem você nem quem você segue ganhou XP neste período.'
+              : filterElement
+                ? `Ninguém com o elemento ${filterElement.name} ganhou XP neste período.`
+                : 'Ninguém ganhou XP neste período.'
           }
         />
       ) : (
         <RankingList entries={data.entries.items} />
+      )}
+      {data.following && data.entries.totalItems <= 1 && (
+        <p className={styles.hint}>
+          Siga outros jogadores pelo perfil deles (é só tocar no nome em "Todo mundo") para comparar
+          o XP de vocês aqui.
+        </p>
       )}
       <Pagination
         page={data.entries.page}

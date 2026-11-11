@@ -25,6 +25,20 @@ export interface PublicProfile {
   /** Quem consulta é o dono do perfil. */
   isCurrentUser: boolean
   isProfilePrivate: boolean
+  followersCount: number
+  followingCount: number
+  /** Quem consulta segue este perfil (sempre false no próprio). */
+  isFollowing: boolean
   statistics: UserStatistics
   achievements: ProfileAchievement[]
+}
+
+/** Pessoa nas listas de seguindo/seguidores; perfil privado aparece sem link. */
+export interface FollowUser {
+  username: string
+  avatarUrl: string | null
+  element: ElementSummary | null
+  level: number
+  isProfilePrivate: boolean
+  followedAt: string
 }

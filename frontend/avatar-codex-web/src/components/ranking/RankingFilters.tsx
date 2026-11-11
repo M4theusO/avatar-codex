@@ -15,22 +15,42 @@ const periods: { value: RankingPeriod; label: string }[] = [
   { value: 'month', label: 'Este mês' },
 ]
 
-/** Período e elemento como botões alternáveis (aria-pressed); trocar o filtro volta para a página 1. */
+const audiences: { following: boolean; label: string }[] = [
+  { following: false, label: 'Todo mundo' },
+  { following: true, label: 'Seguindo' },
+]
+
+/** Período, quem aparece (todos ou só quem você segue) e elemento como botões alternáveis (aria-pressed); trocar o filtro volta para a página 1. */
 export default function RankingFilters({ query, elements, onChange }: RankingFiltersProps) {
   return (
     <div className={styles.filters}>
-      <div className={styles.segmented} role="group" aria-label="Período">
-        {periods.map(({ value, label }) => (
-          <button
-            key={value}
-            type="button"
-            className={styles.segment}
-            aria-pressed={query.period === value}
-            onClick={() => onChange({ ...query, period: value, page: 1 })}
-          >
-            {label}
-          </button>
-        ))}
+      <div className={styles.segments}>
+        <div className={styles.segmented} role="group" aria-label="Período">
+          {periods.map(({ value, label }) => (
+            <button
+              key={value}
+              type="button"
+              className={styles.segment}
+              aria-pressed={query.period === value}
+              onClick={() => onChange({ ...query, period: value, page: 1 })}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className={styles.segmented} role="group" aria-label="Quem aparece">
+          {audiences.map(({ following, label }) => (
+            <button
+              key={label}
+              type="button"
+              className={styles.segment}
+              aria-pressed={Boolean(query.following) === following}
+              onClick={() => onChange({ ...query, following: following || undefined, page: 1 })}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className={styles.chips} role="group" aria-label="Elemento">

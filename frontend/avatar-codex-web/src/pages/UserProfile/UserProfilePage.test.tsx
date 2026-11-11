@@ -1,11 +1,14 @@
 import { screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
+import { followUser, unfollowUser } from '../../services/followService'
 import { getPublicProfile } from '../../services/profileService'
 import { apiError, fire, mockSession } from '../../test/fixtures'
 import { renderRoute } from '../../test/renderWithProviders'
 import type { PublicProfile } from '../../types/profile'
 
 vi.mock('../../services/profileService')
+vi.mock('../../services/followService')
 
 function profile(overrides: Partial<PublicProfile> = {}): PublicProfile {
   return {
@@ -20,6 +23,9 @@ function profile(overrides: Partial<PublicProfile> = {}): PublicProfile {
     createdAt: '2026-10-26T12:00:00Z',
     isCurrentUser: false,
     isProfilePrivate: false,
+    followersCount: 3,
+    followingCount: 1,
+    isFollowing: false,
     statistics: {
       discoveredCharacters: 12,
       totalCharacters: 37,
@@ -83,6 +89,43 @@ describe('UserProfilePage', () => {
     expect(within(achievements as HTMLElement).getAllByText(/Desbloqueada em/)).toHaveLength(2)
   })
 
+  it('seguir muda o botão e o número de seguidores na hora', async () => {
+    mockSession()
+    vi.mocked(getPublicProfile).mockResolvedValue(profile())
+    vi.mocked(followUser).mockResolvedValue()
+    renderRoute('/users/zuko')
+    const user = userEvent.setup()
+
+    const follow = await screen.findByRole('button', { name: 'Seguir' })
+    expect(follow).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.getByText('Seguidores').nextElementSibling).toHaveTextContent('3')
+    // Depois do clique, a API devolve o perfil já seguido.
+    vi.mocked(getPublicProfile).mockResolvedValue(profile({ isFollowing: true, followersCount: 4 }))
+    await user.click(follow)
+
+    expect(followUser).toHaveBeenCalledWith('zuko')
+    expect(await screen.findByRole('button', { name: 'Seguindo' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+    expect(screen.getByText('Seguidores').nextElementSibling).toHaveTextContent('4')
+  })
+
+  it('deixar de seguir e recusa da API: o botão volta e a mensagem aparece', async () => {
+    mockSession()
+    vi.mocked(getPublicProfile).mockResolvedValue(profile({ isFollowing: true, followersCount: 4 }))
+    vi.mocked(unfollowUser).mockRejectedValue(apiError(500, 'Erro inesperado.'))
+    renderRoute('/users/zuko')
+    const user = userEvent.setup()
+
+    await user.click(await screen.findByRole('button', { name: 'Seguindo' }))
+
+    expect(unfollowUser).toHaveBeenCalledWith('zuko')
+    expect(await screen.findByText(/Ocorreu um erro inesperado/)).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'Seguindo' })).toBeInTheDocument()
+    expect(screen.getByText('Seguidores').nextElementSibling).toHaveTextContent('4')
+  })
+
   it('o próprio perfil privado avisa e leva à edição', async () => {
     mockSession()
     vi.mocked(getPublicProfile).mockResolvedValue(
@@ -92,6 +135,7 @@ describe('UserProfilePage', () => {
 
     expect(await screen.findByText(/só você vê esta página/)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Editar perfil/ })).toHaveAttribute('href', '/profile')
+    expect(screen.queryByRole('button', { name: 'Seguir' })).not.toBeInTheDocument()
     expect(screen.getByText('Nenhuma conquista desbloqueada ainda')).toBeInTheDocument()
   })
 

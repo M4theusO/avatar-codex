@@ -18,3 +18,9 @@
 .period::first-letter {
   text-transform: uppercase;
 }
+
+.hint {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}

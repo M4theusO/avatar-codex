@@ -9,6 +9,7 @@ import Skeleton from '../../components/common/Skeleton'
 import { EmptyState, ErrorState } from '../../components/common/StatusMessage'
 import { StatsGrid, StatsGridSkeleton } from '../../components/profile/ExplorationStats'
 import ProfileHero from '../../components/profile/ProfileHero'
+import FollowButton from '../../components/social/FollowButton'
 import { usePublicProfile } from '../../hooks/usePublicProfile'
 import type { PublicProfile } from '../../types/profile'
 import { isNotFoundError } from '../../utils/apiError'
@@ -73,14 +74,24 @@ function ProfileContent({ profile }: { profile: PublicProfile }) {
               <dt>Membro desde</dt>
               <dd>{formatMemberSince(profile.createdAt)}</dd>
             </div>
+            <div>
+              <dt>Seguidores</dt>
+              <dd>{profile.followersCount}</dd>
+            </div>
+            <div>
+              <dt>Seguindo</dt>
+              <dd>{profile.followingCount}</dd>
+            </div>
           </>
         }
         action={
-          isCurrentUser && (
+          isCurrentUser ? (
             <ButtonLink to="/profile" variant="ghost">
               <Pencil size={18} aria-hidden="true" />
               Editar perfil
             </ButtonLink>
+          ) : (
+            <FollowButton username={username} isFollowing={profile.isFollowing} />
           )
         }
       />

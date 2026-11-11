@@ -6,6 +6,8 @@ export type RankingPeriod = 'all' | 'month'
 export interface RankingQuery {
   period: RankingPeriod
   elementId?: number
+  /** Só você e quem você segue (aba "Seguindo"). */
+  following?: boolean
   page: number
 }
 
@@ -29,6 +31,7 @@ export interface Ranking {
   periodStart: string | null
   periodEnd: string | null
   elementId: number | null
+  following: boolean
   entries: PagedResult<RankingEntry>
   /** Posição de quem consulta, ou null quando não entra neste ranking. */
   currentUser: { position: number; experience: number } | null
