@@ -16,7 +16,7 @@
 | **P0** | Arquitetura, banco, personagens, autenticação, frontend, perfil, favoritos |
 | **P1** | Descoberta, XP, níveis, conquistas, quiz |
 | **P2** | Desafios, timeline, comparação |
-| **P3** | Ranking, teste de elemento (Fases 20–21), funcionalidades sociais (não iniciadas) |
+| **P3** | Ranking, teste de elemento (Fases 20–21), funcionalidades sociais (Fases 23–25) |
 
 Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 
@@ -46,6 +46,10 @@ Se o projeto crescer demais, finalizar P0 e P1 antes de avançar.
 | 19 | Excluir conta | — | `DELETE /api/users/me` com senha, botão no perfil, E2E apagando os próprios usuários | Nenhum usuário de teste sobra no banco depois dos E2E ✅ (2026-11-08) |
 | 20 | Teste de elemento | P3 | Perguntas com pontuação por elemento no banco, resultado no perfil, XP na 1ª vez (RF-ELTEST-01) | Resultado decidido no backend e salvo em `User.ElementId` ✅ (2026-11-08) |
 | 21 | Ranking | P3 | Ranking por XP global, do mês e por elemento, só para logados (RF-RANK-01) | Posição do usuário destacada; ordenação e desempate no backend ✅ (2026-11-08) |
+| 22 | Editar perfil | — | Nome de usuário e foto de perfil | Conta demo protegida ✅ (2026-11-08) |
+| 23 | Perfil público | P3 | `GET /api/users/{username}`, `PUT /api/users/me/privacy`, `User.IsProfilePrivate` (migration `AddProfilePrivacy`), `/users/:username`, nomes do ranking com link, chave "Perfil privado" em Editar perfil (RF-SOCIAL-01) | Só para logados; privado = 404 igual ao de inexistente; nunca email/id; conta demo sempre visível ✅ (2026-11-11) |
+| 24 | Seguir usuários | P3 | Tabela `user_follows` (PK seguidor + seguido, CHECK contra seguir a si mesmo, CASCADE), `PUT`/`DELETE /api/users/{username}/follow` idempotentes, listas de seguindo/seguidores, botão otimista no perfil público, aba "Seguindo" no ranking. Sem XP por seguir | Planejada |
+| 25 | Feed de atividades | P3 | `GET /api/feed`: subiu de nível, conquista, quiz gabaritado e elemento descoberto de quem você segue, a partir das tabelas existentes (sem tabela nova); seção no painel, sem item novo na navbar | Planejada |
 
 > Os testes **não ficam todos para a Fase 14**: cada fase já entrega os testes relevantes dela. A Fase 14 completa a cobertura e os fluxos E2E.
 
@@ -511,3 +515,23 @@ No ar em **https://avatar-codex.vercel.app**. Guia completo em [deployment.md](d
 - [x] Frontend: ícones `zap` e `book-open` nas conquistas e `Zap` no desafio de habilidades
 - [x] Testes: backend 358 (228 unitários + 130 de integração: regras dos dois tipos novos, 5ª habilidade desbloqueando "Aprendiz de dobra" uma única vez, atividade do dia contando habilidades; o teste de desafios descobre 4 habilidades, porque o sorteio do dia pode incluí-las), frontend 175, E2E 12
 - [x] Validado no Chrome (Cypress): 5ª habilidade mostra o toast "Conquista desbloqueada — Aprendiz de dobra! +50 XP"; `/achievements` com 8 conquistas e "Guardião dos pergaminhos" em 5/23
+
+## Funcionalidades sociais — plano (2026-11-11)
+
+Decisões aprovadas pelo usuário: **sem texto livre** (comentários e mensagens exigiriam moderação, denúncia e limites de envio); **tudo só para quem está logado**; escopo nas Fases 23–25 (o duelo de quiz ficou de fora). A navbar não ganha seção nova: a entrada é pelo ranking, pelo painel e pelo perfil.
+
+## Fase 23 — Perfil público e privacidade (concluída)
+
+- [x] `User.IsProfilePrivate` (default `false`: as contas existentes ficam visíveis), migration `AddProfilePrivacy`; `UserDto` passa a trazer `isProfilePrivate`
+- [x] `GET /api/users/{username}` (🔒, `ProfilesController` + `PublicProfileService`): nível, XP, elemento, data de cadastro, estatísticas (o mesmo `UserStatisticsDto` do perfil) e conquistas desbloqueadas, mais recentes primeiro. Nunca email, id nem histórico
+- [x] `ProfileRules.CanView`: público para qualquer logado, privado só para o dono. **Privado e inexistente dão o mesmo 404** ("Perfil não encontrado."), para não revelar se a conta existe
+- [x] `PUT /api/users/me/privacy` (`AccountService.UpdatePrivacyAsync`): campo obrigatório (400), repetir o estado não é erro, conta demo → 422 (fica sempre visível)
+- [x] Ranking: `isProfilePrivate` em cada linha; o nome vira link para `/users/:username`, exceto perfis privados de outras pessoas
+- [x] Frontend: página `/users/:username` (loading, 404, erro com nova tentativa, conquistas vazias), `ProfileHero` extraído do `/profile` e usado pelos dois perfis, `StatsGrid` (as estatísticas sem os atalhos), chave "Perfil privado" (`role="switch"`) e link "Ver meu perfil público" em Editar perfil
+- [x] Testes: backend 372 (235 unitários + 137 de integração: perfil sem email/id, nome sem diferenciar maiúsculas, privado = 404 igual ao inexistente e visível ao dono, indicador no ranking, conta excluída, campo ausente, conta demo, sem token), frontend 183 (perfil público, links do ranking, chave de privacidade e recusa da conta demo), E2E 13 (novo `social.cy.ts`; a suíte inteira passou no Chrome contra a API e o Vite de desenvolvimento, não contra o banco de E2E)
+- [x] Validado com a API local (migration aplicada, endpoints testados com usuários temporários, apagados no fim) e no Chrome (CDP) a 1280px e 390px, sem rolagem horizontal: ranking com links, perfil público, chave de privacidade e o próprio perfil privado
+
+**Decisões:**
+- **Nome de usuário na URL** (`/users/aang`), e não um id: o nome já é público no ranking, é único sem diferenciar maiúsculas/minúsculas e não pode ser "me" (mínimo de 3 caracteres). Se o usuário trocar o nome, o link antigo deixa de funcionar, o que é aceitável aqui.
+- **Privado não some do ranking:** o ranking já é só para logados e mostra só dados do jogo; o perfil privado só perde o link.
+- **Coluna `IsProfilePrivate`, e não `IsProfilePublic`:** com o default `false` do .NET, o EF não confunde "não informado" com o valor padrão do banco.

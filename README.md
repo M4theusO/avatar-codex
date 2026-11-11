@@ -8,7 +8,7 @@ O usuário explora personagens, nações, a linha do tempo e comparações entre
 
 > **No ar:** https://avatar-codex.vercel.app (entre com o usuário demo, abaixo). A primeira requisição depois de um tempo sem uso pode levar cerca de 1 minuto: a API fica no plano gratuito do Render, que dorme quando está ociosa.
 >
-> **Status:** v1 concluída e publicada (Fases 0–17); habilidades, exclusão de conta, teste de elemento e ranking nas Fases 18–21; edição do perfil (nome e foto) na Fase 22. Plano completo em [docs/development-phases.md](docs/development-phases.md).
+> **Status:** v1 concluída e publicada (Fases 0–17); habilidades, exclusão de conta, teste de elemento e ranking nas Fases 18–21; edição do perfil (nome e foto) na Fase 22; perfil público com privacidade na Fase 23 (funcionalidades sociais). Plano completo em [docs/development-phases.md](docs/development-phases.md).
 
 ## Funcionalidades
 
@@ -195,7 +195,7 @@ Nenhum secret é versionado; os arquivos `.env.example` servem de modelo.
 | [UI/UX](docs/ui-ux.md) | Identidade visual, rotas, páginas, componentes, estados, acessibilidade |
 | [Testes](docs/testing.md) | Como rodar cada suíte, organização, cobertura e E2E |
 | [Deploy](docs/deployment.md) | Vercel + Render + Neon: decisões, passo a passo, limitações do plano gratuito |
-| [Fases](docs/development-phases.md) | Fases 0–22 e o que foi entregue em cada uma |
+| [Fases](docs/development-phases.md) | Fases 0–25 e o que foi entregue (ou planejado) em cada uma |
 
 ## Aviso legal
 

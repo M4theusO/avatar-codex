@@ -114,7 +114,7 @@ Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personage
 |---|---|
 | RF-ELTEST-01 | Teste de descoberta do elemento do usuário (perguntas com pontuação por elemento); resultado salvo no perfil. A arquitetura já deve permitir (`User.ElementId`). |
 | RF-RANK-01 | Ranking por XP (global, mensal, por elemento). Não implementar antes de P0–P2. |
-| RF-SOCIAL-01 | Funcionalidades sociais. |
+| RF-SOCIAL-01 | Funcionalidades sociais, sem texto livre (sem comentários nem mensagens, para não exigir moderação): perfil público com privacidade (Fase 23), seguir usuários e ranking "Seguindo" (Fase 24), feed de atividades dos seguidos no painel (Fase 25). Tudo só para quem está logado. |
 
 ## 5. Regras de negócio
 
@@ -184,7 +184,7 @@ Conquistas iniciais: **Primeiro passo** (criar conta), **Curioso** (10 personage
 
 ## 9. Status de implementação (v1)
 
-Todos os requisitos P0, P1 e P2 estão implementados, com as exceções e ajustes abaixo. Dos P3 (§4.12), o teste de elemento (RF-ELTEST-01, Fase 20) e o ranking (RF-RANK-01, Fase 21) foram implementados; o ranking é só para quem está logado, porque mostra os nomes de usuário. As funcionalidades sociais não foram iniciadas.
+Todos os requisitos P0, P1 e P2 estão implementados, com as exceções e ajustes abaixo. Dos P3 (§4.12), o teste de elemento (RF-ELTEST-01, Fase 20) e o ranking (RF-RANK-01, Fase 21) foram implementados; o ranking é só para quem está logado, porque mostra os nomes de usuário. Das funcionalidades sociais (RF-SOCIAL-01), o perfil público com privacidade (Fase 23) foi implementado: visível só para quem está logado, privado vira 404 para os outros, a conta demo fica sempre visível. Seguir usuários (Fase 24) e o feed (Fase 25) ainda não foram iniciados.
 
 | Requisito | Situação |
 |---|---|

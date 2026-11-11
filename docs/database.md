@@ -192,6 +192,7 @@ Migration `AddTimeline`. `Order` vem da posição no JSON; ao reordenar, o seed 
 | PasswordHash | text | nunca exposto |
 | AvatarUrl | varchar(500) | URL da foto (`/api/avatars/{publicId}`) ou null; gravada junto com `UserAvatar` |
 | ElementId | int? | FK → Element |
+| IsProfilePrivate | bool | default false: perfil público visível para quem está logado (Fase 23) |
 | ExperiencePoints | int | default 0, CHECK ≥ 0 (total desnormalizado, D5) |
 | CreatedAt / UpdatedAt | timestamptz | |
 
@@ -396,6 +397,7 @@ Uma migration por mudança coesa de esquema, com nome descritivo (ex.: `AddQuizT
 | `AddElementTest` | `element_test_questions` (`order` único), `element_test_options` (unique (`question_id`, `order`) e (`question_id`, `element_id`): uma opção por elemento em cada pergunta; FK do elemento RESTRICT) |
 | `AddUserAvatars` | `user_avatars` (PK `user_id` com FK CASCADE, `public_id` único, `data` bytea) |
 | `AddAbilityDiscoveries` | `ability_discoveries` (UserAbilityDiscovery): PK (`user_id`, `ability_id`), FK do usuário CASCADE, FK da habilidade RESTRICT |
+| `AddProfilePrivacy` | `users.is_profile_private` (bool, default false: os usuários existentes ficam com o perfil visível) |
 
 ## 6. Testes de banco
 
